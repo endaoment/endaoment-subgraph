@@ -1,0 +1,11 @@
+{
+  "mainnet": {
+    "Registry": {
+      "address": "0x94106cA9c7E567109A1D39413052887d1F412183",
+      "startBlock": 15598433
+    },
+    "OrgFundFactory": {
+      "address": "0x10fD9348136dCea154F752fe0B6dB45Fc298A589"
+    }
+  }
+}

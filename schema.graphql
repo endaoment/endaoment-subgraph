@@ -1,0 +1,15 @@
+type ExampleEntity @entity {
+  id: Bytes!
+  count: BigInt!
+  user: Bytes! # address
+  newAuthority: Bytes! # address
+}
+type EntityDeployed @entity(immutable: true) {
+  id: Bytes!
+  entity: Bytes! # address
+  entityType: Int! # uint8
+  entityManager: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
