@@ -4,6 +4,7 @@ type ExampleEntity @entity {
   user: Bytes! # address
   newAuthority: Bytes! # address
 }
+
 type EntityDeployed @entity(immutable: true) {
   id: Bytes!
   entity: Bytes! # address

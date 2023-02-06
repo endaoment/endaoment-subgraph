@@ -1,2 +1,6 @@
 node_modules/
 .DS_STORE
+
+# Matchstick generated files
+tests/.bin
+tests/.latest.json

@@ -1,5 +1,5 @@
 import { newMockEvent } from "matchstick-as"
-import { ethereum, Address } from "@graphprotocol/graph-ts"
+import { ethereum, Address, BigInt } from "@graphprotocol/graph-ts"
 import { EntityDeployed } from "../generated/OrgFundFactory/OrgFundFactory"
 
 export function createEntityDeployedEvent(

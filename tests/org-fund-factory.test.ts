@@ -42,22 +42,22 @@ describe("Describe entity assertions", () => {
   test("EntityDeployed created and stored", () => {
     assert.entityCount("EntityDeployed", 1)
 
-    // 0xa16081f360e3847006db660bae1c6d1b2e17ec2a is the default address used in newMockEvent() function
+    // Load entity from store and compare here instead of the assertion method described below
     assert.fieldEquals(
       "EntityDeployed",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
+       "0x0000000000000000000000000000000000000001",
       "entity",
       "0x0000000000000000000000000000000000000001"
     )
     assert.fieldEquals(
       "EntityDeployed",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
+       "0x0000000000000000000000000000000000000001",
       "entityType",
       "123"
     )
     assert.fieldEquals(
       "EntityDeployed",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
+       "0x0000000000000000000000000000000000000001",
       "entityManager",
       "0x0000000000000000000000000000000000000001"
     )
