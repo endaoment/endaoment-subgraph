@@ -1,3 +1,8 @@
+enum EntityType {
+  Fund
+  Org
+}
+
 type ExampleEntity @entity {
   id: Bytes!
   count: BigInt!
@@ -5,12 +10,25 @@ type ExampleEntity @entity {
   newAuthority: Bytes! # address
 }
 
-type EntityDeployed @entity(immutable: true) {
+type Entity {
+  # Contract address of the entity
   id: Bytes!
-  entity: Bytes! # address
-  entityType: Int! # uint8
+
+  # The type of the entity
+  entityType: EntityType!
+
+  # Manager of the entity
   entityManager: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+
+  # Amount of USDC that has been formally recognized by the entity
+  recognizedUsdcBalance: BigInt!
+
+  # Amount of USDC that is yet to be formally recognized by the entity
+  unrecognizedUsdcBalance: BigInt!
+
+  # Amount of USDC that has been donated to the entity
+  totalUsdcDonated: BigInt!
+
+  # Amount of USDC that has been paid out to accounts or wallets owned by the entity
+  totalUsdcPaidOut: BigInt!
 }
