@@ -12,8 +12,7 @@ This section covers how to run the subgraph locally
 
 ### Steps
 1. Run `yarn docker-up`
-   - This will standup the indexing infrastructure and start indexing all blocks of the Ethereum node.
-   - If your node is a fork from mainnet, **indexing will start at the genesis block**. Such nodes are not recommended for local development.
+   - This will standup the indexing infrastructure and start indexing the latest blocks of your ethereum node.
 2. Run `yarn create-local` to reserve the name for the subgraph
 3. Run `yarn deploy-local` to deploy the subgraph code. 
 4. Once all blocks up to the latest have been indexed, the URL made available on the deployment step will start serving requests.

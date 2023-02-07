@@ -23,6 +23,11 @@ services:
       ipfs: 'ipfs:5001'
       ethereum: 'mainnet:http://host.docker.internal:8545'
       GRAPH_LOG: info
+
+      # Needed to avoid fetching genesis block on forks
+      # https://github.com/graphprotocol/graph-node/issues/3159#issuecomment-1062827725
+      ETHEREUM_REORG_THRESHOLD: 1
+      ETHEREUM_ANCESTOR_COUNT: 1
   ipfs:
     image: ipfs/go-ipfs:v0.10.0
     ports:
