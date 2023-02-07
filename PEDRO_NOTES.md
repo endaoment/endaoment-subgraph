@@ -8,6 +8,7 @@ Follow [here](https://thegraph.com/docs/en/developing/creating-a-subgraph/)
 - Org EIN
 - Org Manager
 - Total Usdc Donated (optional)
+- Total Usdc Granted (optional)
 - Total Usdc paid out (optional)
 - Current Usdc Balance (optional)
 
@@ -16,9 +17,17 @@ Follow [here](https://thegraph.com/docs/en/developing/creating-a-subgraph/)
 - Fund Address
 - Fund manager
 - Total Usdc Donated (optional)
-- Total Usdc paid out (optional)
+- Total Usdc granted (optional)
 - Current Usdc Balance (optional)
 
-## Permission List
+## Permission List  (Optional)
 - Who is privileged? (optional)
 - Who has permission to call what? (optional)
+
+## Donations (Optional)
+- Track individual & immutable donations and correlate them with entities
+
+## Donors (Optional)
+- Track total donated by someone
+- Track individual donations made 
+- Track individual 

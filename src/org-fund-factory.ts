@@ -1,17 +1,43 @@
-import { EntityDeployed as EntityDeployedEvent } from "../generated/OrgFundFactory/OrgFundFactory"
-import { EntityDeployed } from "../generated/schema"
+import { EntityDeployed as EntityDeployedEvent } from '../generated/OrgFundFactory/OrgFundFactory'
+import { NdaoEntity } from '../generated/schema'
+import { BigInt, log } from '@graphprotocol/graph-ts'
+
+enum OnChainNdaoEntityType {
+  Org = 1,
+  Fund = 2,
+}
+
+function convertEntityType(entityType: OnChainNdaoEntityType): string {
+  switch (entityType) {
+    case OnChainNdaoEntityType.Org:
+      return 'Org'
+    case OnChainNdaoEntityType.Fund:
+      return 'Fund'
+    default:
+      return 'Unknown'
+  }
+}
 
 export function handleEntityDeployed(event: EntityDeployedEvent): void {
-  let entity = new EntityDeployed(
-      event.params.entity
-  )
-  entity.entity = event.params.entity
-  entity.entityType = event.params.entityType
+  let entity = new NdaoEntity(event.params.entity)
+
+  entity.entityType = convertEntityType(event.params.entityType)
   entity.entityManager = event.params.entityManager
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  // Initialize balances to 0
+  entity.recognizedUsdcBalance = BigInt.fromI32(0)
+  entity.totalUsdcDonationsReceived = BigInt.fromI32(0)
+  entity.totalUsdcGrantsReceived = BigInt.fromI32(0)
+  entity.totalUsdcContributionsReceived = BigInt.fromI32(0)
+  entity.totalUsdcTransfersReceived = BigInt.fromI32(0)
+  entity.totalUsdcGrantedOut = BigInt.fromI32(0)
+  entity.totalUsdcPaidOut = BigInt.fromI32(0)
 
+  // new code reindex plz
   entity.save()
+
+  // TODO: Do I need to intialize these values?
+  // entity.recognizedUsdcBalance = BigInt.fromI32(0)
+  // entity.totalUsdcDonated = BigInt.fromI32(0)
+  // entity.totalUsdcPaidOut = BigInt.fromI32(0)
 }

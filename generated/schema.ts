@@ -72,7 +72,7 @@ export class ExampleEntity extends Entity {
   }
 }
 
-export class EntityDeployed extends Entity {
+export class NdaoEntity extends Entity {
   constructor(id: Bytes) {
     super();
     this.set("id", Value.fromBytes(id));
@@ -80,19 +80,19 @@ export class EntityDeployed extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save EntityDeployed entity without an ID");
+    assert(id != null, "Cannot save NdaoEntity entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type EntityDeployed must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type NdaoEntity must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("EntityDeployed", id.toBytes().toHexString(), this);
+      store.set("NdaoEntity", id.toBytes().toHexString(), this);
     }
   }
 
-  static load(id: Bytes): EntityDeployed | null {
-    return changetype<EntityDeployed | null>(
-      store.get("EntityDeployed", id.toHexString())
+  static load(id: Bytes): NdaoEntity | null {
+    return changetype<NdaoEntity | null>(
+      store.get("NdaoEntity", id.toHexString())
     );
   }
 
@@ -105,22 +105,13 @@ export class EntityDeployed extends Entity {
     this.set("id", Value.fromBytes(value));
   }
 
-  get entity(): Bytes {
-    let value = this.get("entity");
-    return value!.toBytes();
-  }
-
-  set entity(value: Bytes) {
-    this.set("entity", Value.fromBytes(value));
-  }
-
-  get entityType(): i32 {
+  get entityType(): string {
     let value = this.get("entityType");
-    return value!.toI32();
+    return value!.toString();
   }
 
-  set entityType(value: i32) {
-    this.set("entityType", Value.fromI32(value));
+  set entityType(value: string) {
+    this.set("entityType", Value.fromString(value));
   }
 
   get entityManager(): Bytes {
@@ -132,30 +123,66 @@ export class EntityDeployed extends Entity {
     this.set("entityManager", Value.fromBytes(value));
   }
 
-  get blockNumber(): BigInt {
-    let value = this.get("blockNumber");
+  get recognizedUsdcBalance(): BigInt {
+    let value = this.get("recognizedUsdcBalance");
     return value!.toBigInt();
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set recognizedUsdcBalance(value: BigInt) {
+    this.set("recognizedUsdcBalance", Value.fromBigInt(value));
   }
 
-  get blockTimestamp(): BigInt {
-    let value = this.get("blockTimestamp");
+  get totalUsdcDonationsReceived(): BigInt {
+    let value = this.get("totalUsdcDonationsReceived");
     return value!.toBigInt();
   }
 
-  set blockTimestamp(value: BigInt) {
-    this.set("blockTimestamp", Value.fromBigInt(value));
+  set totalUsdcDonationsReceived(value: BigInt) {
+    this.set("totalUsdcDonationsReceived", Value.fromBigInt(value));
   }
 
-  get transactionHash(): Bytes {
-    let value = this.get("transactionHash");
-    return value!.toBytes();
+  get totalUsdcGrantsReceived(): BigInt {
+    let value = this.get("totalUsdcGrantsReceived");
+    return value!.toBigInt();
   }
 
-  set transactionHash(value: Bytes) {
-    this.set("transactionHash", Value.fromBytes(value));
+  set totalUsdcGrantsReceived(value: BigInt) {
+    this.set("totalUsdcGrantsReceived", Value.fromBigInt(value));
+  }
+
+  get totalUsdcContributionsReceived(): BigInt {
+    let value = this.get("totalUsdcContributionsReceived");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcContributionsReceived(value: BigInt) {
+    this.set("totalUsdcContributionsReceived", Value.fromBigInt(value));
+  }
+
+  get totalUsdcTransfersReceived(): BigInt {
+    let value = this.get("totalUsdcTransfersReceived");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcTransfersReceived(value: BigInt) {
+    this.set("totalUsdcTransfersReceived", Value.fromBigInt(value));
+  }
+
+  get totalUsdcGrantedOut(): BigInt {
+    let value = this.get("totalUsdcGrantedOut");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcGrantedOut(value: BigInt) {
+    this.set("totalUsdcGrantedOut", Value.fromBigInt(value));
+  }
+
+  get totalUsdcPaidOut(): BigInt {
+    let value = this.get("totalUsdcPaidOut");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcPaidOut(value: BigInt) {
+    this.set("totalUsdcPaidOut", Value.fromBigInt(value));
   }
 }

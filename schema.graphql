@@ -1,6 +1,7 @@
 enum EntityType {
   Fund
   Org
+  Unknown
 }
 
 type ExampleEntity @entity {
@@ -10,7 +11,7 @@ type ExampleEntity @entity {
   newAuthority: Bytes! # address
 }
 
-type Entity {
+type NdaoEntity @entity {
   # Contract address of the entity
   id: Bytes!
 
@@ -20,15 +21,34 @@ type Entity {
   # Manager of the entity
   entityManager: Bytes! # address
 
-  # Amount of USDC that has been formally recognized by the entity
+  # USDC Balance that has been formally recognized by the entity
   recognizedUsdcBalance: BigInt!
 
   # Amount of USDC that is yet to be formally recognized by the entity
-  unrecognizedUsdcBalance: BigInt!
+  # unrecognizedUsdcBalance: BigInt! # TODO: See if this field will work
 
-  # Amount of USDC that has been donated to the entity
-  totalUsdcDonated: BigInt!
+  # Amount USDC that has been donated to this entity.
+  totalUsdcDonationsReceived: BigInt!
+
+  # Amount of USDC that has been granted to this entity.
+  # Any Fund -> Org transfer is considered a grant.
+  totalUsdcGrantsReceived: BigInt!
+
+  # Amount of USDC that has been donated or granted to this entity
+  totalUsdcContributionsReceived: BigInt!
+
+  # Amount of USDC that has been transferred to this entity. This includes transfers that are not considered grants
+  # (Org -> Org, Fund -> Fund, Org -> Fund)
+  totalUsdcTransfersReceived: BigInt!
+
+  # Amount of USDC that has been granted out to other Endaoment entities by this entity.
+  # Any Fund -> Org transfer is considered a grant.
+  totalUsdcGrantedOut: BigInt!
 
   # Amount of USDC that has been paid out to accounts or wallets owned by the entity
   totalUsdcPaidOut: BigInt!
+
+  # TODO (Later, if time allows): Track individual donations & grants as entities and correlate them here
 }
+
+# TODO (Later, if time allows): Track unique donors, their total contributions and correlate them to donations
