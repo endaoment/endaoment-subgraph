@@ -5,7 +5,8 @@
       "startBlock": 15598433
     },
     "OrgFundFactory": {
-      "address": "0x10fD9348136dCea154F752fe0B6dB45Fc298A589"
+      "address": "0x10fD9348136dCea154F752fe0B6dB45Fc298A589",
+      "startBlock": 15598433
     }
   }
 }
