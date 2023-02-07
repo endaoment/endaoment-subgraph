@@ -1,0 +1,97 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Registry
+    network: mainnet
+    source:
+      address: "0x94106cA9c7E567109A1D39413052887d1F412183"
+      abi: Registry
+      startBlock: 15598433
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - AuthorityUpdated
+        - DefaultDonationFeeSet
+        - DefaultPayoutFeeSet
+        - DefaultTransferFeeSet
+        - DonationFeeReceiverOverrideSet
+        - EntityStatusSet
+        - FactoryApprovalSet
+        - OwnerUpdated
+        - OwnershipChanged
+        - OwnershipTransferProposed
+        - PayoutFeeOverrideSet
+        - PortfolioStatusSet
+        - PublicCapabilityUpdated
+        - RoleCapabilityUpdated
+        - SwapWrapperStatusSet
+        - TransferFeeReceiverOverrideSet
+        - TransferFeeSenderOverrideSet
+        - TreasuryChanged
+        - UserRoleUpdated
+      abis:
+        - name: Registry
+          file: ./abis/Registry.json
+      eventHandlers:
+        - event: AuthorityUpdated(indexed address,indexed address)
+          handler: handleAuthorityUpdated
+        - event: DefaultDonationFeeSet(indexed uint8,uint32)
+          handler: handleDefaultDonationFeeSet
+        - event: DefaultPayoutFeeSet(indexed uint8,uint32)
+          handler: handleDefaultPayoutFeeSet
+        - event: DefaultTransferFeeSet(indexed uint8,indexed uint8,uint32)
+          handler: handleDefaultTransferFeeSet
+        - event: DonationFeeReceiverOverrideSet(indexed address,uint32)
+          handler: handleDonationFeeReceiverOverrideSet
+        - event: EntityStatusSet(indexed address,bool)
+          handler: handleEntityStatusSet
+        - event: FactoryApprovalSet(indexed address,bool)
+          handler: handleFactoryApprovalSet
+        - event: OwnerUpdated(indexed address,indexed address)
+          handler: handleOwnerUpdated
+        - event: OwnershipChanged(indexed address,indexed address)
+          handler: handleOwnershipChanged
+        - event: OwnershipTransferProposed(indexed address,indexed address)
+          handler: handleOwnershipTransferProposed
+        - event: PayoutFeeOverrideSet(indexed address,uint32)
+          handler: handlePayoutFeeOverrideSet
+        - event: PortfolioStatusSet(indexed address,bool)
+          handler: handlePortfolioStatusSet
+        - event: PublicCapabilityUpdated(indexed address,indexed bytes4,bool)
+          handler: handlePublicCapabilityUpdated
+        - event: RoleCapabilityUpdated(indexed uint8,indexed address,indexed bytes4,bool)
+          handler: handleRoleCapabilityUpdated
+        - event: SwapWrapperStatusSet(indexed address,bool)
+          handler: handleSwapWrapperStatusSet
+        - event: TransferFeeReceiverOverrideSet(indexed uint8,indexed address,uint32)
+          handler: handleTransferFeeReceiverOverrideSet
+        - event: TransferFeeSenderOverrideSet(indexed address,indexed uint8,uint32)
+          handler: handleTransferFeeSenderOverrideSet
+        - event: TreasuryChanged(address,indexed address)
+          handler: handleTreasuryChanged
+        - event: UserRoleUpdated(indexed address,indexed uint8,bool)
+          handler: handleUserRoleUpdated
+      file: ./src/registry.ts
+  - kind: ethereum
+    name: OrgFundFactory
+    network: mainnet
+    source:
+      address: "0x10fD9348136dCea154F752fe0B6dB45Fc298A589"
+      abi: OrgFundFactory
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - EntityDeployed
+      abis:
+        - name: OrgFundFactory
+          file: ./abis/OrgFundFactory.json
+      eventHandlers:
+        - event: EntityDeployed(indexed address,indexed uint8,indexed address)
+          handler: handleEntityDeployed
+      file: ./src/org-fund-factory.ts
