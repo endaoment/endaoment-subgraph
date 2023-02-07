@@ -8,7 +8,8 @@
     "create-local": "graph create --node http://localhost:8020/ endaoment-v2",
     "remove-local": "graph remove --node http://localhost:8020/ endaoment-v2",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 endaoment-v2",
-    "test": "graph test"
+    "test": "graph test",
+    "docker-up": "cd docker && docker-compose -p endaoment-subgraph up -d"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.38.0",

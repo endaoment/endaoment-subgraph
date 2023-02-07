@@ -1,28 +1,16 @@
 # endaoment-subgraph
 Subgraph for the Endaoment Protocol
 
-## Setup
-Follow [here](https://thegraph.com/docs/en/developing/creating-a-subgraph/)
+## Local Development
+This section covers how to run the subgraph locally
 
-## Todo:
+### Requirements
+[//]: # (TODO: Figure out if I can bundle the hardhat node here. That's probably the best move instead of making it running a requirement)
 
-### Org Indexed Data
-- Org Address
-- Org EIN
-- Org Manager
-- Total Usdc Donated (optional)
-- Total Usdc paid out (optional)
-- Current Usdc Balance (optional)
+1. Docker is installed and running
+2. Have node running on `0.0.0.0:8545`
 
-## Fund Indexed Data
-
-- Fund Address
-- Fund manager
-- Total Usdc Donated (optional)
-- Total Usdc paid out (optional)
-- Current Usdc Balance (optional)
-
-## Permission List
-
-- Who is privileged? (optional)
-- Who has permission to call what? (optional)
+### Steps
+1. Run `yarn docker-up`
+2. Run `yarn create-local`
+3. Run `yarn deploy-local`

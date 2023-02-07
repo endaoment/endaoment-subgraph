@@ -4,3 +4,9 @@ node_modules/
 # Matchstick generated files
 tests/.bin
 tests/.latest.json
+
+# Generated output files
+build
+
+# Docker data
+docker/data
