@@ -35,9 +35,4 @@ export function handleEntityDeployed(event: EntityDeployedEvent): void {
 
   // new code reindex plz
   entity.save()
-
-  // TODO: Do I need to intialize these values?
-  // entity.recognizedUsdcBalance = BigInt.fromI32(0)
-  // entity.totalUsdcDonated = BigInt.fromI32(0)
-  // entity.totalUsdcPaidOut = BigInt.fromI32(0)
 }
