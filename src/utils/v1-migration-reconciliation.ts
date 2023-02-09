@@ -25,16 +25,11 @@ export function reconcileV1Migration(entity: NdaoEntity, currentBalanceChange: B
   const contract = NdaoEntityContract.bind(entity.id)
   const recognizedUsdcBalance = contract.balance()
 
-  // The graph protocol says that calls to contracts fetch information at the current block. But what do they mean
-  //  by current block? https://thegraph.com/docs/en/developing/assemblyscript-api/#access-to-smart-contract-state
-  //  1. Latest block?
-  //  2. Block that the event was emitted in?
-  // Looks like it is about the block being indexed, but I must experiment with that before making assumptions.
-
-  // EXPERIMENT:
-  // 1. Setup the test hardhat node with the test local protocol
-  // 2. Do a batch deployment and add log statements to the mapping function.
-  // 3. Verify that in the batch deployment processing logs, the state being queried always matches the end of the block
+  // The graph docs state that calls to contracts fetch information at the end of the current block. This means that
+  // if we call the contract at any moment while processing events, we should get the state of the contract at the end
+  // of the block, not the state at the moment the event is being processed. This was proved experimentally in this
+  // repository. For more information, see the following link:
+  // https://thegraph.com/docs/en/developing/assemblyscript-api/#access-to-smart-contract-state
 
   if (recognizedUsdcBalance == BigInt.fromI32(0)) {
   }
