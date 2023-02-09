@@ -11,6 +11,9 @@ Follow [here](https://thegraph.com/docs/en/developing/creating-a-subgraph/)
 - `_transferWithFeeMultiplier`
   - **(-)** Decrease balance
   - Emits `EntityValueTransferred`
+- `receiveTransfer`
+  - **(+)** Increase balance
+  - **Does not emit events**
 - `portfolioDeposit`
   - **(-)** Decrease balance
   - Emits `EntityDeposit`
