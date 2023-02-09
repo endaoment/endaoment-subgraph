@@ -1,7 +1,7 @@
-import { EntityDonationReceived } from '../generated/templates/NdaoEntity/NdaoEntity'
+import { EntityDonationReceived } from '../../generated/templates/NdaoEntity/NdaoEntity'
 import { BigInt, log } from '@graphprotocol/graph-ts'
-import { NdaoEntity } from '../generated/schema'
-import { NdaoEntity as NdaoEntityContract } from '../generated/templates/NdaoEntity/NdaoEntity'
+import { NdaoEntity } from '../../generated/schema'
+import { NdaoEntity as NdaoEntityContract } from '../../generated/templates/NdaoEntity/NdaoEntity'
 
 export function handleEntityDonationReceived(event: EntityDonationReceived): void {
   let entity = NdaoEntity.load(event.address)
@@ -26,6 +26,7 @@ export function handleEntityDonationReceived(event: EntityDonationReceived): voi
     // V1 -> V2
     if (recognizedUsdcBalance != BigInt.fromI32(0)) {
       entity.totalUsdcReceived = recognizedUsdcBalance
+      // TODO: Extract this to common function already and isolate concern
     }
   }
 

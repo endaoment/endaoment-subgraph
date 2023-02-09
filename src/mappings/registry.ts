@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigInt } from '@graphprotocol/graph-ts'
 import {
   Registry,
   AuthorityUpdated,
@@ -19,9 +19,9 @@ import {
   TransferFeeReceiverOverrideSet,
   TransferFeeSenderOverrideSet,
   TreasuryChanged,
-  UserRoleUpdated
-} from "../generated/Registry/Registry"
-import { ExampleEntity } from "../generated/schema"
+  UserRoleUpdated,
+} from '../../generated/Registry/Registry'
+import { ExampleEntity } from '../../generated/schema'
 
 export function handleAuthorityUpdated(event: AuthorityUpdated): void {
   // Entities can be loaded from the store using a string ID; this ID
@@ -85,19 +85,13 @@ export function handleAuthorityUpdated(event: AuthorityUpdated): void {
   // - contract.treasury(...)
 }
 
-export function handleDefaultDonationFeeSet(
-  event: DefaultDonationFeeSet
-): void {}
+export function handleDefaultDonationFeeSet(event: DefaultDonationFeeSet): void {}
 
 export function handleDefaultPayoutFeeSet(event: DefaultPayoutFeeSet): void {}
 
-export function handleDefaultTransferFeeSet(
-  event: DefaultTransferFeeSet
-): void {}
+export function handleDefaultTransferFeeSet(event: DefaultTransferFeeSet): void {}
 
-export function handleDonationFeeReceiverOverrideSet(
-  event: DonationFeeReceiverOverrideSet
-): void {}
+export function handleDonationFeeReceiverOverrideSet(event: DonationFeeReceiverOverrideSet): void {}
 
 export function handleEntityStatusSet(event: EntityStatusSet): void {}
 
@@ -107,31 +101,21 @@ export function handleOwnerUpdated(event: OwnerUpdated): void {}
 
 export function handleOwnershipChanged(event: OwnershipChanged): void {}
 
-export function handleOwnershipTransferProposed(
-  event: OwnershipTransferProposed
-): void {}
+export function handleOwnershipTransferProposed(event: OwnershipTransferProposed): void {}
 
 export function handlePayoutFeeOverrideSet(event: PayoutFeeOverrideSet): void {}
 
 export function handlePortfolioStatusSet(event: PortfolioStatusSet): void {}
 
-export function handlePublicCapabilityUpdated(
-  event: PublicCapabilityUpdated
-): void {}
+export function handlePublicCapabilityUpdated(event: PublicCapabilityUpdated): void {}
 
-export function handleRoleCapabilityUpdated(
-  event: RoleCapabilityUpdated
-): void {}
+export function handleRoleCapabilityUpdated(event: RoleCapabilityUpdated): void {}
 
 export function handleSwapWrapperStatusSet(event: SwapWrapperStatusSet): void {}
 
-export function handleTransferFeeReceiverOverrideSet(
-  event: TransferFeeReceiverOverrideSet
-): void {}
+export function handleTransferFeeReceiverOverrideSet(event: TransferFeeReceiverOverrideSet): void {}
 
-export function handleTransferFeeSenderOverrideSet(
-  event: TransferFeeSenderOverrideSet
-): void {}
+export function handleTransferFeeSenderOverrideSet(event: TransferFeeSenderOverrideSet): void {}
 
 export function handleTreasuryChanged(event: TreasuryChanged): void {}
 

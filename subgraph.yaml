@@ -75,7 +75,7 @@ dataSources:
 #          handler: handleTreasuryChanged
 #        - event: UserRoleUpdated(indexed address,indexed uint8,bool)
 #          handler: handleUserRoleUpdated
-#      file: ./src/registry.ts
+#      file: ./src/mappings/registry.ts
   - kind: ethereum
     name: OrgFundFactory
     network: mainnet
@@ -95,7 +95,7 @@ dataSources:
       eventHandlers:
         - event: EntityDeployed(indexed address,indexed uint8,indexed address)
           handler: handleEntityDeployed
-      file: ./src/org-fund-factory.ts
+      file: ./src/mappings/org-fund-factory.ts
 templates:
   - kind: ethereum/contract
     name: NdaoEntity
@@ -114,4 +114,4 @@ templates:
       eventHandlers:
         - event: EntityDonationReceived(indexed address,indexed address,indexed address,uint256,uint256,uint256)
           handler: handleEntityDonationReceived
-      file: ./src/ndao-entity.ts
+      file: ./src/mappings/ndao-entity.ts

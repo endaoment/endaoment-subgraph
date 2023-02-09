@@ -24,6 +24,9 @@ type NdaoEntity @entity {
   # USDC Balance that has been formally recognized by the entity
   recognizedUsdcBalance: BigInt!
 
+  # USDC Balance that the entity has invested in Portfolios belonging to the Endaoment protocol
+  investmentBalance: BigInt!
+
   # Amount of USDC that is yet to be formally recognized by the entity
   # unrecognizedUsdcBalance: BigInt! # TODO: See if this field will work
 
@@ -80,8 +83,8 @@ type NdaoEntity @entity {
   totalUsdcPaidOutFees: BigInt!
 
   # TODO (Later, if time allows): Track portfolio deposits, redemptions.
-  # TODO (Later, if time allows): Track capital gains? https://discord.com/channels/734855436276334746/1050050369570488350/1073066728248070184
   # TODO (Later, if time allows): Track individual donations & grants as entities and correlate them here
 }
 
+# TODO (Later, if time allows): Track permissioned wallets
 # TODO (Later, if time allows): Track unique donors, their total contributions and correlate them to donations

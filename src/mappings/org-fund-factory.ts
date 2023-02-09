@@ -1,7 +1,7 @@
-import { EntityDeployed as EntityDeployedEvent } from '../generated/OrgFundFactory/OrgFundFactory'
-import { NdaoEntity } from '../generated/schema'
+import { EntityDeployed as EntityDeployedEvent } from '../../generated/OrgFundFactory/OrgFundFactory'
+import { NdaoEntity } from '../../generated/schema'
 import { BigInt, log } from '@graphprotocol/graph-ts'
-import { NdaoEntity as NdaoEntityTemplate } from '../generated/templates'
+import { NdaoEntity as NdaoEntityTemplate } from '../../generated/templates'
 
 enum OnChainNdaoEntityType {
   Org = 1,
