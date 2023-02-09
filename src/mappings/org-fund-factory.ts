@@ -2,27 +2,16 @@ import { EntityDeployed as EntityDeployedEvent } from '../../generated/OrgFundFa
 import { NdaoEntity } from '../../generated/schema'
 import { BigInt, log } from '@graphprotocol/graph-ts'
 import { NdaoEntity as NdaoEntityTemplate } from '../../generated/templates'
-
-enum OnChainNdaoEntityType {
-  Org = 1,
-  Fund = 2,
-}
-
-function convertEntityType(entityType: OnChainNdaoEntityType): string {
-  switch (entityType) {
-    case OnChainNdaoEntityType.Org:
-      return 'Org'
-    case OnChainNdaoEntityType.Fund:
-      return 'Fund'
-    default:
-      return 'Unknown'
-  }
-}
+import { convertEntityType } from '../utils/on-chain-entity-type'
 
 export function handleEntityDeployed(event: EntityDeployedEvent): void {
   let entity = new NdaoEntity(event.params.entity)
 
   entity.entityType = convertEntityType(event.params.entityType)
+  if (entity.entityType === 'Unknown') {
+    log.warning('Unknown entity type: {}', [event.params.entityType.toString()])
+  }
+
   entity.entityManager = event.params.entityManager
 
   // Initialize balances to 0
