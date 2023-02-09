@@ -1,6 +1,7 @@
 import { EntityDeployed as EntityDeployedEvent } from '../generated/OrgFundFactory/OrgFundFactory'
 import { NdaoEntity } from '../generated/schema'
 import { BigInt, log } from '@graphprotocol/graph-ts'
+import { NdaoEntity as NdaoEntityTemplate } from '../generated/templates'
 
 enum OnChainNdaoEntityType {
   Org = 1,
@@ -33,6 +34,9 @@ export function handleEntityDeployed(event: EntityDeployedEvent): void {
   entity.totalUsdcGrantedOut = BigInt.fromI32(0)
   entity.totalUsdcPaidOut = BigInt.fromI32(0)
 
-  // new code reindex plz
+  // Save entity
   entity.save()
+
+  // Start indexing events from the new entity
+  NdaoEntityTemplate.create(event.params.entity)
 }
