@@ -27,27 +27,60 @@ type NdaoEntity @entity {
   # Amount of USDC that is yet to be formally recognized by the entity
   # unrecognizedUsdcBalance: BigInt! # TODO: See if this field will work
 
-  # Amount USDC that has been donated to this entity.
+  # Amount USDC that has been donated to this entity, after fees. Any recognized inbound asset transfer from addresses
+  # outside the Endaoment protocol is considered a Donation.
   totalUsdcDonationsReceived: BigInt!
 
-  # Amount of USDC that has been granted to this entity.
+  # Amount of fees that have been collected from donations to this entity.
+  totalUsdcDonationsFee: BigInt!
+
+  # Amount of USDC that has been granted to this entity, after fees.
   # Any Fund -> Org transfer is considered a grant.
   totalUsdcGrantsReceived: BigInt!
 
-  # Amount of USDC that has been donated or granted to this entity
+  # Amount of fees that have been paid by grantors for grants to this entity.
+  totalUsdcGrantsInFee: BigInt!
+
+  # Amount of USDC that has been donated or granted to this entity, after fees.
   totalUsdcContributionsReceived: BigInt!
 
-  # Amount of USDC that has been transferred to this entity. This includes transfers that are not considered grants
-  # (Org -> Org, Fund -> Fund, Org -> Fund)
+  # Amount of fees that have been collected from donations or grants to this entity.
+  totalUsdcContributionsFee: BigInt!
+
+  # Amount of USDC that has been transferred to this entity. This includes transfers that are not considered grants.
+  # (Org -> Org, Fund -> Fund, Org -> Fund, V1 Entity -> V2 Entity)
   totalUsdcTransfersReceived: BigInt!
+
+  # Amount of USDC that has been paid in fees for transfers to this entity.
+  totalUsdcTransfersFee: BigInt!
+
+  # Amount of USDC that has been received by this entity using any Endaoment V2 Entity method.
+  totalUsdcReceived: BigInt!
+
+  # Amount of USDC that has been paid in fee for all inbound USDC transactions to this entity.
+  totalUsdcReceivedFees: BigInt!
 
   # Amount of USDC that has been granted out to other Endaoment entities by this entity.
   # Any Fund -> Org transfer is considered a grant.
   totalUsdcGrantedOut: BigInt!
 
-  # Amount of USDC that has been paid out to accounts or wallets owned by the entity
+  # Amount of fees that have been paid by this entity for grants to other Endaoment entities.
+  totalUsdcGrantedOutFees: BigInt!
+
+  # Amount of USDC that has been transfßåerred out of this entity. This includes transfers that are not considered grants.
+  totalUsdcTransferredOut: BigInt!
+
+  # Amount of USDC that has been paid in fees for transfers out of this entity.
+  totalUsdcTransferredOutFees: BigInt!
+
+  # Amount of USDC that has been paid out to accounts or wallets owned by the entity outside the Endaoment Protocol.
   totalUsdcPaidOut: BigInt!
 
+  # Amount of USDC that has been paid in fees for payouts from this entity
+  totalUsdcPaidOutFees: BigInt!
+
+  # TODO (Later, if time allows): Track portfolio deposits, redemptions.
+  # TODO (Later, if time allows): Track capital gains? https://discord.com/channels/734855436276334746/1050050369570488350/1073066728248070184
   # TODO (Later, if time allows): Track individual donations & grants as entities and correlate them here
 }
 

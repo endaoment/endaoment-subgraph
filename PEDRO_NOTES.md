@@ -1,6 +1,33 @@
 ## Setup
 Follow [here](https://thegraph.com/docs/en/developing/creating-a-subgraph/)
 
+## Methods that change balance in the contracts
+- `_donateWithFeeMultiplier`
+  - **(+)** Increase balance
+  - Emits `EntityDonationReceived`
+- `_swapAndDonateWithFeeMultiplier`
+  - **(+)** Increase balance
+  - Emits `EntityDonationReceived`
+- `_transferWithFeeMultiplier`
+  - **(-)** Decrease balance
+  - Emits `EntityValueTransferred`
+- `portfolioDeposit`
+  - **(-)** Decrease balance
+  - Emits `EntityDeposit`
+- `portfolioRedeem`
+  - **(+)** Increase balance
+  - Emits `EntityRedeem`
+- `reconcileBalance`
+  - **(+)** Increase balance
+    - Emits `EntityBalanceReconciled`
+  - **(-)** Decrease balance
+    - Emits `EntityBalanceCorrected`
+- `swapAndReconcileBalance`
+  - **(+)** Increase balance
+  - Emits `EntityBalanceReconciled`
+- `_payoutWithFeeMultiplier`
+  - **(-)** Decrease balance
+  - Emits `EntityValuePaidOut`
 ## Todo:
 
 ### Org Indexed Data

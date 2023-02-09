@@ -141,6 +141,15 @@ export class NdaoEntity extends Entity {
     this.set("totalUsdcDonationsReceived", Value.fromBigInt(value));
   }
 
+  get totalUsdcDonationsFee(): BigInt {
+    let value = this.get("totalUsdcDonationsFee");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcDonationsFee(value: BigInt) {
+    this.set("totalUsdcDonationsFee", Value.fromBigInt(value));
+  }
+
   get totalUsdcGrantsReceived(): BigInt {
     let value = this.get("totalUsdcGrantsReceived");
     return value!.toBigInt();
@@ -148,6 +157,15 @@ export class NdaoEntity extends Entity {
 
   set totalUsdcGrantsReceived(value: BigInt) {
     this.set("totalUsdcGrantsReceived", Value.fromBigInt(value));
+  }
+
+  get totalUsdcGrantsInFee(): BigInt {
+    let value = this.get("totalUsdcGrantsInFee");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcGrantsInFee(value: BigInt) {
+    this.set("totalUsdcGrantsInFee", Value.fromBigInt(value));
   }
 
   get totalUsdcContributionsReceived(): BigInt {
@@ -159,6 +177,15 @@ export class NdaoEntity extends Entity {
     this.set("totalUsdcContributionsReceived", Value.fromBigInt(value));
   }
 
+  get totalUsdcContributionsFee(): BigInt {
+    let value = this.get("totalUsdcContributionsFee");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcContributionsFee(value: BigInt) {
+    this.set("totalUsdcContributionsFee", Value.fromBigInt(value));
+  }
+
   get totalUsdcTransfersReceived(): BigInt {
     let value = this.get("totalUsdcTransfersReceived");
     return value!.toBigInt();
@@ -166,6 +193,33 @@ export class NdaoEntity extends Entity {
 
   set totalUsdcTransfersReceived(value: BigInt) {
     this.set("totalUsdcTransfersReceived", Value.fromBigInt(value));
+  }
+
+  get totalUsdcTransfersFee(): BigInt {
+    let value = this.get("totalUsdcTransfersFee");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcTransfersFee(value: BigInt) {
+    this.set("totalUsdcTransfersFee", Value.fromBigInt(value));
+  }
+
+  get totalUsdcReceived(): BigInt {
+    let value = this.get("totalUsdcReceived");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcReceived(value: BigInt) {
+    this.set("totalUsdcReceived", Value.fromBigInt(value));
+  }
+
+  get totalUsdcReceivedFees(): BigInt {
+    let value = this.get("totalUsdcReceivedFees");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcReceivedFees(value: BigInt) {
+    this.set("totalUsdcReceivedFees", Value.fromBigInt(value));
   }
 
   get totalUsdcGrantedOut(): BigInt {
@@ -177,6 +231,33 @@ export class NdaoEntity extends Entity {
     this.set("totalUsdcGrantedOut", Value.fromBigInt(value));
   }
 
+  get totalUsdcGrantedOutFees(): BigInt {
+    let value = this.get("totalUsdcGrantedOutFees");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcGrantedOutFees(value: BigInt) {
+    this.set("totalUsdcGrantedOutFees", Value.fromBigInt(value));
+  }
+
+  get totalUsdcTransferredOut(): BigInt {
+    let value = this.get("totalUsdcTransferredOut");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcTransferredOut(value: BigInt) {
+    this.set("totalUsdcTransferredOut", Value.fromBigInt(value));
+  }
+
+  get totalUsdcTransferredOutFees(): BigInt {
+    let value = this.get("totalUsdcTransferredOutFees");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcTransferredOutFees(value: BigInt) {
+    this.set("totalUsdcTransferredOutFees", Value.fromBigInt(value));
+  }
+
   get totalUsdcPaidOut(): BigInt {
     let value = this.get("totalUsdcPaidOut");
     return value!.toBigInt();
@@ -184,5 +265,14 @@ export class NdaoEntity extends Entity {
 
   set totalUsdcPaidOut(value: BigInt) {
     this.set("totalUsdcPaidOut", Value.fromBigInt(value));
+  }
+
+  get totalUsdcPaidOutFees(): BigInt {
+    let value = this.get("totalUsdcPaidOutFees");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcPaidOutFees(value: BigInt) {
+    this.set("totalUsdcPaidOutFees", Value.fromBigInt(value));
   }
 }
