@@ -33,6 +33,7 @@ export function handleEntityDeployed(event: EntityDeployedEvent): void {
   entity.totalUsdcTransfersReceived = BigInt.fromI32(0)
   entity.totalUsdcGrantedOut = BigInt.fromI32(0)
   entity.totalUsdcPaidOut = BigInt.fromI32(0)
+  entity.investmentBalance = BigInt.fromI32(0)
 
   // Save entity
   entity.save()
