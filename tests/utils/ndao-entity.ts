@@ -37,6 +37,8 @@ export function createEntityDonationReceivedEvent(
   const donationEvent = changetype<EntityDonationReceived>(newMockEvent())
   donationEvent.block.number = BigInt.fromI32(blockNumber)
 
+  donationEvent.address = to
+
   donationEvent.parameters = []
   donationEvent.parameters.push(new ethereum.EventParam('from', ethereum.Value.fromAddress(from)))
   donationEvent.parameters.push(new ethereum.EventParam('to', ethereum.Value.fromAddress(to)))

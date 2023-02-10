@@ -204,13 +204,22 @@ export class NdaoEntity extends Entity {
     this.set("totalUsdcTransfersReceived", Value.fromBigInt(value));
   }
 
-  get totalUsdcTransfersFee(): BigInt {
-    let value = this.get("totalUsdcTransfersFee");
+  get totalUsdcTransfersInFee(): BigInt {
+    let value = this.get("totalUsdcTransfersInFee");
     return value!.toBigInt();
   }
 
-  set totalUsdcTransfersFee(value: BigInt) {
-    this.set("totalUsdcTransfersFee", Value.fromBigInt(value));
+  set totalUsdcTransfersInFee(value: BigInt) {
+    this.set("totalUsdcTransfersInFee", Value.fromBigInt(value));
+  }
+
+  get totalUsdcMigrated(): BigInt {
+    let value = this.get("totalUsdcMigrated");
+    return value!.toBigInt();
+  }
+
+  set totalUsdcMigrated(value: BigInt) {
+    this.set("totalUsdcMigrated", Value.fromBigInt(value));
   }
 
   get totalUsdcReceived(): BigInt {

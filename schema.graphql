@@ -51,13 +51,16 @@ type NdaoEntity @entity {
   totalUsdcContributionsFee: BigInt!
 
   # Amount of USDC that has been transferred to this entity. This includes transfers that are not considered grants.
-  # (Org -> Org, Fund -> Fund, Org -> Fund, V1 Entity -> V2 Entity)
+  # (Org -> Org, Fund -> Fund, Org -> Fund)
   totalUsdcTransfersReceived: BigInt!
 
   # Amount of USDC that has been paid in fees for transfers to this entity.
-  totalUsdcTransfersFee: BigInt!
+  totalUsdcTransfersInFee: BigInt!
 
-  # Amount of USDC that has been received by this entity using any Endaoment V2 Entity method.
+  # Amount of USDC that has been migrated to this entity from Endaoment V1.
+  totalUsdcMigrated: BigInt!
+
+  # Amount of USDC that has been received by this entity using any Endaoment V2 Entity method, including V1 migration.
   totalUsdcReceived: BigInt!
 
   # Amount of USDC that has been paid in fee for all inbound USDC transactions to this entity.

@@ -61,7 +61,8 @@ describe('Migration Detection Tests', () => {
     assert.bigIntEquals(BigInt.fromI32(348_250_000), entity.totalUsdcContributionsReceived)
     assert.bigIntEquals(BigInt.fromI32(1_750_000), entity.totalUsdcContributionsFee)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersReceived)
-    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersFee)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersInFee)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcMigrated)
     assert.bigIntEquals(BigInt.fromI32(348_250_000), entity.totalUsdcReceived)
     assert.bigIntEquals(BigInt.fromI32(1_750_000), entity.totalUsdcReceivedFees)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOut)
@@ -71,4 +72,6 @@ describe('Migration Detection Tests', () => {
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOut)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
   })
+
+  // TODO: it should correctly index multiple donations to an entity with V1 Assets
 })
