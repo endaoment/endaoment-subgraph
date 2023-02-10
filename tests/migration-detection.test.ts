@@ -4,11 +4,11 @@ import {
   createEntityDonationReceivedEvent,
   DEFAULT_ENTITY_ADDRESS,
   mockBalance,
-} from './ndao-entity-utils'
+} from './utils/ndao-entity'
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { EntityDonationReceived } from '../generated/templates/NdaoEntity/NdaoEntity'
 import { handleEntityDeployed } from '../src/mappings/org-fund-factory'
-import { createEntityDeployedEvent } from './org-fund-factory-utils'
+import { createEntityDeployedEvent } from './utils/org-fund-factory'
 import { OnChainNdaoEntityType } from '../src/utils/on-chain-entity-type'
 import { handleEntityDonationReceived } from '../src/mappings/ndao-entity'
 import { NdaoEntity } from '../generated/schema'

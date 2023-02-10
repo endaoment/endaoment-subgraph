@@ -1,5 +1,5 @@
 import { Address, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts'
-import { EntityDonationReceived } from '../generated/templates/NdaoEntity/NdaoEntity'
+import { EntityDonationReceived } from '../../generated/templates/NdaoEntity/NdaoEntity'
 import { createMockedFunction, newMockEvent } from 'matchstick-as'
 
 export const DEFAULT_DONOR_ADDRESS = Address.fromString('0xe5Ce376f2904C780E6F006213719B38b73E286D7')

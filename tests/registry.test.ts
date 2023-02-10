@@ -3,7 +3,7 @@ import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
 import { ExampleEntity } from '../generated/schema'
 import { AuthorityUpdated } from '../generated/Registry/Registry'
 import { handleAuthorityUpdated } from '../src/mappings/registry'
-import { createAuthorityUpdatedEvent } from './registry-utils'
+import { createAuthorityUpdatedEvent } from './utils/registry'
 
 // Tests structure (matchstick-as >=0.5.0)
 // https://thegraph.com/docs/en/developer/matchstick/#tests-structure-0-5-0

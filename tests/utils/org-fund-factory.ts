@@ -1,6 +1,6 @@
 import { newMockEvent } from 'matchstick-as'
 import { ethereum, Address, BigInt } from '@graphprotocol/graph-ts'
-import { EntityDeployed } from '../generated/OrgFundFactory/OrgFundFactory'
+import { EntityDeployed } from '../../generated/OrgFundFactory/OrgFundFactory'
 
 export function createEntityDeployedEvent(entity: Address, entityType: i32, entityManager: Address): EntityDeployed {
   let entityDeployedEvent = changetype<EntityDeployed>(newMockEvent())

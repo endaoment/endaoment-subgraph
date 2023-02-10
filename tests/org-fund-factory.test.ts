@@ -1,7 +1,7 @@
 import { assert, describe, test, clearStore, afterEach } from 'matchstick-as'
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { handleEntityDeployed } from '../src/mappings/org-fund-factory'
-import { createEntityDeployedEvent } from './org-fund-factory-utils'
+import { createEntityDeployedEvent } from './utils/org-fund-factory'
 import { OnChainNdaoEntityType } from '../src/utils/on-chain-entity-type'
 import { NdaoEntity } from '../generated/schema'
 
