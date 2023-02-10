@@ -6,24 +6,24 @@ import { OnChainNdaoEntityType } from '../src/utils/on-chain-entity-type'
 import { NdaoEntity } from '../generated/schema'
 
 function assertZeroedFinancials(entity: NdaoEntity): void {
-  assert.bigIntEquals(entity.recognizedUsdcBalance, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.investmentBalance, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcDonationsReceived, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcDonationsFee, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcGrantsReceived, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcGrantsInFee, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcContributionsReceived, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcContributionsFee, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcTransfersReceived, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcTransfersFee, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcReceived, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcReceivedFees, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcGrantedOut, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcGrantedOutFees, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcTransferredOut, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcTransferredOutFees, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcPaidOut, BigInt.fromI32(0))
-  assert.bigIntEquals(entity.totalUsdcPaidOutFees, BigInt.fromI32(0))
+  assert.bigIntEquals(BigInt.fromI32(0), entity.recognizedUsdcBalance)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsReceived)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsFee)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsInFee)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionsReceived)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionsFee)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersReceived)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersFee)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceived)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceivedFees)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOut)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOutFees)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOut)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOutFees)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOut)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
 }
 
 describe('OrgFundFactory', () => {
@@ -45,8 +45,8 @@ describe('OrgFundFactory', () => {
     let entityFromStore = NdaoEntity.load(entityAddress)
     if (!entityFromStore) throw new Error('Entity not found in store')
 
-    assert.stringEquals(entityFromStore.entityType, 'Org')
-    assert.bytesEquals(entityFromStore.entityManager, entityManager)
+    assert.stringEquals('Org', entityFromStore.entityType)
+    assert.bytesEquals(entityManager, entityFromStore.entityManager)
     assertZeroedFinancials(entityFromStore)
   })
 
@@ -64,8 +64,8 @@ describe('OrgFundFactory', () => {
     let entityFromStore = NdaoEntity.load(entityAddress)
     if (!entityFromStore) throw new Error('Entity not found in store')
 
-    assert.stringEquals(entityFromStore.entityType, 'Fund')
-    assert.bytesEquals(entityFromStore.entityManager, entityManager)
+    assert.stringEquals('Fund', entityFromStore.entityType)
+    assert.bytesEquals(entityManager, entityFromStore.entityManager)
     assertZeroedFinancials(entityFromStore)
   })
 
@@ -83,8 +83,8 @@ describe('OrgFundFactory', () => {
     let entityFromStore = NdaoEntity.load(entityAddress)
     if (!entityFromStore) throw new Error('Entity not found in store')
 
-    assert.stringEquals(entityFromStore.entityType, 'Unknown')
-    assert.bytesEquals(entityFromStore.entityManager, entityManager)
+    assert.stringEquals('Unknown', entityFromStore.entityType)
+    assert.bytesEquals(entityManager, entityFromStore.entityManager)
     assertZeroedFinancials(entityFromStore)
   })
 })

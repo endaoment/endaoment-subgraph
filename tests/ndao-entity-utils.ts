@@ -1,6 +1,6 @@
 import { Address, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts'
 import { EntityDonationReceived } from '../generated/templates/NdaoEntity/NdaoEntity'
-import { newMockEvent } from 'matchstick-as'
+import { createMockedFunction, newMockEvent } from 'matchstick-as'
 
 export const DEFAULT_DONOR_ADDRESS = Address.fromString('0xe5Ce376f2904C780E6F006213719B38b73E286D7')
 export const DEFAULT_ENTITY_ADDRESS = Address.fromString('0xDf6b465463eA501cAccBcdf895AaDEfc5726FbF0')
@@ -48,4 +48,12 @@ export function createEntityDonationReceivedEvent(
   donationEvent.parameters.push(new ethereum.EventParam('amountFee', ethereum.Value.fromUnsignedBigInt(amountFee)))
 
   return donationEvent
+}
+
+export function mockBalance(address: Address, balance: i32): void {
+  const ethValues: ethereum.Value[] = [ethereum.Value.fromI32(balance)]
+  createMockedFunction(address, 'balance', 'balance():(uint256)').returns(
+    // @ts-ignore - Ignore error due to graph-ts mismatch
+    ethValues,
+  )
 }
