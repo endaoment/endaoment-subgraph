@@ -2,12 +2,6 @@ import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
 import { EntityDonationReceived } from '../generated/templates/NdaoEntity/NdaoEntity'
 import { newMockEvent } from 'matchstick-as'
 
-export type EventContext = {
-  block: ethereum.Block
-  transaction: ethereum.Transaction
-  receipt: ethereum.TransactionReceipt | null
-}
-
 export function createEntityDonationReceivedEvent(
   from: Address,
   to: Address,
@@ -15,15 +9,10 @@ export function createEntityDonationReceivedEvent(
   amountIn: BigInt,
   amountReceived: BigInt,
   amountFee: BigInt,
-  context?: EventContext,
+  blockNumber: i32 = 1,
 ): EntityDonationReceived {
   const donationEvent = changetype<EntityDonationReceived>(newMockEvent())
-
-  if (context) {
-    donationEvent.block = context.block
-    donationEvent.transaction = context.transaction
-    donationEvent.receipt = context.receipt
-  }
+  // donationEvent.block.number = BigInt.fromI32(blockNumber)
 
   donationEvent.parameters = []
   donationEvent.parameters.push(new ethereum.EventParam('from', ethereum.Value.fromAddress(from)))
