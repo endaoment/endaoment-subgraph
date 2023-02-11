@@ -69,6 +69,7 @@ describe('Migration Detection Tests', () => {
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOutFees)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOut)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
+    assert.booleanEquals(true, entity.initialized)
   })
 
   test('it should correctly index multiple donations to an entity with V1 Assets', () => {
@@ -112,6 +113,7 @@ describe('Migration Detection Tests', () => {
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOutFees)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOut)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
+    assert.booleanEquals(true, entity.initialized)
   })
 
   test('it should correctly index single block donation to an entity with V1 Assets', () => {
@@ -154,6 +156,7 @@ describe('Migration Detection Tests', () => {
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOutFees)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOut)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
+    assert.booleanEquals(true, entity.initialized)
   })
 
   // TODO: Add migration detection tests for subtraction events
