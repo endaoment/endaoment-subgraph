@@ -1,8 +1,12 @@
 # endaoment-subgraph
 Subgraph for the Endaoment Protocol
 
+## Getting started
+1. Install dependencies with `yarn install`
+2. Run tests with `yarn test`
+
 ## Local Development
-This section covers how to run the subgraph locally
+This section covers how to spin up a local indexer node with the Endaoment subgraph.
 
 ### Requirements
 1. Docker is installed and running.
@@ -17,3 +21,10 @@ This section covers how to run the subgraph locally
 4. Run `yarn create-local` to reserve the name for the subgraph on your local node.
 5. Run `yarn deploy-local` to deploy the subgraph code. 
 6. Once the latest block has been indexed, the URL made available on the deployment step will start serving up-to-date requests.
+
+### Redeploying after changes
+If you made changes to the subgrah and wish to see it reflected in the local node, run:
+
+```shell
+yarn redeploy-local
+```

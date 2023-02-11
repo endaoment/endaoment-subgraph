@@ -1,68 +1,91 @@
-import {
-  assert,
-  describe,
-  test,
-  clearStore,
-  beforeAll,
-  afterAll
-} from "matchstick-as/assembly/index"
-import { Address } from "@graphprotocol/graph-ts"
-import { EntityDeployed } from "../generated/schema"
-import { EntityDeployed as EntityDeployedEvent } from "../generated/OrgFundFactory/OrgFundFactory"
-import { handleEntityDeployed } from "../src/org-fund-factory"
-import { createEntityDeployedEvent } from "./org-fund-factory-utils"
+import { assert, describe, test, clearStore, afterEach } from 'matchstick-as'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { handleEntityDeployed } from '../src/mappings/org-fund-factory'
+import { createEntityDeployedEvent } from './utils/org-fund-factory'
+import { OnChainNdaoEntityType } from '../src/utils/on-chain-entity-type'
+import { NdaoEntity } from '../generated/schema'
 
-// Tests structure (matchstick-as >=0.5.0)
-// https://thegraph.com/docs/en/developer/matchstick/#tests-structure-0-5-0
+function assertZeroedFinancials(entity: NdaoEntity): void {
+  assert.bigIntEquals(BigInt.fromI32(0), entity.recognizedUsdcBalance)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsReceived)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsFee)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsInFee)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionsReceived)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionsFee)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersReceived)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersInFee)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcMigrated)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceived)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceivedFees)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOut)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOutFees)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOut)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOutFees)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOut)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
+}
 
-describe("Describe entity assertions", () => {
-  beforeAll(() => {
-    let entity = Address.fromString(
-      "0x0000000000000000000000000000000000000001"
-    )
-    let entityType = 123
-    let entityManager = Address.fromString(
-      "0x0000000000000000000000000000000000000001"
-    )
-    let newEntityDeployedEvent = createEntityDeployedEvent(
-      entity,
-      entityType,
-      entityManager
-    )
-    handleEntityDeployed(newEntityDeployedEvent)
-  })
-
-  afterAll(() => {
+describe('OrgFundFactory', () => {
+  afterEach(() => {
     clearStore()
   })
 
-  // For more test scenarios, see:
-  // https://thegraph.com/docs/en/developer/matchstick/#write-a-unit-test
+  test('it should register Org deployment', () => {
+    // Arrange
+    let entityAddress = Address.fromString('0x0000000000000000000000000000000000000001')
+    let entityType = OnChainNdaoEntityType.Org
+    let entityManager = Address.fromString('0x0000000000000000000000000000000000000002')
+    let newEntityDeployedEvent = createEntityDeployedEvent(entityAddress, entityType, entityManager)
 
-  test("EntityDeployed created and stored", () => {
-    assert.entityCount("EntityDeployed", 1)
+    // Act
+    handleEntityDeployed(newEntityDeployedEvent)
 
-    // Load entity from store and compare here instead of the assertion method described below
-    assert.fieldEquals(
-      "EntityDeployed",
-       "0x0000000000000000000000000000000000000001",
-      "entity",
-      "0x0000000000000000000000000000000000000001"
-    )
-    assert.fieldEquals(
-      "EntityDeployed",
-       "0x0000000000000000000000000000000000000001",
-      "entityType",
-      "123"
-    )
-    assert.fieldEquals(
-      "EntityDeployed",
-       "0x0000000000000000000000000000000000000001",
-      "entityManager",
-      "0x0000000000000000000000000000000000000001"
-    )
+    // Assert
+    let entityFromStore = NdaoEntity.load(entityAddress)
+    if (!entityFromStore) throw new Error('Entity not found in store')
 
-    // More assert options:
-    // https://thegraph.com/docs/en/developer/matchstick/#asserts
+    assert.stringEquals('Org', entityFromStore.entityType)
+    assert.bytesEquals(entityManager, entityFromStore.entityManager)
+    assertZeroedFinancials(entityFromStore)
+  })
+
+  test('it should register Fund deployment', () => {
+    // Arrange
+    let entityAddress = Address.fromString('0x0000000000000000000000000000000000000001')
+    let entityType = OnChainNdaoEntityType.Fund
+    let entityManager = Address.fromString('0x0000000000000000000000000000000000000002')
+    let newEntityDeployedEvent = createEntityDeployedEvent(entityAddress, entityType, entityManager)
+
+    // Act
+    handleEntityDeployed(newEntityDeployedEvent)
+
+    // Assert
+    let entityFromStore = NdaoEntity.load(entityAddress)
+    if (!entityFromStore) throw new Error('Entity not found in store')
+
+    assert.stringEquals('Fund', entityFromStore.entityType)
+    assert.bytesEquals(entityManager, entityFromStore.entityManager)
+    assertZeroedFinancials(entityFromStore)
+  })
+
+  test('it should register new entity type deployment', () => {
+    // Arrange
+    let entityAddress = Address.fromString('0x0000000000000000000000000000000000000001')
+    let entityType = 3
+    let entityManager = Address.fromString('0x0000000000000000000000000000000000000002')
+    let newEntityDeployedEvent = createEntityDeployedEvent(entityAddress, entityType, entityManager)
+
+    // Act
+    handleEntityDeployed(newEntityDeployedEvent)
+
+    // Assert
+    let entityFromStore = NdaoEntity.load(entityAddress)
+    if (!entityFromStore) throw new Error('Entity not found in store')
+
+    assert.stringEquals('Unknown', entityFromStore.entityType)
+    assert.bytesEquals(entityManager, entityFromStore.entityManager)
+    assertZeroedFinancials(entityFromStore)
   })
 })
