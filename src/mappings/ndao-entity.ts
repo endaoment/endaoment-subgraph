@@ -41,10 +41,9 @@ export function handleEntityValueTransferred(event: EntityValueTransferred): voi
 
   // Run v1 migration reconciliation logic
   const negativeTransferAmount = event.params.amountReceived.times(BigInt.fromI32(-1))
-  reconcileV1Migration(source, negativeTransferAmount, event)
-
   const fees = event.params.amountFee
   const netAmount = event.params.amountReceived.minus(event.params.amountFee)
+  reconcileV1Migration(source, negativeTransferAmount, event)
   reconcileV1Migration(target, netAmount, event)
 
   // Refresh balances of both entities involved in the transfer
