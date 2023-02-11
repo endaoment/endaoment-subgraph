@@ -153,5 +153,63 @@ describe('NdaoEntity Tests', () => {
       assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcPaidOut)
       assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcPaidOutFees)
     })
+
+    test('it should correctly index normal transfers', () => {
+      // ----- Arrange ------
+      const transferEvent = createDefaultValueTransferredEvent(DEFAULT_ORG2_ADDRESS, DEFAULT_ORG_ADDRESS, 200_000_000)
+      const netTransferAmount = transferEvent.params.amountReceived.minus(transferEvent.params.amountFee)
+      const fee = transferEvent.params.amountFee
+
+      // ------ Act -------
+      handleEntityValueTransferred(transferEvent)
+
+      // ------ Assert ------
+      const destinationOrg = NdaoEntity.load(DEFAULT_ORG_ADDRESS)
+      const sourceOrg = NdaoEntity.load(DEFAULT_FUND_ADDRESS)
+
+      if (!destinationOrg || !sourceOrg) throw new Error('Entity not found in store')
+
+      // Assert source changes
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.recognizedUsdcBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcDonationsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcDonationFees)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcGrantsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcGrantInFees)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcContributionsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcContributionFees)
+      assert.bigIntEquals(netTransferAmount, destinationOrg.totalUsdcTransfersReceived)
+      assert.bigIntEquals(fee, destinationOrg.totalUsdcTransferInFees)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcMigrated)
+      assert.bigIntEquals(netTransferAmount, destinationOrg.totalUsdcReceived)
+      assert.bigIntEquals(fee, destinationOrg.totalUsdcReceivedFees)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcGrantedOut)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcGrantedOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcTransferredOut)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcTransferredOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcPaidOut)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcPaidOutFees)
+
+      // Assert destination changes
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.recognizedUsdcBalance)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.investmentBalance)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcDonationsReceived)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcDonationFees)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcGrantsReceived)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcGrantInFees)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcContributionsReceived)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcContributionFees)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcTransfersReceived)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcTransferInFees)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcMigrated)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcReceived)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcReceivedFees)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcGrantedOut)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcGrantedOutFees)
+      // assert.bigIntEquals(netTransferAmount, sourceOrg.totalUsdcTransferredOut)
+      // assert.bigIntEquals(fee, sourceOrg.totalUsdcTransferredOutFees)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcPaidOut)
+      // assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcPaidOutFees)
+    })
   })
 })
