@@ -113,19 +113,22 @@ type NdaoEntity @entity {
   # TODO (Later, if time allows): Track individual donations & grants as entities and correlate them here
 }
 
-# Helper metadata entity to track migration information of an NdaoEntity. Not meant to be queried directly, as the
-# information is only useful for internal indexing logic.
-type NdaoEntityV1MigrationMetadata @entity {
-  # Contract address of the entity
+"""
+Helper metadata entity to track migration information of an NdaoEntity. Not meant to be queried directly, as the
+information here only useful for internal indexing logic. As soon as an entity is fully initialized, this entity
+is not longer updated.
+"""
+type NdaoEntityFirstIndexedBlock @entity {
+  # Contract address of the entity.
   id: Bytes!
 
-  # Balance of the entity at the end of the block it last emitted an event
+  # Balance of the entity at the end of the first block it emitted and event.
   endOfBlockBalance: BigInt!
 
-  # Number of last block that was processed
+  # Number of the initial block that was processed.
   blockNumber: BigInt!
 
-
+  # Balance delta due to events emitted in the initial block.
   eventBalanceDelta: BigInt!
 }
 

@@ -1,7 +1,8 @@
 import { EntityDonationReceived } from '../../generated/templates/NdaoEntity/NdaoEntity'
-import { BigInt, log } from '@graphprotocol/graph-ts'
+import { log } from '@graphprotocol/graph-ts'
 import { NdaoEntity } from '../../generated/schema'
 import { NdaoEntity as NdaoEntityContract } from '../../generated/templates/NdaoEntity/NdaoEntity'
+import { reconcileV1Migration } from '../utils/v1-migration-reconciliation'
 
 export function handleEntityDonationReceived(event: EntityDonationReceived): void {
   // Fetch entity and ensure it exists
@@ -15,11 +16,13 @@ export function handleEntityDonationReceived(event: EntityDonationReceived): voi
     throw new Error('Indexing Error: Entity not found for donation event')
   }
 
-  // TODO: Migration reconciliation code goes here
+  const netUsdcDonated = event.params.amountReceived.minus(event.params.amountFee)
+
+  reconcileV1Migration(entity, netUsdcDonated, event)
+
   const contract = NdaoEntityContract.bind(event.address)
   entity.recognizedUsdcBalance = contract.balance()
 
-  const netUsdcDonated = event.params.amountReceived.minus(event.params.amountFee)
   entity.totalUsdcDonationsReceived = entity.totalUsdcDonationsReceived.plus(netUsdcDonated)
   entity.totalUsdcDonationsFee = entity.totalUsdcDonationsFee.plus(event.params.amountFee)
   entity.totalUsdcContributionsReceived = entity.totalUsdcContributionsReceived.plus(netUsdcDonated)

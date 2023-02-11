@@ -304,7 +304,7 @@ export class NdaoEntity extends Entity {
   }
 }
 
-export class NdaoEntityV1MigrationMetadata extends Entity {
+export class NdaoEntityFirstIndexedBlock extends Entity {
   constructor(id: Bytes) {
     super();
     this.set("id", Value.fromBytes(id));
@@ -314,24 +314,24 @@ export class NdaoEntityV1MigrationMetadata extends Entity {
     let id = this.get("id");
     assert(
       id != null,
-      "Cannot save NdaoEntityV1MigrationMetadata entity without an ID"
+      "Cannot save NdaoEntityFirstIndexedBlock entity without an ID"
     );
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type NdaoEntityV1MigrationMetadata must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type NdaoEntityFirstIndexedBlock must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
       store.set(
-        "NdaoEntityV1MigrationMetadata",
+        "NdaoEntityFirstIndexedBlock",
         id.toBytes().toHexString(),
         this
       );
     }
   }
 
-  static load(id: Bytes): NdaoEntityV1MigrationMetadata | null {
-    return changetype<NdaoEntityV1MigrationMetadata | null>(
-      store.get("NdaoEntityV1MigrationMetadata", id.toHexString())
+  static load(id: Bytes): NdaoEntityFirstIndexedBlock | null {
+    return changetype<NdaoEntityFirstIndexedBlock | null>(
+      store.get("NdaoEntityFirstIndexedBlock", id.toHexString())
     );
   }
 
