@@ -111,6 +111,7 @@ describe('NdaoEntity Tests', () => {
 
       if (!destinationOrg || !sourceFund) throw new Error('Entity not found in store')
 
+      // Assert source changes
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.recognizedUsdcBalance)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.investmentBalance)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcDonationsReceived)
@@ -130,6 +131,27 @@ describe('NdaoEntity Tests', () => {
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcTransferredOutFees)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcPaidOut)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcPaidOutFees)
+
+      // Assert destination changes
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.recognizedUsdcBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcDonationsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcDonationFees)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcGrantsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcGrantInFees)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcContributionsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcContributionFees)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcTransfersReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcTransferInFees)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcMigrated)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcReceivedFees)
+      assert.bigIntEquals(netTransferAmount, sourceFund.totalUsdcGrantedOut)
+      assert.bigIntEquals(fee, sourceFund.totalUsdcGrantedOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcTransferredOut)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcTransferredOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcPaidOut)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcPaidOutFees)
     })
   })
 })
