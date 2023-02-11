@@ -52,8 +52,10 @@ export function handleEntityValueTransferred(event: EntityValueTransferred): voi
   target.recognizedUsdcBalance = sourceContract.balance()
 
   // Update values relevant to the type of transfer that was executed
-  const isGrantTransfer = source.entityType === FUND_ENTITY_TYPE && target.entityType === ORG_ENTITY_TYPE
+  // log.info('Source type: {}, target type: {}', [source.entityType, target.entityType])
+  const isGrantTransfer = source.entityType == FUND_ENTITY_TYPE && target.entityType == ORG_ENTITY_TYPE
   if (isGrantTransfer) {
+    // log.info('Grant transfer detected', [])
     source.totalUsdcGrantedOut = source.totalUsdcGrantedOut.plus(netAmount)
     source.totalUsdcGrantedOutFees = source.totalUsdcGrantedOutFees.plus(fees)
 
@@ -65,6 +67,7 @@ export function handleEntityValueTransferred(event: EntityValueTransferred): voi
     target.totalUsdcContributionFees = target.totalUsdcContributionFees.plus(fees)
     target.totalUsdcReceivedFees = target.totalUsdcReceivedFees.plus(fees)
   } else {
+    // log.info('Normal transfer detected', [])
     source.totalUsdcTransferredOut = source.totalUsdcTransferredOut.plus(netAmount)
     source.totalUsdcTransferredOutFees = source.totalUsdcTransferredOutFees.plus(fees)
 

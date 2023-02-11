@@ -1,17 +1,26 @@
 import { afterEach, beforeEach, describe, clearStore, test, assert } from 'matchstick-as'
-import { createDefaultDonationEvent, DEFAULT_ENTITY_ADDRESS, mockBalance } from './utils/ndao-entity'
+import {
+  createDefaultDonationEvent,
+  createDefaultValueTransferredEvent,
+  DEFAULT_ENTITY_ADDRESS,
+  mockBalance,
+} from './utils/ndao-entity'
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { handleEntityDeployed } from '../src/mappings/org-fund-factory'
 import { createEntityDeployedEvent } from './utils/org-fund-factory'
 import { OnChainNdaoEntityType } from '../src/utils/on-chain-entity-type'
-import { handleEntityDonationReceived } from '../src/mappings/ndao-entity'
+import { handleEntityDonationReceived, handleEntityValueTransferred } from '../src/mappings/ndao-entity'
 import { NdaoEntity } from '../generated/schema'
+
+const DEFAULT_FUND_ADDRESS = Address.fromString('0x9f2E8FAC6dec33233d8864b48319032a753151B7')
+const DEFAULT_ORG_ADDRESS = DEFAULT_ENTITY_ADDRESS
+const DEFAULT_ORG2_ADDRESS = Address.fromString('0x52CD08D2E2BBB0623515A0b61fB7890cf106b19E')
 
 describe('NdaoEntity Tests', () => {
   beforeEach(() => {
     // Initialize entity via event handler
     const newEntityDeployedEvent = createEntityDeployedEvent(
-      DEFAULT_ENTITY_ADDRESS,
+      DEFAULT_ORG_ADDRESS,
       OnChainNdaoEntityType.Org,
       Address.fromString('0x0000000000000000000000000000000000000002'),
     )
@@ -65,5 +74,62 @@ describe('NdaoEntity Tests', () => {
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
   })
 
-  describe('Transfer Indexing', () => {})
+  describe('Transfer Indexing', () => {
+    beforeEach(() => {
+      // Initialize entities via event handler
+      const orgDeployed = createEntityDeployedEvent(
+        DEFAULT_ORG2_ADDRESS,
+        OnChainNdaoEntityType.Org,
+        Address.fromString('0x0000000000000000000000000000000000000003'),
+      )
+      handleEntityDeployed(orgDeployed)
+
+      const fundDeployed = createEntityDeployedEvent(
+        DEFAULT_FUND_ADDRESS,
+        OnChainNdaoEntityType.Fund,
+        Address.fromString('0x0000000000000000000000000000000000000003'),
+      )
+      handleEntityDeployed(fundDeployed)
+
+      mockBalance(DEFAULT_FUND_ADDRESS, 0)
+      mockBalance(DEFAULT_ORG_ADDRESS, 0)
+      mockBalance(DEFAULT_ORG2_ADDRESS, 0)
+    })
+
+    test('it should correctly index grant transfers', () => {
+      // ----- Arrange ------
+      const transferEvent = createDefaultValueTransferredEvent(DEFAULT_FUND_ADDRESS, DEFAULT_ORG_ADDRESS, 200_000_000)
+      const netTransferAmount = transferEvent.params.amountReceived.minus(transferEvent.params.amountFee)
+      const fee = transferEvent.params.amountFee
+
+      // ------ Act -------
+      handleEntityValueTransferred(transferEvent)
+
+      // ------ Assert ------
+      const destinationOrg = NdaoEntity.load(DEFAULT_ORG_ADDRESS)
+      const sourceFund = NdaoEntity.load(DEFAULT_FUND_ADDRESS)
+
+      if (!destinationOrg || !sourceFund) throw new Error('Entity not found in store')
+
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.recognizedUsdcBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcDonationsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcDonationFees)
+      assert.bigIntEquals(netTransferAmount, destinationOrg.totalUsdcGrantsReceived)
+      assert.bigIntEquals(fee, destinationOrg.totalUsdcGrantInFees)
+      assert.bigIntEquals(netTransferAmount, destinationOrg.totalUsdcContributionsReceived)
+      assert.bigIntEquals(fee, destinationOrg.totalUsdcContributionFees)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcTransfersReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcTransferInFees)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcMigrated)
+      assert.bigIntEquals(netTransferAmount, destinationOrg.totalUsdcReceived)
+      assert.bigIntEquals(fee, destinationOrg.totalUsdcReceivedFees)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcGrantedOut)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcGrantedOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcTransferredOut)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcTransferredOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcPaidOut)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcPaidOutFees)
+    })
+  })
 })

@@ -1,5 +1,5 @@
 import { Address, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts'
-import { EntityDonationReceived } from '../../generated/templates/NdaoEntity/NdaoEntity'
+import { EntityDonationReceived, EntityValueTransferred } from '../../generated/templates/NdaoEntity/NdaoEntity'
 import { createMockedFunction, newMockEvent } from 'matchstick-as'
 
 export const DEFAULT_DONOR_ADDRESS = Address.fromString('0xe5Ce376f2904C780E6F006213719B38b73E286D7')
@@ -58,4 +58,37 @@ export function mockBalance(address: Address, balance: i32): void {
     // @ts-ignore - Ignore error due to graph-ts mismatch
     ethValues,
   )
+}
+
+export function createDefaultValueTransferredEvent(
+  from: Address,
+  to: Address,
+  amountReceived: u64,
+  blockNumber: i32 = 1,
+): EntityValueTransferred {
+  const amountInBi = BigInt.fromU64(amountReceived)
+  const fee = amountInBi.times(BigInt.fromI32(5)).div(BigInt.fromI32(1000)) // 0.5% fee
+  return createEntityValueTransferred(from, to, amountInBi, fee, blockNumber)
+}
+export function createEntityValueTransferred(
+  from: Address,
+  to: Address,
+  amountReceived: BigInt,
+  amountFee: BigInt,
+  blockNumber: i32 = 1,
+): EntityValueTransferred {
+  const donationEvent = changetype<EntityValueTransferred>(newMockEvent())
+  donationEvent.block.number = BigInt.fromI32(blockNumber)
+
+  donationEvent.address = from
+
+  donationEvent.parameters = []
+  donationEvent.parameters.push(new ethereum.EventParam('from', ethereum.Value.fromAddress(from)))
+  donationEvent.parameters.push(new ethereum.EventParam('to', ethereum.Value.fromAddress(to)))
+  donationEvent.parameters.push(
+    new ethereum.EventParam('amountReceived', ethereum.Value.fromUnsignedBigInt(amountReceived)),
+  )
+  donationEvent.parameters.push(new ethereum.EventParam('amountFee', ethereum.Value.fromUnsignedBigInt(amountFee)))
+
+  return donationEvent
 }
