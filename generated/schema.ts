@@ -150,13 +150,13 @@ export class NdaoEntity extends Entity {
     this.set("totalUsdcDonationsReceived", Value.fromBigInt(value));
   }
 
-  get totalUsdcDonationsFee(): BigInt {
-    let value = this.get("totalUsdcDonationsFee");
+  get totalUsdcDonationFees(): BigInt {
+    let value = this.get("totalUsdcDonationFees");
     return value!.toBigInt();
   }
 
-  set totalUsdcDonationsFee(value: BigInt) {
-    this.set("totalUsdcDonationsFee", Value.fromBigInt(value));
+  set totalUsdcDonationFees(value: BigInt) {
+    this.set("totalUsdcDonationFees", Value.fromBigInt(value));
   }
 
   get totalUsdcGrantsReceived(): BigInt {
@@ -168,13 +168,13 @@ export class NdaoEntity extends Entity {
     this.set("totalUsdcGrantsReceived", Value.fromBigInt(value));
   }
 
-  get totalUsdcGrantsInFee(): BigInt {
-    let value = this.get("totalUsdcGrantsInFee");
+  get totalUsdcGrantInFees(): BigInt {
+    let value = this.get("totalUsdcGrantInFees");
     return value!.toBigInt();
   }
 
-  set totalUsdcGrantsInFee(value: BigInt) {
-    this.set("totalUsdcGrantsInFee", Value.fromBigInt(value));
+  set totalUsdcGrantInFees(value: BigInt) {
+    this.set("totalUsdcGrantInFees", Value.fromBigInt(value));
   }
 
   get totalUsdcContributionsReceived(): BigInt {
@@ -186,13 +186,13 @@ export class NdaoEntity extends Entity {
     this.set("totalUsdcContributionsReceived", Value.fromBigInt(value));
   }
 
-  get totalUsdcContributionsFee(): BigInt {
-    let value = this.get("totalUsdcContributionsFee");
+  get totalUsdcContributionFees(): BigInt {
+    let value = this.get("totalUsdcContributionFees");
     return value!.toBigInt();
   }
 
-  set totalUsdcContributionsFee(value: BigInt) {
-    this.set("totalUsdcContributionsFee", Value.fromBigInt(value));
+  set totalUsdcContributionFees(value: BigInt) {
+    this.set("totalUsdcContributionFees", Value.fromBigInt(value));
   }
 
   get totalUsdcTransfersReceived(): BigInt {
@@ -204,13 +204,13 @@ export class NdaoEntity extends Entity {
     this.set("totalUsdcTransfersReceived", Value.fromBigInt(value));
   }
 
-  get totalUsdcTransfersInFee(): BigInt {
-    let value = this.get("totalUsdcTransfersInFee");
+  get totalUsdcTransferInFees(): BigInt {
+    let value = this.get("totalUsdcTransferInFees");
     return value!.toBigInt();
   }
 
-  set totalUsdcTransfersInFee(value: BigInt) {
-    this.set("totalUsdcTransfersInFee", Value.fromBigInt(value));
+  set totalUsdcTransferInFees(value: BigInt) {
+    this.set("totalUsdcTransferInFees", Value.fromBigInt(value));
   }
 
   get totalUsdcMigrated(): BigInt {
