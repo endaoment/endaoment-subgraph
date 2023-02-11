@@ -261,6 +261,27 @@ describe('NdaoEntity Tests', () => {
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcPaidOutFees)
     })
 
-    // todo: it should refresh source entity and destination entity balance
+    test('it should refresh source entity and destination entity balance', () => {
+      // ----- Arrange ------
+      const transferEvent = createDefaultValueTransferredEvent(DEFAULT_FUND_ADDRESS, DEFAULT_ORG_ADDRESS, 200_000_000)
+      const netGrantAmount = transferEvent.params.amountReceived.minus(transferEvent.params.amountFee)
+      const grantFee = transferEvent.params.amountFee
+
+      mockBalance(DEFAULT_FUND_ADDRESS, 10)
+      mockBalance(DEFAULT_ORG_ADDRESS, 20)
+
+      // ------ Act -------
+      handleEntityValueTransferred(transferEvent)
+
+      // ------ Assert ------
+      const destinationOrg = NdaoEntity.load(DEFAULT_ORG_ADDRESS)
+      const sourceFund = NdaoEntity.load(DEFAULT_FUND_ADDRESS)
+
+      if (!destinationOrg || !sourceFund) throw new Error('Entity not found in store')
+
+      // Assert destination changes
+      assert.bigIntEquals(BigInt.fromI32(20), destinationOrg.recognizedUsdcBalance)
+      assert.bigIntEquals(BigInt.fromI32(10), sourceFund.recognizedUsdcBalance)
+    })
   })
 })
