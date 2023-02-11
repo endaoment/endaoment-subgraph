@@ -16,13 +16,13 @@ export function handleEntityDonationReceived(event: EntityDonationReceived): voi
     throw new Error('Indexing Error: Entity not found for donation event')
   }
 
+  // Run v1 migration reconciliation logic
   const netUsdcDonated = event.params.amountReceived.minus(event.params.amountFee)
-
   reconcileV1Migration(entity, netUsdcDonated, event)
 
+  // Update entity values
   const contract = NdaoEntityContract.bind(event.address)
   entity.recognizedUsdcBalance = contract.balance()
-
   entity.totalUsdcDonationsReceived = entity.totalUsdcDonationsReceived.plus(netUsdcDonated)
   entity.totalUsdcDonationsFee = entity.totalUsdcDonationsFee.plus(event.params.amountFee)
   entity.totalUsdcContributionsReceived = entity.totalUsdcContributionsReceived.plus(netUsdcDonated)
