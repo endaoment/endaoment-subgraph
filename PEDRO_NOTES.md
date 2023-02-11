@@ -2,10 +2,10 @@
 Follow [here](https://thegraph.com/docs/en/developing/creating-a-subgraph/)
 
 ## Methods that change balance in the contracts
-- `_donateWithFeeMultiplier`
+- `_donateWithFeeMultiplier` [OK]
   - **(+)** Increase balance
-  - Emits `EntityDonationReceived`
-- `_swapAndDonateWithFeeMultiplier`
+  - Emits `EntityDonationReceived` 
+- `_swapAndDonateWithFeeMultiplier` [OK]
   - **(+)** Increase balance
   - Emits `EntityDonationReceived`
 - `_transferWithFeeMultiplier`

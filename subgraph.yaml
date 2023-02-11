@@ -114,4 +114,6 @@ templates:
       eventHandlers:
         - event: EntityDonationReceived(indexed address,indexed address,indexed address,uint256,uint256,uint256)
           handler: handleEntityDonationReceived
+        - event: EntityValueTransferred(indexed address,indexed address,uint256,uint256)
+          handler: handleEntityValueTransferred
       file: ./src/mappings/ndao-entity.ts

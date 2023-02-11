@@ -1,20 +1,13 @@
-import { EntityDonationReceived } from '../../generated/templates/NdaoEntity/NdaoEntity'
+import { EntityDonationReceived, EntityValueTransferred } from '../../generated/templates/NdaoEntity/NdaoEntity'
 import { log } from '@graphprotocol/graph-ts'
 import { NdaoEntity } from '../../generated/schema'
 import { NdaoEntity as NdaoEntityContract } from '../../generated/templates/NdaoEntity/NdaoEntity'
 import { reconcileV1Migration } from '../utils/v1-migration-reconciliation'
+import { loadNdaoEntityOrThrow } from '../utils/ndao-entity-utils'
 
 export function handleEntityDonationReceived(event: EntityDonationReceived): void {
   // Fetch entity and ensure it exists
-  let entity = NdaoEntity.load(event.address)
-  if (entity == null) {
-    log.error(
-      'Entity not found for donation event: {}. If you see this error, it is an indexing bug, since entities must ' +
-        'exist in the database for donation events to start being indexed.',
-      [event.address.toHexString()],
-    )
-    throw new Error('Indexing Error: Entity not found for donation event')
-  }
+  const entity = loadNdaoEntityOrThrow(event.address)
 
   // Run v1 migration reconciliation logic
   const netUsdcDonated = event.params.amountReceived.minus(event.params.amountFee)
@@ -31,4 +24,9 @@ export function handleEntityDonationReceived(event: EntityDonationReceived): voi
   entity.totalUsdcReceivedFees = entity.totalUsdcReceivedFees.plus(event.params.amountFee)
 
   entity.save()
+}
+
+export function handleEntityValueTransferred(event: EntityValueTransferred): void {
+  // Fetch entity and ensure it exists
+  const entity = loadNdaoEntityOrThrow(event.address)
 }
