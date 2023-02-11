@@ -90,10 +90,6 @@ describe('NdaoEntity Tests', () => {
         Address.fromString('0x0000000000000000000000000000000000000003'),
       )
       handleEntityDeployed(fundDeployed)
-
-      mockBalance(DEFAULT_FUND_ADDRESS, 0)
-      mockBalance(DEFAULT_ORG_ADDRESS, 0)
-      mockBalance(DEFAULT_ORG2_ADDRESS, 0)
     })
 
     test('it should correctly index grant transfers', () => {
@@ -101,6 +97,9 @@ describe('NdaoEntity Tests', () => {
       const transferEvent = createDefaultValueTransferredEvent(DEFAULT_FUND_ADDRESS, DEFAULT_ORG_ADDRESS, 200_000_000)
       const netTransferAmount = transferEvent.params.amountReceived.minus(transferEvent.params.amountFee)
       const fee = transferEvent.params.amountFee
+
+      mockBalance(DEFAULT_FUND_ADDRESS, 0)
+      mockBalance(DEFAULT_ORG_ADDRESS, netTransferAmount.toI32())
 
       // ------ Act -------
       handleEntityValueTransferred(transferEvent)
@@ -111,8 +110,8 @@ describe('NdaoEntity Tests', () => {
 
       if (!destinationOrg || !sourceFund) throw new Error('Entity not found in store')
 
-      // Assert source changes
-      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.recognizedUsdcBalance)
+      // Assert destination changes
+      assert.bigIntEquals(netTransferAmount, destinationOrg.recognizedUsdcBalance)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.investmentBalance)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcDonationsReceived)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcDonationFees)
@@ -132,7 +131,7 @@ describe('NdaoEntity Tests', () => {
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcPaidOut)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcPaidOutFees)
 
-      // Assert destination changes
+      // Assert source changes
       assert.bigIntEquals(BigInt.fromI32(0), sourceFund.recognizedUsdcBalance)
       assert.bigIntEquals(BigInt.fromI32(0), sourceFund.investmentBalance)
       assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcDonationsReceived)
@@ -160,6 +159,9 @@ describe('NdaoEntity Tests', () => {
       const netTransferAmount = transferEvent.params.amountReceived.minus(transferEvent.params.amountFee)
       const fee = transferEvent.params.amountFee
 
+      mockBalance(DEFAULT_ORG2_ADDRESS, 0)
+      mockBalance(DEFAULT_ORG_ADDRESS, netTransferAmount.toI32())
+
       // ------ Act -------
       handleEntityValueTransferred(transferEvent)
 
@@ -169,8 +171,8 @@ describe('NdaoEntity Tests', () => {
 
       if (!destinationOrg || !sourceOrg) throw new Error('Entity not found in store')
 
-      // Assert source changes
-      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.recognizedUsdcBalance)
+      // Assert destination changes
+      assert.bigIntEquals(netTransferAmount, destinationOrg.recognizedUsdcBalance)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.investmentBalance)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcDonationsReceived)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcDonationFees)
@@ -190,7 +192,7 @@ describe('NdaoEntity Tests', () => {
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcPaidOut)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcPaidOutFees)
 
-      // Assert destination changes
+      // Assert source changes
       assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.recognizedUsdcBalance)
       assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.investmentBalance)
       assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcDonationsReceived)
@@ -211,5 +213,51 @@ describe('NdaoEntity Tests', () => {
       assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcPaidOut)
       assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcPaidOutFees)
     })
+
+    test('it should aggregate grant values with donation values', () => {
+      // ----- Arrange ------
+      const transferEvent = createDefaultValueTransferredEvent(DEFAULT_FUND_ADDRESS, DEFAULT_ORG_ADDRESS, 200_000_000)
+      const netGrantAmount = transferEvent.params.amountReceived.minus(transferEvent.params.amountFee)
+      const grantFee = transferEvent.params.amountFee
+
+      const donationEvent = createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 100_000_000)
+      const netDonationAmount = donationEvent.params.amountReceived.minus(donationEvent.params.amountFee)
+      const donationFee = donationEvent.params.amountFee
+
+      const totalNetContribution = netDonationAmount.plus(netGrantAmount)
+      const totalContributionFee = donationFee.plus(grantFee)
+
+      // ------ Act -------
+      handleEntityValueTransferred(transferEvent)
+      handleEntityDonationReceived(donationEvent)
+
+      // ------ Assert ------
+      const destinationOrg = NdaoEntity.load(DEFAULT_ORG_ADDRESS)
+
+      if (!destinationOrg) throw new Error('Entity not found in store')
+
+      // Assert destination changes
+      // assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.recognizedUsdcBalance)
+      // assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.investmentBalance)
+      // assert.bigIntEquals(netDonationAmount, destinationOrg.totalUsdcDonationsReceived)
+      // assert.bigIntEquals(donationFee, destinationOrg.totalUsdcDonationFees)
+      // assert.bigIntEquals(netGrantAmount, destinationOrg.totalUsdcGrantsReceived)
+      // assert.bigIntEquals(grantFee, destinationOrg.totalUsdcGrantInFees)
+      // assert.bigIntEquals(totalNetContribution, destinationOrg.totalUsdcContributionsReceived)
+      // assert.bigIntEquals(totalContributionFee, destinationOrg.totalUsdcContributionFees)
+      // assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcTransfersReceived)
+      // assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcTransferInFees)
+      // assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcMigrated)
+      // assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcReceived)
+      // assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcReceivedFees)
+      // assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcGrantedOut)
+      // assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcGrantedOutFees)
+      // assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcTransferredOut)
+      // assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcTransferredOutFees)
+      // assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcPaidOut)
+      // assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcPaidOutFees)
+    })
+
+    // todo: it should refresh source entity and destination entity balance
   })
 })

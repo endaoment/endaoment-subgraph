@@ -49,7 +49,9 @@ export function handleEntityValueTransferred(event: EntityValueTransferred): voi
   // Refresh balances of both entities involved in the transfer
   const sourceContract = NdaoEntityContract.bind(Address.fromBytes(source.id))
   source.recognizedUsdcBalance = sourceContract.balance()
-  target.recognizedUsdcBalance = sourceContract.balance()
+
+  const targetContract = NdaoEntityContract.bind(Address.fromBytes(target.id))
+  target.recognizedUsdcBalance = targetContract.balance()
 
   // Update values relevant to the type of transfer that was executed
   log.info('Source type: {}, target type: {}', [source.entityType, target.entityType])
