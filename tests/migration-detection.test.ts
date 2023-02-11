@@ -13,8 +13,6 @@ import { OnChainNdaoEntityType } from '../src/utils/on-chain-entity-type'
 import { handleEntityDonationReceived } from '../src/mappings/ndao-entity'
 import { NdaoEntity } from '../generated/schema'
 
-// random ethereum address
-
 describe('Migration Detection Tests', () => {
   beforeEach(() => {
     // Initialize entity via event handler
