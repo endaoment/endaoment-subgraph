@@ -54,7 +54,7 @@ export function handleEntityValueTransferred(event: EntityValueTransferred): voi
   target.recognizedUsdcBalance = targetContract.balance()
 
   // Update values relevant to the type of transfer that was executed
-  log.info('Source type: {}, target type: {}', [source.entityType, target.entityType])
+  //log.info('Source type: {}, target type: {}', [source.entityType, target.entityType])
   const isGrantTransfer = source.entityType == FUND_ENTITY_TYPE && target.entityType == ORG_ENTITY_TYPE
   if (isGrantTransfer) {
     //log.info('Grant transfer detected', [])
