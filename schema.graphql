@@ -1,6 +1,11 @@
 enum EntityType {
+  "Fund Entity"
   Fund
+
+  "Org Entity"
   Org
+
+  "Unknown Entity, not yet fully supported by the subgraph."
   Unknown
 }
 
@@ -12,81 +17,116 @@ type ExampleEntity @entity {
 }
 
 type NdaoEntity @entity {
-  # Contract address of the entity
+  "Contract address of the entity."
   id: Bytes!
 
-  # The type of the entity
+  "The type of the entity."
   entityType: EntityType!
 
-  # Manager of the entity
-  entityManager: Bytes! # address
+  "Manager of the entity."
+  entityManager: Bytes!
 
-  # USDC Balance that has been formally recognized by the entity
+  "USDC Balance that has been formally recognized by the entity."
   recognizedUsdcBalance: BigInt!
 
-  # USDC Balance that the entity has invested in Portfolios belonging to the Endaoment protocol
+  "USDC Balance that the entity has invested in Portfolios belonging to the Endaoment protocol"
   investmentBalance: BigInt!
 
   # Amount of USDC that is yet to be formally recognized by the entity
   # unrecognizedUsdcBalance: BigInt! # TODO: See if this field will work
 
-  # Amount USDC that has been donated to this entity, after fees. Any recognized inbound asset transfer from addresses
-  # outside the Endaoment protocol is considered a Donation.
+  """
+  Amount USDC that has been donated to this entity, after fees. Any recognized inbound asset transfer from addresses
+  outside the Endaoment protocol is considered a Donation.
+  """
   totalUsdcDonationsReceived: BigInt!
 
-  # Amount of fees that have been collected from donations to this entity.
+  "Amount of fees that have been collected from donations to this entity."
   totalUsdcDonationsFee: BigInt!
 
-  # Amount of USDC that has been granted to this entity, after fees.
-  # Any Fund -> Org transfer is considered a grant.
+  "Amount of USDC that has been granted to this entity, after fees. Any Fund -> Org transfer is considered a grant."
   totalUsdcGrantsReceived: BigInt!
 
-  # Amount of fees that have been paid by grantors for grants to this entity.
+  "Amount of fees that have been paid by grantors for grants to this entity."
   totalUsdcGrantsInFee: BigInt!
 
-  # Amount of USDC that has been donated or granted to this entity, after fees.
+  "Amount of USDC that has been donated or granted to this entity, after fees."
   totalUsdcContributionsReceived: BigInt!
 
-  # Amount of fees that have been collected from donations or grants to this entity.
+  "Amount of fees that have been collected from donations or grants to this entity."
   totalUsdcContributionsFee: BigInt!
 
-  # Amount of USDC that has been transferred to this entity. This includes transfers that are not considered grants.
-  # (Org -> Org, Fund -> Fund, Org -> Fund)
+  """
+  Amount of USDC that has been transferred to this entity. This includes only transfers that are not considered grants.
+  Example: (Org -> Org, Fund -> Fund, Org -> Fund)
+  """
   totalUsdcTransfersReceived: BigInt!
 
-  # Amount of USDC that has been paid in fees for transfers to this entity.
+  "Amount of USDC that has been paid in fees for transfers to this entity."
   totalUsdcTransfersInFee: BigInt!
 
-  # Amount of USDC that has been migrated to this entity from Endaoment V1.
+  "Amount of USDC that has been migrated to this entity from Endaoment V1."
   totalUsdcMigrated: BigInt!
 
-  # Amount of USDC that has been received by this entity using any Endaoment V2 Entity method, including V1 migration.
+  "Amount of USDC that has been received by this entity using any Endaoment V2 Entity method, including V1 migration."
   totalUsdcReceived: BigInt!
 
-  # Amount of USDC that has been paid in fee for all inbound USDC transactions to this entity.
+  "Amount of USDC that has been paid in fee for all inbound USDC transactions to this entity."
   totalUsdcReceivedFees: BigInt!
 
-  # Amount of USDC that has been granted out to other Endaoment entities by this entity.
-  # Any Fund -> Org transfer is considered a grant.
+  """
+  Amount of USDC that has been granted out to other Endaoment entities by this entity.
+  Any Fund -> Org transfer is considered a grant.
+  """
   totalUsdcGrantedOut: BigInt!
 
-  # Amount of fees that have been paid by this entity for grants to other Endaoment entities.
+  "Amount of fees that have been paid by this entity for grants to other Endaoment entities."
   totalUsdcGrantedOutFees: BigInt!
 
-  # Amount of USDC that has been transfßåerred out of this entity. This includes transfers that are not considered grants.
+  """
+  Amount of USDC that has been transferred out of this entity. This includes only transfers that are not considered grants.
+  Example: (Org -> Org, Fund -> Fund, Org -> Fund)
+  """
   totalUsdcTransferredOut: BigInt!
 
-  # Amount of USDC that has been paid in fees for transfers out of this entity.
+  "Amount of USDC that has been paid in fees for transfers out of this entity."
   totalUsdcTransferredOutFees: BigInt!
 
-  # Amount of USDC that has been paid out to accounts or wallets owned by the entity outside the Endaoment Protocol.
+  "Amount of USDC that has been paid out to accounts or wallets owned by the entity outside the Endaoment Protocol."
   totalUsdcPaidOut: BigInt!
 
-  # Amount of USDC that has been paid in fees for payouts from this entity
+  "Amount of USDC that has been paid in fees for payouts from this entity"
   totalUsdcPaidOutFees: BigInt!
+
+  """
+  Flag indicating whether the entity has been fully initialized with V1 migration data. For this to occur, the entity
+  must have emitted at least 1 event in 2 separate blocks.
+
+  Entities that are not fully initialized will account for migrated funds in its balance but not include them in the
+  following fields:
+  > * totalUsdcMigrated
+  > * totalUsdcReceived
+  """
+  initialized: Boolean!
 
   # TODO (Later, if time allows): Track portfolio deposits, redemptions.
   # TODO (Later, if time allows): Track individual donations & grants as entities and correlate them here
+}
+
+# Helper metadata entity to track migration information of an NdaoEntity. Not meant to be queried directly, as the
+# information is only useful for internal indexing logic.
+type NdaoEntityV1MigrationMetadata @entity {
+  # Contract address of the entity
+  id: Bytes!
+
+  # Balance of the entity at the end of the block it last emitted an event
+  endOfBlockBalance: BigInt!
+
+  # Number of last block that was processed
+  blockNumber: BigInt!
+
+
+  eventBalanceDelta: BigInt!
 }
 
 # TODO (Later, if time allows): Track permissioned wallets

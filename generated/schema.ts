@@ -293,4 +293,81 @@ export class NdaoEntity extends Entity {
   set totalUsdcPaidOutFees(value: BigInt) {
     this.set("totalUsdcPaidOutFees", Value.fromBigInt(value));
   }
+
+  get initialized(): boolean {
+    let value = this.get("initialized");
+    return value!.toBoolean();
+  }
+
+  set initialized(value: boolean) {
+    this.set("initialized", Value.fromBoolean(value));
+  }
+}
+
+export class NdaoEntityV1MigrationMetadata extends Entity {
+  constructor(id: Bytes) {
+    super();
+    this.set("id", Value.fromBytes(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save NdaoEntityV1MigrationMetadata entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.BYTES,
+        `Entities of type NdaoEntityV1MigrationMetadata must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set(
+        "NdaoEntityV1MigrationMetadata",
+        id.toBytes().toHexString(),
+        this
+      );
+    }
+  }
+
+  static load(id: Bytes): NdaoEntityV1MigrationMetadata | null {
+    return changetype<NdaoEntityV1MigrationMetadata | null>(
+      store.get("NdaoEntityV1MigrationMetadata", id.toHexString())
+    );
+  }
+
+  get id(): Bytes {
+    let value = this.get("id");
+    return value!.toBytes();
+  }
+
+  set id(value: Bytes) {
+    this.set("id", Value.fromBytes(value));
+  }
+
+  get endOfBlockBalance(): BigInt {
+    let value = this.get("endOfBlockBalance");
+    return value!.toBigInt();
+  }
+
+  set endOfBlockBalance(value: BigInt) {
+    this.set("endOfBlockBalance", Value.fromBigInt(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    return value!.toBigInt();
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
+  get eventBalanceDelta(): BigInt {
+    let value = this.get("eventBalanceDelta");
+    return value!.toBigInt();
+  }
+
+  set eventBalanceDelta(value: BigInt) {
+    this.set("eventBalanceDelta", Value.fromBigInt(value));
+  }
 }

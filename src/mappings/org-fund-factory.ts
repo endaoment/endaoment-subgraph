@@ -34,6 +34,7 @@ export function handleEntityDeployed(event: EntityDeployedEvent): void {
   entity.totalUsdcTransferredOutFees = BigInt.fromI32(0)
   entity.totalUsdcPaidOut = BigInt.fromI32(0)
   entity.totalUsdcPaidOutFees = BigInt.fromI32(0)
+  entity.initialized = false
 
   // Save entity
   entity.save()
