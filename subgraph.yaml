@@ -92,6 +92,8 @@ dataSources:
       abis:
         - name: OrgFundFactory
           file: ./abis/OrgFundFactory.json
+        - name: Org
+          file: ./abis/Org.json
       eventHandlers:
         - event: EntityDeployed(indexed address,indexed uint8,indexed address)
           handler: handleEntityDeployed

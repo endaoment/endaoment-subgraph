@@ -114,6 +114,23 @@ export class NdaoEntity extends Entity {
     this.set("entityType", Value.fromString(value));
   }
 
+  get ein(): string | null {
+    let value = this.get("ein");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set ein(value: string | null) {
+    if (!value) {
+      this.unset("ein");
+    } else {
+      this.set("ein", Value.fromString(<string>value));
+    }
+  }
+
   get entityManager(): Bytes {
     let value = this.get("entityManager");
     return value!.toBytes();

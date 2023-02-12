@@ -28,11 +28,6 @@ export function handleEntityDonationReceived(event: EntityDonationReceived): voi
 
   entity.save()
 }
-function indexGrant(source: NdaoEntity, destination: NdaoEntity, event: EntityValueTransferred): void {
-  // Update source entity values
-  // source.totalUsdcGrantedOut = source.totalUsdcGrantedOut.plus(event.params.)
-  // Update destination entity values
-}
 
 export function handleEntityValueTransferred(event: EntityValueTransferred): void {
   // Fetch entity and ensure it exists

@@ -1,8 +1,9 @@
 import { EntityDeployed as EntityDeployedEvent } from '../../generated/OrgFundFactory/OrgFundFactory'
 import { NdaoEntity } from '../../generated/schema'
-import { BigInt, log } from '@graphprotocol/graph-ts'
+import { Address, BigInt, Entity, log } from '@graphprotocol/graph-ts'
 import { NdaoEntity as NdaoEntityTemplate } from '../../generated/templates'
 import { convertEntityType } from '../utils/on-chain-entity-type'
+import { Org as OrgContract } from '../../generated/OrgFundFactory/Org'
 
 export function handleEntityDeployed(event: EntityDeployedEvent): void {
   let entity = new NdaoEntity(event.params.entity)
@@ -10,6 +11,12 @@ export function handleEntityDeployed(event: EntityDeployedEvent): void {
   entity.entityType = convertEntityType(event.params.entityType)
   if (entity.entityType === 'Unknown') {
     log.warning('Unknown entity type: {}', [event.params.entityType.toString()])
+  }
+
+  if (entity.entityType === 'Org') {
+    const contract = OrgContract.bind(Address.fromBytes(entity.id))
+    const orgId = contract.orgId()
+    entity.ein = orgId.toString()
   }
 
   entity.entityManager = event.params.entityManager

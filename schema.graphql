@@ -23,6 +23,9 @@ type NdaoEntity @entity {
   "The type of the entity."
   entityType: EntityType!
 
+  "The EIN of the entity. Only applicable to Orgs."
+  ein: String
+
   "Manager of the entity."
   entityManager: Bytes!
 
