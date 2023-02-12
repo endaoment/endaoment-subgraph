@@ -1,17 +1,20 @@
-import { EntityDonationReceived, EntityValueTransferred } from '../../generated/templates/NdaoEntity/NdaoEntity'
-import { Address, BigInt, log } from '@graphprotocol/graph-ts'
+import {
+  EntityBalanceReconciled,
+  EntityDonationReceived,
+  EntityValueTransferred,
+} from '../../generated/templates/NdaoEntity/NdaoEntity'
+import { Address, BigInt, ethereum, log } from '@graphprotocol/graph-ts'
 import { NdaoEntity as NdaoEntityContract } from '../../generated/templates/NdaoEntity/NdaoEntity'
 import { reconcileV1Migration } from '../utils/v1-migration-reconciliation'
 import { loadNdaoEntityOrThrow } from '../utils/ndao-entity-utils'
 import { FUND_ENTITY_TYPE, ORG_ENTITY_TYPE } from '../utils/on-chain-entity-type'
-import { NdaoEntity } from '../../generated/schema'
 
-export function handleEntityDonationReceived(event: EntityDonationReceived): void {
+function registerDonation(event: ethereum.Event, usdcDonated: BigInt, fee: BigInt): void {
   // Fetch entity and ensure it exists
   const entity = loadNdaoEntityOrThrow(event.address)
 
   // Run v1 migration reconciliation logic
-  const netUsdcDonated = event.params.amountReceived.minus(event.params.amountFee)
+  const netUsdcDonated = usdcDonated.minus(fee)
   reconcileV1Migration(entity, netUsdcDonated, event)
 
   // Update entity values
@@ -22,11 +25,15 @@ export function handleEntityDonationReceived(event: EntityDonationReceived): voi
   entity.totalUsdcContributionsReceived = entity.totalUsdcContributionsReceived.plus(netUsdcDonated)
   entity.totalUsdcReceived = entity.totalUsdcReceived.plus(netUsdcDonated)
 
-  entity.totalUsdcDonationFees = entity.totalUsdcDonationFees.plus(event.params.amountFee)
-  entity.totalUsdcContributionFees = entity.totalUsdcContributionFees.plus(event.params.amountFee)
-  entity.totalUsdcReceivedFees = entity.totalUsdcReceivedFees.plus(event.params.amountFee)
+  entity.totalUsdcDonationFees = entity.totalUsdcDonationFees.plus(fee)
+  entity.totalUsdcContributionFees = entity.totalUsdcContributionFees.plus(fee)
+  entity.totalUsdcReceivedFees = entity.totalUsdcReceivedFees.plus(fee)
 
   entity.save()
+}
+
+export function handleEntityDonationReceived(event: EntityDonationReceived): void {
+  registerDonation(event, event.params.amountReceived, event.params.amountFee)
 }
 
 export function handleEntityValueTransferred(event: EntityValueTransferred): void {
@@ -77,4 +84,8 @@ export function handleEntityValueTransferred(event: EntityValueTransferred): voi
 
   source.save()
   target.save()
+}
+
+export function handleEntityBalanceReconciled(event: EntityBalanceReconciled): void {
+  registerDonation(event, event.params.amountReceived, event.params.amountFee)
 }

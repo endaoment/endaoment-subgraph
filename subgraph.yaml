@@ -118,4 +118,6 @@ templates:
           handler: handleEntityDonationReceived
         - event: EntityValueTransferred(indexed address,indexed address,uint256,uint256)
           handler: handleEntityValueTransferred
+        - event: EntityBalanceReconciled(indexed address,uint256,uint256)
+          handler: handleEntityBalanceReconciled
       file: ./src/mappings/ndao-entity.ts

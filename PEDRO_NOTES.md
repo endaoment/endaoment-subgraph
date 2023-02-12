@@ -8,10 +8,10 @@ Follow [here](https://thegraph.com/docs/en/developing/creating-a-subgraph/)
 - `_swapAndDonateWithFeeMultiplier` [OK]
   - **(+)** Increase balance
   - Emits `EntityDonationReceived`
-- `_transferWithFeeMultiplier`
+- `_transferWithFeeMultiplier` [OK]
   - **(-)** Decrease balance
   - Emits `EntityValueTransferred`
-- `receiveTransfer`
+- `receiveTransfer`  [OK]
   - **(+)** Increase balance
   - **Does not emit events**
 - `portfolioDeposit`
