@@ -4,18 +4,19 @@ import { handleEntityDeployed } from '../src/mappings/org-fund-factory'
 import { createEntityDeployedEvent } from './utils/org-fund-factory'
 import { OnChainNdaoEntityType } from '../src/utils/on-chain-entity-type'
 import { NdaoEntity } from '../generated/schema'
+import { mockOrgId } from './utils/ndao-entity'
 
 function assertZeroedFinancials(entity: NdaoEntity): void {
   assert.bigIntEquals(BigInt.fromI32(0), entity.recognizedUsdcBalance)
   assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
   assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsReceived)
-  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsFee)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationFees)
   assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
-  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsInFee)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantInFees)
   assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionsReceived)
-  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionsFee)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionFees)
   assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersReceived)
-  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersInFee)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferInFees)
   assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcMigrated)
   assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceived)
   assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceivedFees)
@@ -38,6 +39,7 @@ describe('OrgFundFactory', () => {
     let entityType = OnChainNdaoEntityType.Org
     let entityManager = Address.fromString('0x0000000000000000000000000000000000000002')
     let newEntityDeployedEvent = createEntityDeployedEvent(entityAddress, entityType, entityManager)
+    mockOrgId(entityAddress, '844661797')
 
     // Act
     handleEntityDeployed(newEntityDeployedEvent)
@@ -48,6 +50,7 @@ describe('OrgFundFactory', () => {
 
     assert.stringEquals('Org', entityFromStore.entityType)
     assert.bytesEquals(entityManager, entityFromStore.entityManager)
+    assert.stringEquals('844661797', entityFromStore.ein!)
     assertZeroedFinancials(entityFromStore)
   })
 

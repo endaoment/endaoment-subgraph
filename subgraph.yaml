@@ -92,6 +92,8 @@ dataSources:
       abis:
         - name: OrgFundFactory
           file: ./abis/OrgFundFactory.json
+        - name: Org
+          file: ./abis/Org.json
       eventHandlers:
         - event: EntityDeployed(indexed address,indexed uint8,indexed address)
           handler: handleEntityDeployed
@@ -114,4 +116,6 @@ templates:
       eventHandlers:
         - event: EntityDonationReceived(indexed address,indexed address,indexed address,uint256,uint256,uint256)
           handler: handleEntityDonationReceived
+        - event: EntityValueTransferred(indexed address,indexed address,uint256,uint256)
+          handler: handleEntityValueTransferred
       file: ./src/mappings/ndao-entity.ts

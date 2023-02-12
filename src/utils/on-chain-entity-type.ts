@@ -3,13 +3,17 @@ export enum OnChainNdaoEntityType {
   Fund = 2,
 }
 
+export const ORG_ENTITY_TYPE = 'Org'
+export const FUND_ENTITY_TYPE = 'Fund'
+export const UNKNOWN_ENTITY_TYPE = 'Unknown'
+
 export function convertEntityType(entityType: OnChainNdaoEntityType): string {
   switch (entityType) {
     case OnChainNdaoEntityType.Org:
-      return 'Org'
+      return ORG_ENTITY_TYPE
     case OnChainNdaoEntityType.Fund:
-      return 'Fund'
+      return FUND_ENTITY_TYPE
     default:
-      return 'Unknown'
+      return UNKNOWN_ENTITY_TYPE
   }
 }

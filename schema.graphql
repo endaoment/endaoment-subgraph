@@ -23,6 +23,9 @@ type NdaoEntity @entity {
   "The type of the entity."
   entityType: EntityType!
 
+  "The EIN of the entity. Only applicable to Orgs."
+  ein: String
+
   "Manager of the entity."
   entityManager: Bytes!
 
@@ -42,19 +45,19 @@ type NdaoEntity @entity {
   totalUsdcDonationsReceived: BigInt!
 
   "Amount of fees that have been collected from donations to this entity."
-  totalUsdcDonationsFee: BigInt!
+  totalUsdcDonationFees: BigInt!
 
   "Amount of USDC that has been granted to this entity, after fees. Any Fund -> Org transfer is considered a grant."
   totalUsdcGrantsReceived: BigInt!
 
   "Amount of fees that have been paid by grantors for grants to this entity."
-  totalUsdcGrantsInFee: BigInt!
+  totalUsdcGrantInFees: BigInt!
 
   "Amount of USDC that has been donated or granted to this entity, after fees."
   totalUsdcContributionsReceived: BigInt!
 
   "Amount of fees that have been collected from donations or grants to this entity."
-  totalUsdcContributionsFee: BigInt!
+  totalUsdcContributionFees: BigInt!
 
   """
   Amount of USDC that has been transferred to this entity. This includes only transfers that are not considered grants.
@@ -63,7 +66,7 @@ type NdaoEntity @entity {
   totalUsdcTransfersReceived: BigInt!
 
   "Amount of USDC that has been paid in fees for transfers to this entity."
-  totalUsdcTransfersInFee: BigInt!
+  totalUsdcTransferInFees: BigInt!
 
   "Amount of USDC that has been migrated to this entity from Endaoment V1."
   totalUsdcMigrated: BigInt!
@@ -75,7 +78,7 @@ type NdaoEntity @entity {
   totalUsdcReceivedFees: BigInt!
 
   """
-  Amount of USDC that has been granted out to other Endaoment entities by this entity.
+  Amount of USDC that has been granted out to other Endaoment entities by this entity, net of fees.
   Any Fund -> Org transfer is considered a grant.
   """
   totalUsdcGrantedOut: BigInt!
@@ -84,8 +87,8 @@ type NdaoEntity @entity {
   totalUsdcGrantedOutFees: BigInt!
 
   """
-  Amount of USDC that has been transferred out of this entity. This includes only transfers that are not considered grants.
-  Example: (Org -> Org, Fund -> Fund, Org -> Fund)
+  Amount of USDC that has been transferred out of this entity, net of fees. This includes only transfers that are not
+  considered grants. Example: (Org -> Org, Fund -> Fund, Org -> Fund)
   """
   totalUsdcTransferredOut: BigInt!
 
