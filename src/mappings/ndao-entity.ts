@@ -1,4 +1,5 @@
 import {
+  EntityBalanceCorrected,
   EntityBalanceReconciled,
   EntityDonationReceived,
   EntityValueTransferred,
@@ -88,4 +89,21 @@ export function handleEntityValueTransferred(event: EntityValueTransferred): voi
 
 export function handleEntityBalanceReconciled(event: EntityBalanceReconciled): void {
   registerDonation(event, event.params.amountReceived, event.params.amountFee)
+}
+
+export function handleEntityBalanceCorrected(event: EntityBalanceCorrected): void {
+  // This event is only emitted in the edge case where balance is subtracted from the entity using
+  // Entity:callAsEntity. On those cases, because the graph has no awareness of how the balance was reduced,
+  // it cannot categorize the cash outflow and will only update the recognized balance.
+  const entity = loadNdaoEntityOrThrow(event.address)
+
+  // Run v1 migration reconciliation logic, but without recognizing any cashflow (since we don't know how much
+  // was removed)
+  reconcileV1Migration(entity, BigInt.zero(), event)
+
+  const contract = NdaoEntityContract.bind(event.address)
+  entity.recognizedUsdcBalance = contract.balance()
+
+  // Save the entity
+  entity.save()
 }
