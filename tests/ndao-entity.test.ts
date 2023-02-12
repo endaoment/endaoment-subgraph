@@ -3,6 +3,9 @@ import {
   createDefaultDonationEvent,
   createDefaultValueTransferredEvent,
   DEFAULT_ENTITY_ADDRESS,
+  DEFAULT_FUND_ADDRESS,
+  DEFAULT_ORG2_ADDRESS,
+  DEFAULT_ORG_ADDRESS,
   mockBalance,
 } from './utils/ndao-entity'
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
@@ -11,10 +14,6 @@ import { createEntityDeployedEvent } from './utils/org-fund-factory'
 import { OnChainNdaoEntityType } from '../src/utils/on-chain-entity-type'
 import { handleEntityDonationReceived, handleEntityValueTransferred } from '../src/mappings/ndao-entity'
 import { NdaoEntity } from '../generated/schema'
-
-const DEFAULT_FUND_ADDRESS = Address.fromString('0x9f2E8FAC6dec33233d8864b48319032a753151B7')
-const DEFAULT_ORG_ADDRESS = DEFAULT_ENTITY_ADDRESS
-const DEFAULT_ORG2_ADDRESS = Address.fromString('0x52CD08D2E2BBB0623515A0b61fB7890cf106b19E')
 
 describe('NdaoEntity Tests', () => {
   beforeEach(() => {
@@ -264,8 +263,6 @@ describe('NdaoEntity Tests', () => {
     test('it should refresh source entity and destination entity balance', () => {
       // ----- Arrange ------
       const transferEvent = createDefaultValueTransferredEvent(DEFAULT_FUND_ADDRESS, DEFAULT_ORG_ADDRESS, 200_000_000)
-      const netGrantAmount = transferEvent.params.amountReceived.minus(transferEvent.params.amountFee)
-      const grantFee = transferEvent.params.amountFee
 
       mockBalance(DEFAULT_FUND_ADDRESS, 10)
       mockBalance(DEFAULT_ORG_ADDRESS, 20)

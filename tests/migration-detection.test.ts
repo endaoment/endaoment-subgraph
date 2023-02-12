@@ -1,8 +1,12 @@
 import { afterEach, beforeEach, describe, clearStore, test, assert } from 'matchstick-as'
 import {
   createDefaultDonationEvent,
+  createDefaultValueTransferredEvent,
   createEntityDonationReceivedEvent,
   DEFAULT_ENTITY_ADDRESS,
+  DEFAULT_FUND_ADDRESS,
+  DEFAULT_ORG2_ADDRESS,
+  DEFAULT_ORG_ADDRESS,
   mockBalance,
 } from './utils/ndao-entity'
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
@@ -10,14 +14,14 @@ import { EntityDonationReceived } from '../generated/templates/NdaoEntity/NdaoEn
 import { handleEntityDeployed } from '../src/mappings/org-fund-factory'
 import { createEntityDeployedEvent } from './utils/org-fund-factory'
 import { OnChainNdaoEntityType } from '../src/utils/on-chain-entity-type'
-import { handleEntityDonationReceived } from '../src/mappings/ndao-entity'
+import { handleEntityDonationReceived, handleEntityValueTransferred } from '../src/mappings/ndao-entity'
 import { NdaoEntity } from '../generated/schema'
 
 describe('Migration Detection Tests', () => {
   beforeEach(() => {
     // Initialize entity via event handler
     const newEntityDeployedEvent = createEntityDeployedEvent(
-      DEFAULT_ENTITY_ADDRESS,
+      DEFAULT_ORG_ADDRESS,
       OnChainNdaoEntityType.Org,
       Address.fromString('0x0000000000000000000000000000000000000002'),
     )
@@ -35,19 +39,19 @@ describe('Migration Detection Tests', () => {
     // - Fees = 1 USD (0.5%)
     // - No V1 Assets.
     // - Balance at the end of block: 199 USD
-    mockBalance(DEFAULT_ENTITY_ADDRESS, 199_000_000)
-    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ENTITY_ADDRESS, 100_000_000))
-    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ENTITY_ADDRESS, 100_000_000))
+    mockBalance(DEFAULT_ORG_ADDRESS, 199_000_000)
+    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 100_000_000))
+    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 100_000_000))
 
     // Block 2:
     // - 1 donation of 150 USD.
     // - Fees = 0.75 USD (0.5%)
     // - Balance at the end of block: 348.25 USD
-    mockBalance(DEFAULT_ENTITY_ADDRESS, 348_250_000)
-    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ENTITY_ADDRESS, 150_000_000, 2))
+    mockBalance(DEFAULT_ORG_ADDRESS, 348_250_000)
+    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 150_000_000, 2))
 
     // ------ Assert ------
-    const entity = NdaoEntity.load(DEFAULT_ENTITY_ADDRESS)
+    const entity = NdaoEntity.load(DEFAULT_ORG_ADDRESS)
     if (!entity) throw new Error('Entity not found in store')
 
     assert.bigIntEquals(BigInt.fromI32(348_250_000), entity.recognizedUsdcBalance)
@@ -79,17 +83,17 @@ describe('Migration Detection Tests', () => {
     // - Fees = 1.5 USD (0.5%)
     // - V1 Migrated Assets = 1000 USD
     // - Balance at the end of block: 1298,50 USD
-    mockBalance(DEFAULT_ENTITY_ADDRESS, 1_298_500_000)
-    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ENTITY_ADDRESS, 100_000_000))
-    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ENTITY_ADDRESS, 200_000_000))
+    mockBalance(DEFAULT_ORG_ADDRESS, 1_298_500_000)
+    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 100_000_000))
+    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 200_000_000))
 
     // Block 2:
     // - 1 donation of 150 USD.
     // - Fees = 0.75 USD (0.5%)
     // - Balance at the end of block: 1447.75 USD
-    mockBalance(DEFAULT_ENTITY_ADDRESS, 1_447_750_000)
-    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ENTITY_ADDRESS, 150_000_000, 2))
-    const entity = NdaoEntity.load(DEFAULT_ENTITY_ADDRESS)
+    mockBalance(DEFAULT_ORG_ADDRESS, 1_447_750_000)
+    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 150_000_000, 2))
+    const entity = NdaoEntity.load(DEFAULT_ORG_ADDRESS)
 
     // ------ Assert ------
     if (!entity) throw new Error('Entity not found in store')
@@ -123,16 +127,16 @@ describe('Migration Detection Tests', () => {
     // - Fees = 1.0 USD (0.5%)
     // - V1 Migrated Assets = 1200 USD
     // - Balance at the end of block: 1399,00 USD
-    mockBalance(DEFAULT_ENTITY_ADDRESS, 1_399_000_000)
-    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ENTITY_ADDRESS, 200_000_000))
+    mockBalance(DEFAULT_ORG_ADDRESS, 1_399_000_000)
+    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 200_000_000))
 
     // Block 2:
     // - 1 donation of 150 USD.
     // - Fees = 0.75 USD (0.5%)
     // - Balance at the end of block: 1548.25 USD
-    mockBalance(DEFAULT_ENTITY_ADDRESS, 1_548_250_000)
-    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ENTITY_ADDRESS, 150_000_000, 2))
-    const entity = NdaoEntity.load(DEFAULT_ENTITY_ADDRESS)
+    mockBalance(DEFAULT_ORG_ADDRESS, 1_548_250_000)
+    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 150_000_000, 2))
+    const entity = NdaoEntity.load(DEFAULT_ORG_ADDRESS)
 
     // ------ Assert ------
     if (!entity) throw new Error('Entity not found in store')
@@ -159,21 +163,98 @@ describe('Migration Detection Tests', () => {
     assert.booleanEquals(true, entity.initialized)
   })
 
-  // 1. Balance is zero and balance delta is negative
-  test('it should correctly index transfer event from an entity with V1 Assets (zero final balance)', () => {})
+  // TODO: Add test for events going back in time
 
-  // 2. Balance is non-zero and balance delta is negative
-  test('it should correctly index transfer event from an entity with V1 Assets (non-zero final balance)', () => {})
+  describe('Transfer events', () => {
+    beforeEach(() => {
+      // Initialize entities via event handler
+      const orgDeployed = createEntityDeployedEvent(
+        DEFAULT_ORG2_ADDRESS,
+        OnChainNdaoEntityType.Org,
+        Address.fromString('0x0000000000000000000000000000000000000003'),
+      )
+      handleEntityDeployed(orgDeployed)
 
-  // 3. Balance is zero and balance delta is 0 (no v1 migrated assets)
-  test('it should correctly index transfer event from an entity without V1 Assets', () => {})
+      const fundDeployed = createEntityDeployedEvent(
+        DEFAULT_FUND_ADDRESS,
+        OnChainNdaoEntityType.Fund,
+        Address.fromString('0x0000000000000000000000000000000000000003'),
+      )
+      handleEntityDeployed(fundDeployed)
+    })
 
-  // 4. Delta positive (donation > transferOut)
-  test('it should correctly index transfer + donation events from an entity with V1 Assets (donation > transferOut)', () => {})
+    // 1. Balance is zero and balance delta is negative
+    test('it should correctly index transfer event from an entity with V1 Assets (zero final balance)', () => {})
 
-  // 5. Delta negative (donation < transferOut)
-  test('it should correctly index transfer + donation events from an entity with V1 Assets (donation < transferOut)', () => {})
+    // 2. Balance is non-zero and balance delta is negative
+    test('it should correctly index transfer event from an entity with V1 Assets (non-zero final balance)', () => {
+      // ------ Act -------
+      // Block 1:
+      // - 2 transfers - 1 for 100 USD, another for 200 USD. Total 300 USD.
+      // - Fees = 1.5 USD (0.5%)
+      // - V1 Migrated Assets = 1100 USD
+      // - Balance at the end of block: 800,00 USD
+      mockBalance(DEFAULT_ORG_ADDRESS, 800_000_000)
+      mockBalance(DEFAULT_ORG2_ADDRESS, 0) // here to not break the indexing logic for org2
+      handleEntityValueTransferred(
+        createDefaultValueTransferredEvent(DEFAULT_ORG_ADDRESS, DEFAULT_ORG2_ADDRESS, 100_000_000),
+      )
+      handleEntityValueTransferred(
+        createDefaultValueTransferredEvent(DEFAULT_ORG_ADDRESS, DEFAULT_ORG2_ADDRESS, 200_000_000),
+      )
 
-  // 6. Delta neutral (donation = transferOut)
-  test('it should correctly index transfer + donation events from an entity without V1 Assets', () => {})
+      // Block 2:
+      // - 1 transfer of 150 USD.
+      // - Fees = 0.75 USD (0.5%)
+      // - Balance at the end of block: 650.00 USD
+      mockBalance(DEFAULT_ORG_ADDRESS, 650_000_000)
+      handleEntityValueTransferred(
+        createDefaultValueTransferredEvent(DEFAULT_ORG_ADDRESS, DEFAULT_ORG2_ADDRESS, 150_000_000, 2),
+      )
+      const entity = NdaoEntity.load(DEFAULT_ORG_ADDRESS)
+
+      // ------ Assert ------
+      if (!entity) throw new Error('Entity not found in store')
+
+      assert.bigIntEquals(BigInt.fromI32(650_000_000), entity.recognizedUsdcBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantInFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferInFees)
+      assert.bigIntEquals(BigInt.fromI32(1100_000_000), entity.totalUsdcMigrated)
+      assert.bigIntEquals(BigInt.fromI32(1100_000_000), entity.totalUsdcReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceivedFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOutFees)
+      assert.bigIntEquals(BigInt.fromI32(447_750_000), entity.totalUsdcTransferredOut)
+      assert.bigIntEquals(BigInt.fromI32(2_250_000), entity.totalUsdcTransferredOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
+      assert.booleanEquals(true, entity.initialized)
+    })
+
+    // 3. Balance is zero and balance delta is 0 (no v1 migrated assets)
+    test('it should correctly index transfer event from an entity without V1 Assets', () => {})
+
+    // 4. Delta positive (donation > transferOut)
+    test('it should correctly index transfer + donation events from an entity with V1 Assets (donation > transferOut)', () => {})
+
+    // 5. Delta negative (donation < transferOut)
+    test('it should correctly index transfer + donation events from an entity with V1 Assets (donation < transferOut)', () => {})
+
+    // 6. Delta neutral (donation = transferOut)
+    test('it should correctly index transfer + donation events from an entity without V1 Assets', () => {})
+
+    test('it should finalize migration on transfer destination (has v1 funds)', () => {
+      // 1. Grant to Org
+      // 2. Has migrated balance
+    })
+
+    test('it should finalize migration on transfer destination (no v1 funds)', () => {})
+  })
 })

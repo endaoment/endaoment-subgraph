@@ -12,23 +12,34 @@ export function reconcileV1Migration(entity: NdaoEntity, currentBalanceChange: B
   const blockNumber = event.block.number
   let firstIndexedBlock = NdaoEntityFirstIndexedBlock.load(entity.id)
 
-  // If we are in a block after the first indexed block, we know we have all the events that occurred in that block.
-  if (firstIndexedBlock && firstIndexedBlock.blockNumber < blockNumber) {
-    // We consider an amount migrated if the balance at the end of the first indexed block cannot be explained
-    // by the sum of all the events that occurred in that block. This because migration is the only event that can
-    // change the balance of the contract without emitting an V2 event.
-    const unexplainedBalance = firstIndexedBlock.endOfBlockBalance.minus(firstIndexedBlock.eventBalanceDelta)
-    if (unexplainedBalance.gt(BigInt.fromI32(0))) {
-      entity.totalUsdcMigrated = unexplainedBalance
-      entity.totalUsdcReceived = entity.totalUsdcReceived.plus(unexplainedBalance)
+  if (firstIndexedBlock) {
+    // Ensure the current block number is never lower thant the first indexed block for the entity. If that ever occurs,
+    // it means that the indexer went back in time, which shouldn't be possible.
+    if (blockNumber < firstIndexedBlock.blockNumber) {
+      throw new Error(
+        `FATAL ERROR: Block number of first indexed block (${firstIndexedBlock.blockNumber.toString()}) is` +
+          `greater than current block number (${blockNumber.toString()})`,
+      )
     }
 
-    entity.initialized = true
-    entity.save()
-    return
+    // If we are in a block after the first indexed block, we know we have all the events that occurred in that block.
+    if (firstIndexedBlock.blockNumber < blockNumber) {
+      // We consider an amount migrated if the balance at the end of the first indexed block cannot be explained
+      // by the sum of all the events that occurred in that block. This because migration is the only event that can
+      // change the balance of the contract without emitting an V2 event.
+      const unexplainedBalance = firstIndexedBlock.endOfBlockBalance.minus(firstIndexedBlock.eventBalanceDelta)
+      if (unexplainedBalance.gt(BigInt.fromI32(0))) {
+        entity.totalUsdcMigrated = unexplainedBalance
+        entity.totalUsdcReceived = entity.totalUsdcReceived.plus(unexplainedBalance)
+      }
+
+      entity.initialized = true
+      entity.save()
+      return
+    }
   }
 
-  // If we are in the event of the first block, create the necessary migration metadata entity to track all balance
+  // If this is the first event of the first block, create the necessary migration metadata entity to track all balance
   // changes on the block.
   if (firstIndexedBlock == null) {
     firstIndexedBlock = new NdaoEntityFirstIndexedBlock(entity.id)
