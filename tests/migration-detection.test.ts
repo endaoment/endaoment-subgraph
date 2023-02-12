@@ -287,16 +287,98 @@ describe('Migration Detection Tests', () => {
     })
 
     // 3. Balance is zero and balance delta is 0 (no v1 migrated assets)
-    test('it should correctly index transfer event from an entity without V1 Assets', () => {})
+    test('it should correctly index transfer event from an entity without V1 Assets', () => {
+      // ------ Act -------
+      // Block 1:
+      // - 1 Donation of 100 USD | 0.5 USD fee | Balance = 99.50 USD
+      // - 1 Transfer out of 99.50 USD | 0.4975 USD fee | Balance = 0 USD
+      // - No migrated assets
+      // - Balance at the end of block: 0 USD
+      mockBalance(DEFAULT_ORG_ADDRESS, 0)
+      mockBalance(DEFAULT_ORG2_ADDRESS, 0) // here to not break the indexing logic for org2
+      handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 100_000_000))
+      handleEntityValueTransferred(
+        createDefaultValueTransferredEvent(DEFAULT_ORG_ADDRESS, DEFAULT_ORG2_ADDRESS, 99_500_000),
+      )
 
-    // 4. Delta positive (donation > transferOut)
-    test('it should correctly index transfer + donation events from an entity with V1 Assets (donation > transferOut)', () => {})
+      // Block 2:
+      // - 1 donation of 150 USD | 0.75 USD fee | Balance = 149.25 USD
+      mockBalance(DEFAULT_ORG_ADDRESS, 149_250_000)
+      handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 150_000_000, 2))
+      const entity = NdaoEntity.load(DEFAULT_ORG_ADDRESS)
+
+      // ------ Assert ------
+      if (!entity) throw new Error('Entity not found in store')
+
+      assert.bigIntEquals(BigInt.fromI32(149_250_000), entity.recognizedUsdcBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(248_750_000), entity.totalUsdcDonationsReceived)
+      assert.bigIntEquals(BigInt.fromI32(1_250_000), entity.totalUsdcDonationFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantInFees)
+      assert.bigIntEquals(BigInt.fromI32(248_750_000), entity.totalUsdcContributionsReceived)
+      assert.bigIntEquals(BigInt.fromI32(1_250_000), entity.totalUsdcContributionFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferInFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcMigrated)
+      assert.bigIntEquals(BigInt.fromI32(248_750_000), entity.totalUsdcReceived)
+      assert.bigIntEquals(BigInt.fromI32(1_250_000), entity.totalUsdcReceivedFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOutFees)
+      assert.bigIntEquals(BigInt.fromI32(99_002_500), entity.totalUsdcTransferredOut)
+      assert.bigIntEquals(BigInt.fromI32(497_500), entity.totalUsdcTransferredOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
+      assert.booleanEquals(true, entity.initialized)
+    })
+
+    test('it should correctly index transfer + donation events from an entity with V1 Assets (donation > transferOut)', () => {
+      // ------ Act -------
+      // Block 1:
+      // - V1 Assets: 200 USD
+      // - 1 Donation of 200 USD | 1 USD fee | Balance = 399 USD
+      // - 1 Transfer out of 100 USD | 0.5 USD fee | Balance = 299 USD
+      // - Balance at the end of block: 299 USD
+      mockBalance(DEFAULT_ORG_ADDRESS, 299_000_000)
+      mockBalance(DEFAULT_ORG2_ADDRESS, 0) // here to not break the indexing logic for org2
+      handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 200_000_000))
+      handleEntityValueTransferred(
+        createDefaultValueTransferredEvent(DEFAULT_ORG_ADDRESS, DEFAULT_ORG2_ADDRESS, 100_000_000),
+      )
+
+      // Block 2:
+      // - 1 donation of 150 USD | 0.75 USD fee | Balance = 448.25 USD
+      mockBalance(DEFAULT_ORG_ADDRESS, 448_250_000)
+      handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 150_000_000, 2))
+      const entity = NdaoEntity.load(DEFAULT_ORG_ADDRESS)
+
+      // ------ Assert ------
+      if (!entity) throw new Error('Entity not found in store')
+
+      assert.bigIntEquals(BigInt.fromI32(448_250_000), entity.recognizedUsdcBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(348_250_000), entity.totalUsdcDonationsReceived)
+      assert.bigIntEquals(BigInt.fromI32(1_750_000), entity.totalUsdcDonationFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantInFees)
+      assert.bigIntEquals(BigInt.fromI32(348_250_000), entity.totalUsdcContributionsReceived)
+      assert.bigIntEquals(BigInt.fromI32(1_750_000), entity.totalUsdcContributionFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferInFees)
+      assert.bigIntEquals(BigInt.fromI32(200_000_000), entity.totalUsdcMigrated)
+      assert.bigIntEquals(BigInt.fromI32(548_250_000), entity.totalUsdcReceived)
+      assert.bigIntEquals(BigInt.fromI32(1_750_000), entity.totalUsdcReceivedFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOutFees)
+      assert.bigIntEquals(BigInt.fromI32(99_500_000), entity.totalUsdcTransferredOut)
+      assert.bigIntEquals(BigInt.fromI32(500_000), entity.totalUsdcTransferredOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
+      assert.booleanEquals(true, entity.initialized)
+    })
 
     // 5. Delta negative (donation < transferOut)
     test('it should correctly index transfer + donation events from an entity with V1 Assets (donation < transferOut)', () => {})
-
-    // 6. Delta neutral (donation = transferOut)
-    test('it should correctly index transfer + donation events from an entity without V1 Assets', () => {})
 
     test('it should finalize migration on transfer destination (has v1 funds)', () => {
       // 1. Grant to Org
