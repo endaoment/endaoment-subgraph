@@ -8,6 +8,7 @@ import {
   DEFAULT_ORG2_ADDRESS,
   DEFAULT_ORG_ADDRESS,
   mockBalance,
+  mockOrgId,
 } from './utils/ndao-entity'
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { EntityDonationReceived } from '../generated/templates/NdaoEntity/NdaoEntity'
@@ -20,6 +21,7 @@ import { NdaoEntity } from '../generated/schema'
 describe('Migration Detection Tests', () => {
   beforeEach(() => {
     // Initialize entity via event handler
+    mockOrgId(DEFAULT_ORG_ADDRESS, '814661797')
     const newEntityDeployedEvent = createEntityDeployedEvent(
       DEFAULT_ORG_ADDRESS,
       OnChainNdaoEntityType.Org,
@@ -168,6 +170,7 @@ describe('Migration Detection Tests', () => {
   describe('Transfer events', () => {
     beforeEach(() => {
       // Initialize entities via event handler
+      mockOrgId(DEFAULT_ORG2_ADDRESS, '834661797')
       const orgDeployed = createEntityDeployedEvent(
         DEFAULT_ORG2_ADDRESS,
         OnChainNdaoEntityType.Org,

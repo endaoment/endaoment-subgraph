@@ -7,6 +7,7 @@ import {
   DEFAULT_ORG2_ADDRESS,
   DEFAULT_ORG_ADDRESS,
   mockBalance,
+  mockOrgId,
 } from './utils/ndao-entity'
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { handleEntityDeployed } from '../src/mappings/org-fund-factory'
@@ -18,6 +19,7 @@ import { NdaoEntity } from '../generated/schema'
 describe('NdaoEntity Tests', () => {
   beforeEach(() => {
     // Initialize entity via event handler
+    mockOrgId(DEFAULT_ORG_ADDRESS, '844661797')
     const newEntityDeployedEvent = createEntityDeployedEvent(
       DEFAULT_ORG_ADDRESS,
       OnChainNdaoEntityType.Org,
@@ -76,6 +78,7 @@ describe('NdaoEntity Tests', () => {
   describe('Transfer Indexing', () => {
     beforeEach(() => {
       // Initialize entities via event handler
+      mockOrgId(DEFAULT_ORG2_ADDRESS, '814661797')
       const orgDeployed = createEntityDeployedEvent(
         DEFAULT_ORG2_ADDRESS,
         OnChainNdaoEntityType.Org,

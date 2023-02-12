@@ -64,6 +64,14 @@ export function mockBalance(address: Address, balance: i32): void {
   )
 }
 
+export function mockOrgId(address: Address, ein: string): void {
+  const ethValues: ethereum.Value[] = [ethereum.Value.fromBytes(Bytes.fromUTF8(ein))]
+  createMockedFunction(address, 'orgId', 'orgId():(bytes32)').returns(
+    // @ts-ignore - Ignore error due to graph-ts mismatch
+    ethValues,
+  )
+}
+
 export function createDefaultValueTransferredEvent(
   from: Address,
   to: Address,
