@@ -159,5 +159,21 @@ describe('Migration Detection Tests', () => {
     assert.booleanEquals(true, entity.initialized)
   })
 
-  // TODO: Add migration detection tests for subtraction events
+  // 1. Balance is zero and balance delta is negative
+  test('it should correctly index transfer event from an entity with V1 Assets (zero final balance)', () => {})
+
+  // 2. Balance is non-zero and balance delta is negative
+  test('it should correctly index transfer event from an entity with V1 Assets (non-zero final balance)', () => {})
+
+  // 3. Balance is zero and balance delta is 0 (no v1 migrated assets)
+  test('it should correctly index transfer event from an entity without V1 Assets', () => {})
+
+  // 4. Delta positive (donation > transferOut)
+  test('it should correctly index transfer + donation events from an entity with V1 Assets (donation > transferOut)', () => {})
+
+  // 5. Delta negative (donation < transferOut)
+  test('it should correctly index transfer + donation events from an entity with V1 Assets (donation < transferOut)', () => {})
+
+  // 6. Delta neutral (donation = transferOut)
+  test('it should correctly index transfer + donation events from an entity without V1 Assets', () => {})
 })
