@@ -41,6 +41,7 @@ Follow [here](https://thegraph.com/docs/en/developing/creating-a-subgraph/)
 - Total Usdc Granted (optional)
 - Total Usdc paid out (optional)
 - Current Usdc Balance (optional)
+- Unreconciled ETH
 
 ## Fund Indexed Data
 
@@ -49,6 +50,7 @@ Follow [here](https://thegraph.com/docs/en/developing/creating-a-subgraph/)
 - Total Usdc Donated (optional)
 - Total Usdc granted (optional)
 - Current Usdc Balance (optional)
+- Unreconciled ETH
 
 ## Permission List  (Optional)
 - Who is privileged? (optional)

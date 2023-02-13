@@ -186,6 +186,7 @@ describe('Migration Detection Tests', () => {
       handleEntityDeployed(fundDeployed)
     })
 
+    // TODO: Use this test below as a blueprint for payout indexing tests
     test('it should correctly index transfer event from an entity with V1 Assets (zero final balance)', () => {
       // ------ Act -------
       // Block 1:

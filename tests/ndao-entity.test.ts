@@ -334,15 +334,18 @@ describe('NdaoEntity Tests', () => {
   })
 
   test('it should correctly index balance corrected', () => {
+    // ------ Arrange -------
+    const balance = 398_000_000
+
     // ------ Act -------
-    mockBalance(DEFAULT_ENTITY_ADDRESS, 398_000_000)
-    handleEntityBalanceCorrected(createEntityBalanceCorrectedEvent(DEFAULT_ENTITY_ADDRESS, 398_000_000))
+    mockBalance(DEFAULT_ENTITY_ADDRESS, balance)
+    handleEntityBalanceCorrected(createEntityBalanceCorrectedEvent(DEFAULT_ENTITY_ADDRESS, balance))
 
     // ------ Assert ------
     const entity = NdaoEntity.load(DEFAULT_ENTITY_ADDRESS)
     if (!entity) throw new Error('Entity not found in store')
 
-    assert.bigIntEquals(BigInt.fromI32(398_000_000), entity.recognizedUsdcBalance)
+    assert.bigIntEquals(BigInt.fromI32(balance), entity.recognizedUsdcBalance)
     assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsReceived)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationFees)
