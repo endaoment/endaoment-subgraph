@@ -403,4 +403,11 @@ describe('NdaoEntity Tests', () => {
     assert.bigIntEquals(BigInt.fromI32(199_000_000), entity.totalUsdcPaidOut)
     assert.bigIntEquals(BigInt.fromI32(1_000_000), entity.totalUsdcPaidOutFees)
   })
+
+  describe('Portfolios', () => {
+    // TODO: it should correctly index a single portfolio deposit
+    test('it should correctly index a single portfolio deposit', () => {})
+    // TODO: it should correctly index multiple portfolio deposits
+    // TODO: it should correctly index portfolio deposits to different portfolios
+  })
 })

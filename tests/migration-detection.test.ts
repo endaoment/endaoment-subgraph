@@ -611,4 +611,6 @@ describe('Migration Detection Tests', () => {
     assert.bigIntEquals(BigInt.fromI32(2_000_000), entity.totalUsdcPaidOutFees)
     assert.booleanEquals(true, entity.initialized)
   })
+
+  // TODO: it should correctly index deposits from an entity with V1 Assets
 })
