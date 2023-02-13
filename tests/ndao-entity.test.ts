@@ -65,7 +65,7 @@ describe('NdaoEntity Tests', () => {
     if (!entity) throw new Error('Entity not found in store')
 
     assert.bigIntEquals(BigInt.fromI32(348_250_000), entity.recognizedUsdcBalance)
-    assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
     assert.bigIntEquals(BigInt.fromI32(348_250_000), entity.totalUsdcDonationsReceived)
     assert.bigIntEquals(BigInt.fromI32(1_750_000), entity.totalUsdcDonationFees)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -124,7 +124,7 @@ describe('NdaoEntity Tests', () => {
 
       // Assert destination changes
       assert.bigIntEquals(netTransferAmount, destinationOrg.recognizedUsdcBalance)
-      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.investedUsdc)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcDonationsReceived)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcDonationFees)
       assert.bigIntEquals(netTransferAmount, destinationOrg.totalUsdcGrantsReceived)
@@ -145,7 +145,7 @@ describe('NdaoEntity Tests', () => {
 
       // Assert source changes
       assert.bigIntEquals(BigInt.fromI32(0), sourceFund.recognizedUsdcBalance)
-      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceFund.investedUsdc)
       assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcDonationsReceived)
       assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcDonationFees)
       assert.bigIntEquals(BigInt.fromI32(0), sourceFund.totalUsdcGrantsReceived)
@@ -185,7 +185,7 @@ describe('NdaoEntity Tests', () => {
 
       // Assert destination changes
       assert.bigIntEquals(netTransferAmount, destinationOrg.recognizedUsdcBalance)
-      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.investedUsdc)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcDonationsReceived)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcDonationFees)
       assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.totalUsdcGrantsReceived)
@@ -206,7 +206,7 @@ describe('NdaoEntity Tests', () => {
 
       // Assert source changes
       assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.recognizedUsdcBalance)
-      assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.investedUsdc)
       assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcDonationsReceived)
       assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcDonationFees)
       assert.bigIntEquals(BigInt.fromI32(0), sourceOrg.totalUsdcGrantsReceived)
@@ -253,7 +253,7 @@ describe('NdaoEntity Tests', () => {
 
       // Assert destination changes
       assert.bigIntEquals(totalNetContribution, destinationOrg.recognizedUsdcBalance)
-      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), destinationOrg.investedUsdc)
       assert.bigIntEquals(netDonationAmount, destinationOrg.totalUsdcDonationsReceived)
       assert.bigIntEquals(donationFee, destinationOrg.totalUsdcDonationFees)
       assert.bigIntEquals(netGrantAmount, destinationOrg.totalUsdcGrantsReceived)
@@ -316,7 +316,7 @@ describe('NdaoEntity Tests', () => {
     if (!entity) throw new Error('Entity not found in store')
 
     assert.bigIntEquals(BigInt.fromI32(547_250_000), entity.recognizedUsdcBalance)
-    assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
     assert.bigIntEquals(BigInt.fromI32(547_250_000), entity.totalUsdcDonationsReceived)
     assert.bigIntEquals(BigInt.fromI32(2_750_000), entity.totalUsdcDonationFees)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -349,7 +349,7 @@ describe('NdaoEntity Tests', () => {
     if (!entity) throw new Error('Entity not found in store')
 
     assert.bigIntEquals(BigInt.fromI32(balance), entity.recognizedUsdcBalance)
-    assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsReceived)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationFees)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -384,7 +384,7 @@ describe('NdaoEntity Tests', () => {
     if (!entity) throw new Error('Entity not found in store')
 
     assert.bigIntEquals(BigInt.fromI32(finalBalance), entity.recognizedUsdcBalance)
-    assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsReceived)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationFees)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)

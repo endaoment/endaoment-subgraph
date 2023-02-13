@@ -33,9 +33,6 @@ type NdaoEntity @entity {
   "USDC Balance that has been formally recognized by the entity."
   recognizedUsdcBalance: BigInt!
 
-  "USDC Balance that the entity has invested in Portfolios belonging to the Endaoment protocol"
-  investmentBalance: BigInt!
-
   # Amount of USDC that is yet to be formally recognized by the entity
   # unrecognizedUsdcBalance: BigInt! # TODO: See if this field will work
 
@@ -112,6 +109,14 @@ type NdaoEntity @entity {
   > * totalUsdcReceived
   """
   initialized: Boolean!
+
+  """
+  USDC Balance that the entity has invested in Portfolios belonging to the Endaoment protocol.
+  > * This is the sum of all USDC invested in all portfolios and NOT the current USDC value of the portfolio shares.
+  > * Fees are included in the amount, since it tracks the entire sum sent to portfolio contracts.
+  > * When shares are redeemed, this amount is reduced proportionally to the amount of shares redeemed.
+  """
+  investedUsdc: BigInt!
 
   "Positions owned by the entity in various portfolios."
   positions: [PortfolioPosition!]! @derivedFrom(field: "entity")

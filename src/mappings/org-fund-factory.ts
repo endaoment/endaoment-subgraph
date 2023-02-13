@@ -23,7 +23,7 @@ export function handleEntityDeployed(event: EntityDeployedEvent): void {
 
   // Initialize balances to 0
   entity.recognizedUsdcBalance = BigInt.fromI32(0)
-  entity.investmentBalance = BigInt.fromI32(0)
+  entity.investedUsdc = BigInt.fromI32(0)
   entity.totalUsdcDonationsReceived = BigInt.fromI32(0)
   entity.totalUsdcDonationFees = BigInt.fromI32(0)
   entity.totalUsdcGrantsReceived = BigInt.fromI32(0)

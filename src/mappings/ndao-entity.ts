@@ -1,6 +1,7 @@
 import {
   EntityBalanceCorrected,
   EntityBalanceReconciled,
+  EntityDeposit,
   EntityDonationReceived,
   EntityValuePaidOut,
   EntityValueTransferred,
@@ -121,6 +122,23 @@ export function handleEntityValuePaidOut(event: EntityValuePaidOut): void {
   const netValuePaidOut = event.params.amountSent.minus(event.params.amountFee)
   entity.totalUsdcPaidOut = entity.totalUsdcPaidOut.plus(netValuePaidOut)
   entity.totalUsdcPaidOutFees = entity.totalUsdcPaidOutFees.plus(event.params.amountFee)
+
+  entity.save()
+}
+
+export function handleEntityDeposit(event: EntityDeposit): void {
+  // Fetch entity and ensure it exists
+  const entity = loadNdaoEntityOrThrow(event.address)
+
+  // Run v1 migration reconciliation logic
+  const negativeDepositAmount = event.params.baseTokenDeposited.times(BigInt.fromI32(-1))
+  reconcileV1Migration(entity, negativeDepositAmount, event)
+
+  // Update entity values
+  const contract = NdaoEntityContract.bind(event.address)
+  entity.recognizedUsdcBalance = contract.balance()
+
+  // TODO: Implement updates here
 
   entity.save()
 }

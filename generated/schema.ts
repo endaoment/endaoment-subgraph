@@ -149,15 +149,6 @@ export class NdaoEntity extends Entity {
     this.set("recognizedUsdcBalance", Value.fromBigInt(value));
   }
 
-  get investmentBalance(): BigInt {
-    let value = this.get("investmentBalance");
-    return value!.toBigInt();
-  }
-
-  set investmentBalance(value: BigInt) {
-    this.set("investmentBalance", Value.fromBigInt(value));
-  }
-
   get totalUsdcDonationsReceived(): BigInt {
     let value = this.get("totalUsdcDonationsReceived");
     return value!.toBigInt();
@@ -318,6 +309,15 @@ export class NdaoEntity extends Entity {
 
   set initialized(value: boolean) {
     this.set("initialized", Value.fromBoolean(value));
+  }
+
+  get investedUsdc(): BigInt {
+    let value = this.get("investedUsdc");
+    return value!.toBigInt();
+  }
+
+  set investedUsdc(value: BigInt) {
+    this.set("investedUsdc", Value.fromBigInt(value));
   }
 
   get positions(): Array<string> {

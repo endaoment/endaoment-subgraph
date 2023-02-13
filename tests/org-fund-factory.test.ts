@@ -8,7 +8,7 @@ import { mockOrgId } from './utils/ndao-entity'
 
 function assertZeroedFinancials(entity: NdaoEntity): void {
   assert.bigIntEquals(BigInt.fromI32(0), entity.recognizedUsdcBalance)
-  assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+  assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
   assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsReceived)
   assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationFees)
   assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)

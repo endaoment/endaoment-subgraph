@@ -66,7 +66,7 @@ describe('Migration Detection Tests', () => {
     if (!entity) throw new Error('Entity not found in store')
 
     assert.bigIntEquals(BigInt.fromI32(348_250_000), entity.recognizedUsdcBalance)
-    assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
     assert.bigIntEquals(BigInt.fromI32(348_250_000), entity.totalUsdcDonationsReceived)
     assert.bigIntEquals(BigInt.fromI32(1_750_000), entity.totalUsdcDonationFees)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -110,7 +110,7 @@ describe('Migration Detection Tests', () => {
     if (!entity) throw new Error('Entity not found in store')
 
     assert.bigIntEquals(BigInt.fromI32(1_447_750_000), entity.recognizedUsdcBalance)
-    assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
     assert.bigIntEquals(BigInt.fromI32(447_750_000), entity.totalUsdcDonationsReceived)
     assert.bigIntEquals(BigInt.fromI32(2_250_000), entity.totalUsdcDonationFees)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -153,7 +153,7 @@ describe('Migration Detection Tests', () => {
     if (!entity) throw new Error('Entity not found in store')
 
     assert.bigIntEquals(BigInt.fromI32(1_548_250_000), entity.recognizedUsdcBalance)
-    assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
     assert.bigIntEquals(BigInt.fromI32(348_250_000), entity.totalUsdcDonationsReceived)
     assert.bigIntEquals(BigInt.fromI32(1_750_000), entity.totalUsdcDonationFees)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -231,7 +231,7 @@ describe('Migration Detection Tests', () => {
       if (!entity) throw new Error('Entity not found in store')
 
       assert.bigIntEquals(BigInt.fromI32(149_250_000), entity.recognizedUsdcBalance)
-      assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
       assert.bigIntEquals(BigInt.fromI32(149_250_000), entity.totalUsdcDonationsReceived)
       assert.bigIntEquals(BigInt.fromI32(750_000), entity.totalUsdcDonationFees)
       assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -282,7 +282,7 @@ describe('Migration Detection Tests', () => {
       if (!entity) throw new Error('Entity not found in store')
 
       assert.bigIntEquals(BigInt.fromI32(650_000_000), entity.recognizedUsdcBalance)
-      assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
       assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsReceived)
       assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationFees)
       assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -327,7 +327,7 @@ describe('Migration Detection Tests', () => {
       if (!entity) throw new Error('Entity not found in store')
 
       assert.bigIntEquals(BigInt.fromI32(149_250_000), entity.recognizedUsdcBalance)
-      assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
       assert.bigIntEquals(BigInt.fromI32(248_750_000), entity.totalUsdcDonationsReceived)
       assert.bigIntEquals(BigInt.fromI32(1_250_000), entity.totalUsdcDonationFees)
       assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -372,7 +372,7 @@ describe('Migration Detection Tests', () => {
       if (!entity) throw new Error('Entity not found in store')
 
       assert.bigIntEquals(BigInt.fromI32(448_250_000), entity.recognizedUsdcBalance)
-      assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
       assert.bigIntEquals(BigInt.fromI32(348_250_000), entity.totalUsdcDonationsReceived)
       assert.bigIntEquals(BigInt.fromI32(1_750_000), entity.totalUsdcDonationFees)
       assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -418,7 +418,7 @@ describe('Migration Detection Tests', () => {
       if (!entity) throw new Error('Entity not found in store')
 
       assert.bigIntEquals(BigInt.fromI32(248_750_000), entity.recognizedUsdcBalance)
-      assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
       assert.bigIntEquals(BigInt.fromI32(248_750_000), entity.totalUsdcDonationsReceived)
       assert.bigIntEquals(BigInt.fromI32(1_250_000), entity.totalUsdcDonationFees)
       assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -461,7 +461,7 @@ describe('Migration Detection Tests', () => {
       if (!entity) throw new Error('Entity not found in store')
 
       assert.bigIntEquals(BigInt.fromI32(548_750_000), entity.recognizedUsdcBalance)
-      assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
       assert.bigIntEquals(BigInt.fromI32(149_250_000), entity.totalUsdcDonationsReceived)
       assert.bigIntEquals(BigInt.fromI32(750_000), entity.totalUsdcDonationFees)
       assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -504,7 +504,7 @@ describe('Migration Detection Tests', () => {
       if (!entity) throw new Error('Entity not found in store')
 
       assert.bigIntEquals(BigInt.fromI32(248_750_000), entity.recognizedUsdcBalance)
-      assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
       assert.bigIntEquals(BigInt.fromI32(149_250_000), entity.totalUsdcDonationsReceived)
       assert.bigIntEquals(BigInt.fromI32(750_000), entity.totalUsdcDonationFees)
       assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -548,7 +548,7 @@ describe('Migration Detection Tests', () => {
     if (!entity) throw new Error('Entity not found in store')
 
     assert.bigIntEquals(BigInt.fromI32(1_548_250_000), entity.recognizedUsdcBalance)
-    assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
     assert.bigIntEquals(BigInt.fromI32(348_250_000), entity.totalUsdcDonationsReceived)
     assert.bigIntEquals(BigInt.fromI32(1_750_000), entity.totalUsdcDonationFees)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -591,7 +591,7 @@ describe('Migration Detection Tests', () => {
     if (!entity) throw new Error('Entity not found in store')
 
     assert.bigIntEquals(BigInt.fromI32(149_250_000), entity.recognizedUsdcBalance)
-    assert.bigIntEquals(BigInt.fromI32(0), entity.investmentBalance)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
     assert.bigIntEquals(BigInt.fromI32(149_250_000), entity.totalUsdcDonationsReceived)
     assert.bigIntEquals(BigInt.fromI32(750_000), entity.totalUsdcDonationFees)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
