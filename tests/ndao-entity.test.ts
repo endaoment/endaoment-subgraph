@@ -409,12 +409,13 @@ describe('NdaoEntity Tests', () => {
 
   describe('Portfolios', () => {
     test('it should correctly index a single portfolio deposit', () => {
-      // ------ Act -------
+      // ------ Arrange -------
       const investedAmount = 400_000_000
+      const shares = investedAmount * 10
+
+      // ------ Act -------
       mockBalance(DEFAULT_ENTITY_ADDRESS, 0)
-      handleEntityDeposit(
-        createEntityDepositEvent(DEFAULT_ENTITY_ADDRESS, PORTFOLIO_1_ADDRESS, investedAmount, investedAmount * 10),
-      )
+      handleEntityDeposit(createEntityDepositEvent(DEFAULT_ENTITY_ADDRESS, PORTFOLIO_1_ADDRESS, investedAmount, shares))
 
       // ------ Assert ------
       const entity = NdaoEntity.load(DEFAULT_ENTITY_ADDRESS)
@@ -442,6 +443,11 @@ describe('NdaoEntity Tests', () => {
 
       const position = PortfolioPosition.load(`${PORTFOLIO_1_ADDRESS.toHex()}|${DEFAULT_ENTITY_ADDRESS.toHex()}`)
       if (!position) throw new Error('Portfolio position not found in store')
+
+      assert.bytesEquals(entity.id, position.entity)
+      assert.bytesEquals(PORTFOLIO_1_ADDRESS, position.portfolio)
+      assert.bigIntEquals(BigInt.fromU64(shares), position.shares)
+      assert.bigIntEquals(BigInt.fromU64(investedAmount), position.investedUsdc)
     })
     // TODO: it should correctly index multiple portfolio deposits
     // TODO: it should correctly index portfolio deposits to different portfolios
