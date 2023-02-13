@@ -157,7 +157,7 @@ export function createEntityBalanceCorrectedEvent(
   return event
 }
 
-export function createDefaultBalancePaidOutEvent(
+export function createDefaultValuePaidOutEvent(
   from: Address,
   to: Address,
   amountSent: u64,
@@ -165,10 +165,10 @@ export function createDefaultBalancePaidOutEvent(
 ): EntityValuePaidOut {
   const amountSentBi = BigInt.fromU64(amountSent)
   const fee = amountSentBi.times(BigInt.fromI32(5)).div(BigInt.fromI32(1000)) // 0.5% fee
-  return createEntityBalancePaidOutEvent(from, to, amountSentBi, fee, blockNumber)
+  return createEntityValuePaidOutEvent(from, to, amountSentBi, fee, blockNumber)
 }
 
-export function createEntityBalancePaidOutEvent(
+export function createEntityValuePaidOutEvent(
   from: Address,
   to: Address,
   amountSent: BigInt,

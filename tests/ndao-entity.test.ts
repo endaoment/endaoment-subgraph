@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, clearStore, test, assert } from 'matchstick-as'
 import {
-  createDefaultBalancePaidOutEvent,
+  createDefaultValuePaidOutEvent,
   createDefaultBalanceReconciledEvent,
   createDefaultDonationEvent,
   createDefaultValueTransferredEvent,
@@ -377,7 +377,7 @@ describe('NdaoEntity Tests', () => {
     mockBalance(DEFAULT_ENTITY_ADDRESS, finalBalance)
 
     // Net Payout = 199 USD | Fee = 1 USD
-    handleEntityValuePaidOut(createDefaultBalancePaidOutEvent(DEFAULT_ENTITY_ADDRESS, EXTERNAL_ADDRESS, 200_000_000))
+    handleEntityValuePaidOut(createDefaultValuePaidOutEvent(DEFAULT_ENTITY_ADDRESS, EXTERNAL_ADDRESS, 200_000_000))
 
     // ------ Assert ------
     const entity = NdaoEntity.load(DEFAULT_ENTITY_ADDRESS)
