@@ -138,8 +138,8 @@ export function handleEntityDeposit(event: EntityDeposit): void {
     position = new PortfolioPosition(positionId)
     position.entity = entity.id
     position.portfolio = event.params.portfolio
-    position.shares = BigInt.fromI32(0)
-    position.investedUsdc = BigInt.fromI32(0)
+    position.shares = BigInt.zero()
+    position.investedUsdc = BigInt.zero()
   }
 
   // Run v1 migration reconciliation logic

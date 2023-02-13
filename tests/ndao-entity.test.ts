@@ -14,6 +14,7 @@ import {
   mockOrgId,
   createEntityDepositEvent,
   PORTFOLIO_1_ADDRESS,
+  PORTFOLIO_2_ADDRESS,
 } from './utils/ndao-entity'
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { handleEntityDeployed } from '../src/mappings/org-fund-factory'
@@ -410,8 +411,8 @@ describe('NdaoEntity Tests', () => {
   describe('Portfolios', () => {
     test('it should correctly index a single portfolio deposit', () => {
       // ------ Arrange -------
-      const investedAmount = 400_000_000
-      const shares = investedAmount * 10
+      const investedAmount: u64 = 400_000_000
+      const shares: u64 = investedAmount * 10
 
       // ------ Act -------
       mockBalance(DEFAULT_ENTITY_ADDRESS, 0)
@@ -422,7 +423,7 @@ describe('NdaoEntity Tests', () => {
       if (!entity) throw new Error('Entity not found in store')
 
       assert.bigIntEquals(BigInt.fromI32(0), entity.recognizedUsdcBalance)
-      assert.bigIntEquals(BigInt.fromI32(investedAmount), entity.investedUsdc)
+      assert.bigIntEquals(BigInt.fromU64(investedAmount), entity.investedUsdc)
       assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsReceived)
       assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationFees)
       assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
@@ -449,7 +450,111 @@ describe('NdaoEntity Tests', () => {
       assert.bigIntEquals(BigInt.fromU64(shares), position.shares)
       assert.bigIntEquals(BigInt.fromU64(investedAmount), position.investedUsdc)
     })
-    // TODO: it should correctly index multiple portfolio deposits
-    // TODO: it should correctly index portfolio deposits to different portfolios
+
+    test('it should correctly index portfolio deposits to different portfolios', () => {
+      // ------ Arrange -------
+      const investedAmount1: u64 = 400_000_000
+      const shares1: u64 = investedAmount1 * 10
+      const investedAmount2: u64 = 200_000_000
+      const shares2: u64 = investedAmount2 * 10
+
+      // ------ Act -------
+      mockBalance(DEFAULT_ENTITY_ADDRESS, 0)
+      handleEntityDeposit(
+        createEntityDepositEvent(DEFAULT_ENTITY_ADDRESS, PORTFOLIO_1_ADDRESS, investedAmount1, shares1),
+      )
+      handleEntityDeposit(
+        createEntityDepositEvent(DEFAULT_ENTITY_ADDRESS, PORTFOLIO_2_ADDRESS, investedAmount2, shares2),
+      )
+
+      // ------ Assert ------
+      const entity = NdaoEntity.load(DEFAULT_ENTITY_ADDRESS)
+      if (!entity) throw new Error('Entity not found in store')
+
+      assert.bigIntEquals(BigInt.fromI32(0), entity.recognizedUsdcBalance)
+      assert.bigIntEquals(BigInt.fromU64(investedAmount1 + investedAmount2), entity.investedUsdc)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantInFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferInFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcMigrated)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceivedFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
+
+      const position1 = PortfolioPosition.load(`${PORTFOLIO_1_ADDRESS.toHex()}|${DEFAULT_ENTITY_ADDRESS.toHex()}`)
+      if (!position1) throw new Error('Portfolio position not found in store')
+
+      assert.bytesEquals(entity.id, position1.entity)
+      assert.bytesEquals(PORTFOLIO_1_ADDRESS, position1.portfolio)
+      assert.bigIntEquals(BigInt.fromU64(shares1), position1.shares)
+      assert.bigIntEquals(BigInt.fromU64(investedAmount1), position1.investedUsdc)
+
+      const position2 = PortfolioPosition.load(`${PORTFOLIO_2_ADDRESS.toHex()}|${DEFAULT_ENTITY_ADDRESS.toHex()}`)
+      if (!position2) throw new Error('Portfolio position not found in store')
+
+      assert.bytesEquals(entity.id, position2.entity)
+      assert.bytesEquals(PORTFOLIO_2_ADDRESS, position2.portfolio)
+      assert.bigIntEquals(BigInt.fromU64(shares2), position2.shares)
+      assert.bigIntEquals(BigInt.fromU64(investedAmount2), position2.investedUsdc)
+    })
+
+    test('it should correctly index multiple portfolio deposits to the same portfolio', () => {
+      // ------ Arrange -------
+      const investedAmount1: u64 = 400_000_000
+      const shares1: u64 = investedAmount1 * 10
+      const investedAmount2: u64 = 200_000_000
+      const shares2: u64 = investedAmount2 * 10
+
+      // ------ Act -------
+      mockBalance(DEFAULT_ENTITY_ADDRESS, 0)
+      handleEntityDeposit(
+        createEntityDepositEvent(DEFAULT_ENTITY_ADDRESS, PORTFOLIO_1_ADDRESS, investedAmount1, shares1),
+      )
+      handleEntityDeposit(
+        createEntityDepositEvent(DEFAULT_ENTITY_ADDRESS, PORTFOLIO_1_ADDRESS, investedAmount2, shares2),
+      )
+
+      // ------ Assert ------
+      const entity = NdaoEntity.load(DEFAULT_ENTITY_ADDRESS)
+      if (!entity) throw new Error('Entity not found in store')
+
+      assert.bigIntEquals(BigInt.fromI32(0), entity.recognizedUsdcBalance)
+      assert.bigIntEquals(BigInt.fromU64(investedAmount1 + investedAmount2), entity.investedUsdc)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantInFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferInFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcMigrated)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceivedFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
+
+      const position1 = PortfolioPosition.load(`${PORTFOLIO_1_ADDRESS.toHex()}|${DEFAULT_ENTITY_ADDRESS.toHex()}`)
+      if (!position1) throw new Error('Portfolio position not found in store')
+
+      assert.bytesEquals(entity.id, position1.entity)
+      assert.bytesEquals(PORTFOLIO_1_ADDRESS, position1.portfolio)
+      assert.bigIntEquals(BigInt.fromU64(shares1 + shares2), position1.shares)
+      assert.bigIntEquals(BigInt.fromU64(investedAmount1 + investedAmount2), position1.investedUsdc)
+    })
   })
 })
