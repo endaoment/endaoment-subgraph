@@ -319,6 +319,85 @@ export class NdaoEntity extends Entity {
   set initialized(value: boolean) {
     this.set("initialized", Value.fromBoolean(value));
   }
+
+  get positions(): Array<string> {
+    let value = this.get("positions");
+    return value!.toStringArray();
+  }
+
+  set positions(value: Array<string>) {
+    this.set("positions", Value.fromStringArray(value));
+  }
+}
+
+export class PortfolioPosition extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save PortfolioPosition entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type PortfolioPosition must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("PortfolioPosition", id.toString(), this);
+    }
+  }
+
+  static load(id: string): PortfolioPosition | null {
+    return changetype<PortfolioPosition | null>(
+      store.get("PortfolioPosition", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get entity(): Bytes {
+    let value = this.get("entity");
+    return value!.toBytes();
+  }
+
+  set entity(value: Bytes) {
+    this.set("entity", Value.fromBytes(value));
+  }
+
+  get portfolio(): Bytes {
+    let value = this.get("portfolio");
+    return value!.toBytes();
+  }
+
+  set portfolio(value: Bytes) {
+    this.set("portfolio", Value.fromBytes(value));
+  }
+
+  get shares(): BigInt {
+    let value = this.get("shares");
+    return value!.toBigInt();
+  }
+
+  set shares(value: BigInt) {
+    this.set("shares", Value.fromBigInt(value));
+  }
+
+  get investedUsdc(): BigInt {
+    let value = this.get("investedUsdc");
+    return value!.toBigInt();
+  }
+
+  set investedUsdc(value: BigInt) {
+    this.set("investedUsdc", Value.fromBigInt(value));
+  }
 }
 
 export class NdaoEntityFirstIndexedBlock extends Entity {

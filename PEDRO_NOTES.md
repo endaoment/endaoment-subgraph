@@ -30,7 +30,7 @@ Follow [here](https://thegraph.com/docs/en/developing/creating-a-subgraph/)
   - Emits `EntityBalanceReconciled` [OK]
 - `_payoutWithFeeMultiplier`
   - **(-)** Decrease balance
-  - Emits `EntityValuePaidOut`
+  - Emits `EntityValuePaidOut` [OK]
 ## Todo:
 
 ### Org Indexed Data

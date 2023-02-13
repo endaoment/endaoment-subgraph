@@ -16,6 +16,7 @@ type ExampleEntity @entity {
   newAuthority: Bytes! # address
 }
 
+"An entity that is part of the Endaoment protocol."
 type NdaoEntity @entity {
   "Contract address of the entity."
   id: Bytes!
@@ -112,8 +113,29 @@ type NdaoEntity @entity {
   """
   initialized: Boolean!
 
+  "Positions owned by the entity in various portfolios."
+  positions: [PortfolioPosition!]! @derivedFrom(field: "entity")
+
   # TODO (Later, if time allows): Track portfolio deposits, redemptions.
   # TODO (Later, if time allows): Track individual donations & grants as entities and correlate them here
+}
+
+"A position taken by an Endaoment entity in a portfolio approved by Endaoment"
+type PortfolioPosition @entity {
+  "Id of the position, which is a concatenation of the portfolio address and the entity address."
+  id: ID!
+
+  "Address of the entity that owns this position."
+  entity: NdaoEntity!
+
+  "Address of the portfolio that invested by the entity."
+  portfolio: Bytes!
+
+  "Shares of the portfolio that are owned by the entity."
+  shares: BigInt!
+
+  "Amount of USDC invested by the entity in the portfolio."
+  investedUsdc: BigInt!
 }
 
 """
