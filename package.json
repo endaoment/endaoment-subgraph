@@ -11,6 +11,7 @@
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 endaoment-v2",
     "redeploy-local": "yarn remove-local && yarn create-local && yarn deploy-local",
     "test": "graph test",
+    "coverage": "graph test -- -c",
     "docker-up": "cd docker && docker-compose -p endaoment-subgraph up -d"
   },
   "dependencies": {

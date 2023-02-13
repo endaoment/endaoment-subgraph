@@ -1,5 +1,9 @@
 import { Address, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts'
-import { EntityDonationReceived, EntityValueTransferred } from '../../generated/templates/NdaoEntity/NdaoEntity'
+import {
+  EntityBalanceReconciled,
+  EntityDonationReceived,
+  EntityValueTransferred,
+} from '../../generated/templates/NdaoEntity/NdaoEntity'
 import { createMockedFunction, newMockEvent } from 'matchstick-as'
 
 export const DEFAULT_DONOR_ADDRESS = Address.fromString('0xe5Ce376f2904C780E6F006213719B38b73E286D7')
@@ -97,6 +101,37 @@ export function createEntityValueTransferred(
   donationEvent.parameters = []
   donationEvent.parameters.push(new ethereum.EventParam('from', ethereum.Value.fromAddress(from)))
   donationEvent.parameters.push(new ethereum.EventParam('to', ethereum.Value.fromAddress(to)))
+  donationEvent.parameters.push(
+    new ethereum.EventParam('amountReceived', ethereum.Value.fromUnsignedBigInt(amountReceived)),
+  )
+  donationEvent.parameters.push(new ethereum.EventParam('amountFee', ethereum.Value.fromUnsignedBigInt(amountFee)))
+
+  return donationEvent
+}
+
+export function createDefaultBalanceReconciledEvent(
+  entity: Address,
+  amountReceived: u64,
+  blockNumber: i32 = 1,
+): EntityBalanceReconciled {
+  const amountInBi = BigInt.fromU64(amountReceived)
+  const fee = amountInBi.times(BigInt.fromI32(5)).div(BigInt.fromI32(1000)) // 0.5% fee
+  return createEntityBalanceReconciledEvent(entity, amountInBi, fee, blockNumber)
+}
+
+export function createEntityBalanceReconciledEvent(
+  entity: Address,
+  amountReceived: BigInt,
+  amountFee: BigInt,
+  blockNumber: i32 = 1,
+): EntityBalanceReconciled {
+  const donationEvent = changetype<EntityBalanceReconciled>(newMockEvent())
+  donationEvent.block.number = BigInt.fromI32(blockNumber)
+
+  donationEvent.address = entity
+
+  donationEvent.parameters = []
+  donationEvent.parameters.push(new ethereum.EventParam('entity', ethereum.Value.fromAddress(entity)))
   donationEvent.parameters.push(
     new ethereum.EventParam('amountReceived', ethereum.Value.fromUnsignedBigInt(amountReceived)),
   )
