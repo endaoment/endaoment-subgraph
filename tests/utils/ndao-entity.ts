@@ -5,6 +5,7 @@ import {
   EntityValueTransferred,
   EntityBalanceCorrected,
   EntityValuePaidOut,
+  EntityDeposit,
 } from '../../generated/templates/NdaoEntity/NdaoEntity'
 import { createMockedFunction, newMockEvent } from 'matchstick-as'
 
@@ -13,9 +14,9 @@ export const DEFAULT_ENTITY_ADDRESS = Address.fromString('0xDf6b465463eA501cAccB
 export const DEFAULT_FUND_ADDRESS = Address.fromString('0x9f2E8FAC6dec33233d8864b48319032a753151B7')
 export const DEFAULT_ORG_ADDRESS = DEFAULT_ENTITY_ADDRESS
 export const DEFAULT_ORG2_ADDRESS = Address.fromString('0x52CD08D2E2BBB0623515A0b61fB7890cf106b19E')
-
 export const EXTERNAL_ADDRESS = Address.fromString('0x159aeBc6CDE21B5509eD6C96F02F951D696E2ca5')
-
+export const PORTFOLIO_1_ADDRESS = Address.fromString('0x164F81F81ea3b8505F330D112779763Fa5FDDD5a')
+export const PORTFOLIO_2_ADDRESS = Address.fromString('0xad2009019B94E3E66028361c84539af601f1937D')
 export const TOKEN_IN = Address.fromString('0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
 export const DEFAULT_TOKEN_IN = BigInt.fromI64(10 ** 18)
 
@@ -185,6 +186,33 @@ export function createEntityValuePaidOutEvent(
   event.parameters.push(new ethereum.EventParam('to', ethereum.Value.fromAddress(from)))
   event.parameters.push(new ethereum.EventParam('amountSent', ethereum.Value.fromUnsignedBigInt(amountSent)))
   event.parameters.push(new ethereum.EventParam('amountFee', ethereum.Value.fromUnsignedBigInt(amountFee)))
+
+  return event
+}
+
+export function createEntityDepositEvent(
+  source: Address,
+  portfolio: Address,
+  baseTokenDeposited: u64,
+  sharesReceived: u64,
+  blockNumber: i32 = 1,
+): EntityDeposit {
+  const event = changetype<EntityDeposit>(newMockEvent())
+  event.block.number = BigInt.fromI32(blockNumber)
+
+  event.address = source
+
+  event.parameters = []
+  event.parameters.push(new ethereum.EventParam('portfolio', ethereum.Value.fromAddress(portfolio)))
+  event.parameters.push(
+    new ethereum.EventParam(
+      'baseTokenDeposited',
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromU64(baseTokenDeposited)),
+    ),
+  )
+  event.parameters.push(
+    new ethereum.EventParam('sharesReceived', ethereum.Value.fromUnsignedBigInt(BigInt.fromU64(sharesReceived))),
+  )
 
   return event
 }
