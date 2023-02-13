@@ -174,7 +174,15 @@ describe('Migration Detection Tests', () => {
     assert.booleanEquals(true, entity.initialized)
   })
 
-  // TODO: Add test for events going back in time
+  test(
+    'it should throw exception if event goes back in time',
+    () => {
+      mockBalance(DEFAULT_ORG_ADDRESS, 0)
+      handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 100_000_000, 2))
+      handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 100_000_000, 1)) // <-- This should throw
+    },
+    true, // <-- This expects the code to throw
+  )
 
   describe('Transfer events', () => {
     beforeEach(() => {
