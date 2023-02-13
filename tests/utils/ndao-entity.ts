@@ -4,6 +4,7 @@ import {
   EntityDonationReceived,
   EntityValueTransferred,
   EntityBalanceCorrected,
+  EntityValuePaidOut,
 } from '../../generated/templates/NdaoEntity/NdaoEntity'
 import { createMockedFunction, newMockEvent } from 'matchstick-as'
 
@@ -12,6 +13,8 @@ export const DEFAULT_ENTITY_ADDRESS = Address.fromString('0xDf6b465463eA501cAccB
 export const DEFAULT_FUND_ADDRESS = Address.fromString('0x9f2E8FAC6dec33233d8864b48319032a753151B7')
 export const DEFAULT_ORG_ADDRESS = DEFAULT_ENTITY_ADDRESS
 export const DEFAULT_ORG2_ADDRESS = Address.fromString('0x52CD08D2E2BBB0623515A0b61fB7890cf106b19E')
+
+export const EXTERNAL_ADDRESS = Address.fromString('0x159aeBc6CDE21B5509eD6C96F02F951D696E2ca5')
 
 export const TOKEN_IN = Address.fromString('0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
 export const DEFAULT_TOKEN_IN = BigInt.fromI64(10 ** 18)
@@ -140,16 +143,48 @@ export function createEntityBalanceCorrectedEvent(
   newBalance: u64,
   blockNumber: i32 = 1,
 ): EntityBalanceCorrected {
-  const donationEvent = changetype<EntityBalanceCorrected>(newMockEvent())
-  donationEvent.block.number = BigInt.fromI32(blockNumber)
+  const event = changetype<EntityBalanceCorrected>(newMockEvent())
+  event.block.number = BigInt.fromI32(blockNumber)
 
-  donationEvent.address = entity
+  event.address = entity
 
-  donationEvent.parameters = []
-  donationEvent.parameters.push(new ethereum.EventParam('entity', ethereum.Value.fromAddress(entity)))
-  donationEvent.parameters.push(
+  event.parameters = []
+  event.parameters.push(new ethereum.EventParam('entity', ethereum.Value.fromAddress(entity)))
+  event.parameters.push(
     new ethereum.EventParam('newBalance', ethereum.Value.fromUnsignedBigInt(BigInt.fromU64(newBalance))),
   )
 
-  return donationEvent
+  return event
+}
+
+export function createDefaultValuePaidOutEvent(
+  from: Address,
+  to: Address,
+  amountSent: u64,
+  blockNumber: i32 = 1,
+): EntityValuePaidOut {
+  const amountSentBi = BigInt.fromU64(amountSent)
+  const fee = amountSentBi.times(BigInt.fromI32(5)).div(BigInt.fromI32(1000)) // 0.5% fee
+  return createEntityValuePaidOutEvent(from, to, amountSentBi, fee, blockNumber)
+}
+
+export function createEntityValuePaidOutEvent(
+  from: Address,
+  to: Address,
+  amountSent: BigInt,
+  amountFee: BigInt,
+  blockNumber: i32 = 1,
+): EntityValuePaidOut {
+  const event = changetype<EntityValuePaidOut>(newMockEvent())
+  event.block.number = BigInt.fromI32(blockNumber)
+
+  event.address = from
+
+  event.parameters = []
+  event.parameters.push(new ethereum.EventParam('from', ethereum.Value.fromAddress(from)))
+  event.parameters.push(new ethereum.EventParam('to', ethereum.Value.fromAddress(from)))
+  event.parameters.push(new ethereum.EventParam('amountSent', ethereum.Value.fromUnsignedBigInt(amountSent)))
+  event.parameters.push(new ethereum.EventParam('amountFee', ethereum.Value.fromUnsignedBigInt(amountFee)))
+
+  return event
 }

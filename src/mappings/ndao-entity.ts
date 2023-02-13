@@ -2,6 +2,7 @@ import {
   EntityBalanceCorrected,
   EntityBalanceReconciled,
   EntityDonationReceived,
+  EntityValuePaidOut,
   EntityValueTransferred,
 } from '../../generated/templates/NdaoEntity/NdaoEntity'
 import { Address, BigInt, ethereum, log } from '@graphprotocol/graph-ts'
@@ -57,10 +58,8 @@ export function handleEntityValueTransferred(event: EntityValueTransferred): voi
   target.recognizedUsdcBalance = targetContract.balance()
 
   // Update values relevant to the type of transfer that was executed
-  //log.info('Source type: {}, target type: {}', [source.entityType, target.entityType])
   const isGrantTransfer = source.entityType == FUND_ENTITY_TYPE && target.entityType == ORG_ENTITY_TYPE
   if (isGrantTransfer) {
-    //log.info('Grant transfer detected', [])
     source.totalUsdcGrantedOut = source.totalUsdcGrantedOut.plus(netAmount)
     source.totalUsdcGrantedOutFees = source.totalUsdcGrantedOutFees.plus(fees)
 
@@ -72,7 +71,6 @@ export function handleEntityValueTransferred(event: EntityValueTransferred): voi
     target.totalUsdcContributionFees = target.totalUsdcContributionFees.plus(fees)
     target.totalUsdcReceivedFees = target.totalUsdcReceivedFees.plus(fees)
   } else {
-    //log.info('Normal transfer detected', [])
     source.totalUsdcTransferredOut = source.totalUsdcTransferredOut.plus(netAmount)
     source.totalUsdcTransferredOutFees = source.totalUsdcTransferredOutFees.plus(fees)
 
@@ -105,5 +103,24 @@ export function handleEntityBalanceCorrected(event: EntityBalanceCorrected): voi
   entity.recognizedUsdcBalance = contract.balance()
 
   // Save the entity
+  entity.save()
+}
+
+export function handleEntityValuePaidOut(event: EntityValuePaidOut): void {
+  // Fetch entity and ensure it exists
+  const entity = loadNdaoEntityOrThrow(event.address)
+
+  // Run v1 migration reconciliation logic
+  const negativeValuePaidOut = event.params.amountSent.times(BigInt.fromI32(-1))
+  reconcileV1Migration(entity, negativeValuePaidOut, event)
+
+  // Update entity values
+  const contract = NdaoEntityContract.bind(event.address)
+  entity.recognizedUsdcBalance = contract.balance()
+
+  const netValuePaidOut = event.params.amountSent.minus(event.params.amountFee)
+  entity.totalUsdcPaidOut = entity.totalUsdcPaidOut.plus(netValuePaidOut)
+  entity.totalUsdcPaidOutFees = entity.totalUsdcPaidOutFees.plus(event.params.amountFee)
+
   entity.save()
 }
