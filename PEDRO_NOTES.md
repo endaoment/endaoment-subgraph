@@ -2,32 +2,32 @@
 Follow [here](https://thegraph.com/docs/en/developing/creating-a-subgraph/)
 
 ## Methods that change balance in the contracts
-- `_donateWithFeeMultiplier` [OK]
+- `_donateWithFeeMultiplier` 
   - **(+)** Increase balance
-  - Emits `EntityDonationReceived` 
-- `_swapAndDonateWithFeeMultiplier` [OK]
+  - Emits `EntityDonationReceived` [OK]
+- `_swapAndDonateWithFeeMultiplier` 
   - **(+)** Increase balance
-  - Emits `EntityDonationReceived`
-- `_transferWithFeeMultiplier`
+  - Emits `EntityDonationReceived` [OK]
+- `_transferWithFeeMultiplier` 
   - **(-)** Decrease balance
-  - Emits `EntityValueTransferred`
+  - Emits `EntityValueTransferred` [OK]
 - `receiveTransfer`
   - **(+)** Increase balance
-  - **Does not emit events**
+  - **Does not emit events** [OK]
 - `portfolioDeposit`
   - **(-)** Decrease balance
-  - Emits `EntityDeposit`
+  - Emits `EntityDeposit` 
 - `portfolioRedeem`
   - **(+)** Increase balance
   - Emits `EntityRedeem`
-- `reconcileBalance`
+- `reconcileBalance` 
   - **(+)** Increase balance
-    - Emits `EntityBalanceReconciled`
+    - Emits `EntityBalanceReconciled` [OK]
   - **(-)** Decrease balance
-    - Emits `EntityBalanceCorrected`
+    - Emits `EntityBalanceCorrected` [OK]
 - `swapAndReconcileBalance`
   - **(+)** Increase balance
-  - Emits `EntityBalanceReconciled`
+  - Emits `EntityBalanceReconciled` [OK]
 - `_payoutWithFeeMultiplier`
   - **(-)** Decrease balance
   - Emits `EntityValuePaidOut`
