@@ -127,7 +127,11 @@ type NdaoEntity @entity {
 
 "A position taken by an Endaoment entity in a portfolio approved by Endaoment"
 type PortfolioPosition @entity {
-  "Id of the position, which is a concatenation of the portfolio address and the entity address."
+  """
+  Id of the position, which is a concatenation of the portfolio address and the entity address.
+
+  Format: <0xPortfolio_address>|<0xEntity_address>
+  """
   id: ID!
 
   "Address of the entity that owns this position."

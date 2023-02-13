@@ -11,6 +11,7 @@ import { NdaoEntity as NdaoEntityContract } from '../../generated/templates/Ndao
 import { reconcileV1Migration } from '../utils/v1-migration-reconciliation'
 import { loadNdaoEntityOrThrow } from '../utils/ndao-entity-utils'
 import { FUND_ENTITY_TYPE, ORG_ENTITY_TYPE } from '../utils/on-chain-entity-type'
+import { PortfolioPosition } from '../../generated/schema'
 
 function registerDonation(event: ethereum.Event, usdcDonated: BigInt, fee: BigInt): void {
   // Fetch entity and ensure it exists
@@ -130,6 +131,17 @@ export function handleEntityDeposit(event: EntityDeposit): void {
   // Fetch entity and ensure it exists
   const entity = loadNdaoEntityOrThrow(event.address)
 
+  // Fetch position or create it if it doesn't exist
+  const positionId = `${event.params.portfolio.toHex()}|${event.address.toHex()}`
+  let position = PortfolioPosition.load(positionId)
+  if (position == null) {
+    position = new PortfolioPosition(positionId)
+    position.entity = entity.id
+    position.portfolio = event.params.portfolio
+    position.shares = BigInt.fromI32(0)
+    position.investedUsdc = BigInt.fromI32(0)
+  }
+
   // Run v1 migration reconciliation logic
   const negativeDepositAmount = event.params.baseTokenDeposited.times(BigInt.fromI32(-1))
   reconcileV1Migration(entity, negativeDepositAmount, event)
@@ -137,8 +149,12 @@ export function handleEntityDeposit(event: EntityDeposit): void {
   // Update entity values
   const contract = NdaoEntityContract.bind(event.address)
   entity.recognizedUsdcBalance = contract.balance()
+  entity.investedUsdc = entity.investedUsdc.plus(event.params.baseTokenDeposited)
 
-  // TODO: Implement updates here
+  // Update portfolio position values
+  position.shares = position.shares.plus(event.params.sharesReceived)
+  position.investedUsdc = position.investedUsdc.plus(event.params.baseTokenDeposited)
 
   entity.save()
+  position.save()
 }
