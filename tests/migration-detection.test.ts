@@ -15,6 +15,7 @@ import {
   createDefaultBalanceReconciledEvent,
   createEntityDepositEvent,
   PORTFOLIO_1_ADDRESS,
+  createEntityRedeemEvent,
 } from './utils/ndao-entity'
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { EntityDonationReceived } from '../generated/templates/NdaoEntity/NdaoEntity'
@@ -25,6 +26,7 @@ import {
   handleEntityBalanceReconciled,
   handleEntityDeposit,
   handleEntityDonationReceived,
+  handleEntityRedeem,
   handleEntityValuePaidOut,
   handleEntityValueTransferred,
 } from '../src/mappings/ndao-entity'
@@ -651,6 +653,55 @@ describe('Migration Detection Tests', () => {
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferInFees)
     assert.bigIntEquals(BigInt.fromU64(investedAmount), entity.totalUsdcMigrated)
     assert.bigIntEquals(BigInt.fromU64(149_250_000 + investedAmount), entity.totalUsdcReceived)
+    assert.bigIntEquals(BigInt.fromI32(750_000), entity.totalUsdcReceivedFees)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOut)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOutFees)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOut)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOutFees)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOut)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
+    assert.booleanEquals(true, entity.initialized)
+  })
+
+  test('it should correctly index redeem event from an entity with V1 Assets (Migrated Balance Redeemed)', () => {
+    // ------ Arrange ------
+    const investedAmount: u64 = 400_000_000
+    const shares: u64 = investedAmount * 10
+
+    // ------ Act -------
+    // Block 1:
+    // - 1 DEPOSIT for 400 USD
+    // - 1 REDEEM for 400 USD
+    // - V1 Migrated Assets = 400 USD
+    // - Balance at the end of block: 400 USD
+    mockBalance(DEFAULT_ORG_ADDRESS, investedAmount)
+    handleEntityDeposit(createEntityDepositEvent(DEFAULT_ENTITY_ADDRESS, PORTFOLIO_1_ADDRESS, investedAmount, shares))
+    handleEntityRedeem(createEntityRedeemEvent(DEFAULT_ENTITY_ADDRESS, PORTFOLIO_1_ADDRESS, shares, investedAmount))
+
+    // Block 2:
+    // - 1 Donation of 150 USD.
+    // - Fees = 0.75 USD (0.5%)
+    // - Balance at the end of block: 549.25 USD
+    const newBalance = 149_250_000 + investedAmount
+    mockBalance(DEFAULT_ORG_ADDRESS, newBalance)
+    handleEntityDonationReceived(createDefaultDonationEvent(DEFAULT_ORG_ADDRESS, 150_000_000, 2))
+    const entity = NdaoEntity.load(DEFAULT_ORG_ADDRESS)
+
+    // ------ Assert ------
+    if (!entity) throw new Error('Entity not found in store')
+
+    assert.bigIntEquals(BigInt.fromU64(newBalance), entity.recognizedUsdcBalance)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
+    assert.bigIntEquals(BigInt.fromI32(149_250_000), entity.totalUsdcDonationsReceived)
+    assert.bigIntEquals(BigInt.fromI32(750_000), entity.totalUsdcDonationFees)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantInFees)
+    assert.bigIntEquals(BigInt.fromI32(149_250_000), entity.totalUsdcContributionsReceived)
+    assert.bigIntEquals(BigInt.fromI32(750_000), entity.totalUsdcContributionFees)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersReceived)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferInFees)
+    assert.bigIntEquals(BigInt.fromI32(400_000_000), entity.totalUsdcMigrated)
+    assert.bigIntEquals(BigInt.fromI32(149_250_000 + 400_000_000), entity.totalUsdcReceived)
     assert.bigIntEquals(BigInt.fromI32(750_000), entity.totalUsdcReceivedFees)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOut)
     assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOutFees)

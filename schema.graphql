@@ -9,13 +9,6 @@ enum EntityType {
   Unknown
 }
 
-type ExampleEntity @entity {
-  id: Bytes!
-  count: BigInt!
-  user: Bytes! # address
-  newAuthority: Bytes! # address
-}
-
 "An entity that is part of the Endaoment protocol."
 type NdaoEntity @entity {
   "Contract address of the entity."

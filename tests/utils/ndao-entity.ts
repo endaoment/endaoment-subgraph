@@ -64,8 +64,8 @@ export function createEntityDonationReceivedEvent(
   return event
 }
 
-export function mockBalance(address: Address, balance: i32): void {
-  const ethValues: ethereum.Value[] = [ethereum.Value.fromI32(balance)]
+export function mockBalance(address: Address, balance: u64): void {
+  const ethValues: ethereum.Value[] = [ethereum.Value.fromUnsignedBigInt(BigInt.fromU64(balance))]
   createMockedFunction(address, 'balance', 'balance():(uint256)').returns(
     // @ts-ignore - Ignore error due to graph-ts mismatch
     ethValues,

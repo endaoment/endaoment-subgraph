@@ -559,7 +559,7 @@ describe('NdaoEntity Tests', () => {
       assert.bigIntEquals(BigInt.fromU64(investedAmount1 + investedAmount2), position1.investedUsdc)
     })
 
-    test('it should correctly index multiple portfolio deposits to the same portfolio', () => {
+    test('it should correctly index a full redemption', () => {
       // ------ Arrange -------
       const investedAmount: u64 = 400_000_000
       const shares: u64 = investedAmount * 10
