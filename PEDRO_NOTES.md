@@ -16,10 +16,10 @@ Follow [here](https://thegraph.com/docs/en/developing/creating-a-subgraph/)
   - **Does not emit events** [OK]
 - `portfolioDeposit`
   - **(-)** Decrease balance
-  - Emits `EntityDeposit` 
+  - Emits `EntityDeposit` [OK]
 - `portfolioRedeem`
   - **(+)** Increase balance
-  - Emits `EntityRedeem`
+  - Emits `EntityRedeem` [OK]
 - `reconcileBalance` 
   - **(+)** Increase balance
     - Emits `EntityBalanceReconciled` [OK]
@@ -34,25 +34,25 @@ Follow [here](https://thegraph.com/docs/en/developing/creating-a-subgraph/)
 ## Todo:
 
 ### Org Indexed Data
-- Org Address
-- Org EIN
-- Org Manager
-- Total Usdc Donated (optional)
-- Total Usdc Granted (optional)
-- Total Usdc paid out (optional)
-- Current Usdc Balance (optional)
-- Unreconciled ETH
+- Org Address [OK]
+- Org EIN [OK]
+- Org Manager [OK]
+- Total Usdc Donated [OK]
+- Total Usdc Granted [OK]
+- Total Usdc paid out [OK]
+- Current Usdc Balance [OK]
+- Unreconciled ETH (IMPLEMENT)
 
 ## Fund Indexed Data
 
-- Fund Address
-- Fund manager
-- Total Usdc Donated (optional)
-- Total Usdc granted (optional)
-- Current Usdc Balance (optional)
-- Unreconciled ETH
+- Fund Address [OK]
+- Fund manager [OK]
+- Total Usdc Donated [OK]
+- Total Usdc granted [OK]
+- Current Usdc Balance [OK]
+- Unreconciled ETH (IMPLEMENT)
 
-## Permission List  (Optional)
+## Permission List (IMPLEMENT)
 - Who is privileged? (optional)
 - Who has permission to call what? (optional)
 
