@@ -15,6 +15,7 @@ import {
   createEntityDepositEvent,
   PORTFOLIO_1_ADDRESS,
   PORTFOLIO_2_ADDRESS,
+  createEntityRedeemEvent,
 } from './utils/ndao-entity'
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { handleEntityDeployed } from '../src/mappings/org-fund-factory'
@@ -25,6 +26,7 @@ import {
   handleEntityBalanceReconciled,
   handleEntityDeposit,
   handleEntityDonationReceived,
+  handleEntityRedeem,
   handleEntityValuePaidOut,
   handleEntityValueTransferred,
 } from '../src/mappings/ndao-entity'
@@ -556,5 +558,49 @@ describe('NdaoEntity Tests', () => {
       assert.bigIntEquals(BigInt.fromU64(shares1 + shares2), position1.shares)
       assert.bigIntEquals(BigInt.fromU64(investedAmount1 + investedAmount2), position1.investedUsdc)
     })
+
+    test('it should correctly index multiple portfolio deposits to the same portfolio', () => {
+      // ------ Arrange -------
+      const investedAmount: u64 = 400_000_000
+      const shares: u64 = investedAmount * 10
+
+      // ------ Act -------
+      mockBalance(DEFAULT_ENTITY_ADDRESS, 400_000_000)
+      handleEntityDeposit(createEntityDepositEvent(DEFAULT_ENTITY_ADDRESS, PORTFOLIO_1_ADDRESS, investedAmount, shares))
+      handleEntityRedeem(createEntityRedeemEvent(DEFAULT_ENTITY_ADDRESS, PORTFOLIO_1_ADDRESS, shares, investedAmount))
+
+      // ------ Assert ------
+      const entity = NdaoEntity.load(DEFAULT_ENTITY_ADDRESS)
+      if (!entity) throw new Error('Entity not found in store')
+
+      assert.bigIntEquals(BigInt.fromI32(400_000_000), entity.recognizedUsdcBalance)
+      assert.bigIntEquals(BigInt.fromU64(0), entity.investedUsdc)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantInFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionsReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferInFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcMigrated)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceived)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceivedFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOutFees)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOut)
+      assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
+
+      const position = PortfolioPosition.load(`${PORTFOLIO_1_ADDRESS.toHex()}|${DEFAULT_ENTITY_ADDRESS.toHex()}`)
+      if (position) throw new Error('Expected portfolio position to be null')
+    })
+
+    // TODO: it should correctly index a partial redemption (50%)
+
+    // TODO: it should correctly index a partial redemption (25%)
+
+    // TODO: it should correctly index a partial redemption (10%)
   })
 })

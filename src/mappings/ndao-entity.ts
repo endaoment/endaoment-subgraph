@@ -7,7 +7,7 @@ import {
   EntityValuePaidOut,
   EntityValueTransferred,
 } from '../../generated/templates/NdaoEntity/NdaoEntity'
-import { Address, BigInt, ethereum, log } from '@graphprotocol/graph-ts'
+import { Address, BigInt, ethereum, log, store } from '@graphprotocol/graph-ts'
 import { NdaoEntity as NdaoEntityContract } from '../../generated/templates/NdaoEntity/NdaoEntity'
 import { reconcileV1Migration } from '../utils/v1-migration-reconciliation'
 import { loadNdaoEntityOrThrow } from '../utils/ndao-entity-utils'
@@ -189,6 +189,14 @@ export function handleEntityRedeem(event: EntityRedeem): void {
   position.shares = position.shares.minus(event.params.sharesRedeemed)
   position.investedUsdc = position.investedUsdc.minus(proportionalRedemption)
 
+  // Save entity
   entity.save()
-  position.save()
+
+  // If position is empty, remove it from the database to prevent polluting the Positions array of a given entity.
+  // Save otherwise.
+  if (position.shares.equals(BigInt.zero()) && position.investedUsdc.equals(BigInt.zero())) {
+    store.remove('PortfolioPosition', positionId)
+  } else {
+    position.save()
+  }
 }
