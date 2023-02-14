@@ -3,6 +3,7 @@ import {
   EntityBalanceReconciled,
   EntityDeposit,
   EntityDonationReceived,
+  EntityRedeem,
   EntityValuePaidOut,
   EntityValueTransferred,
 } from '../../generated/templates/NdaoEntity/NdaoEntity'
@@ -154,6 +155,39 @@ export function handleEntityDeposit(event: EntityDeposit): void {
   // Update portfolio position values
   position.shares = position.shares.plus(event.params.sharesReceived)
   position.investedUsdc = position.investedUsdc.plus(event.params.baseTokenDeposited)
+
+  entity.save()
+  position.save()
+}
+
+export function handleEntityRedeem(event: EntityRedeem): void {
+  // Fetch entity and ensure it exists
+  const entity = loadNdaoEntityOrThrow(event.address)
+
+  // Fetch position
+  const positionId = `${event.params.portfolio.toHex()}|${event.address.toHex()}`
+  let position = PortfolioPosition.load(positionId)
+
+  // Unlikely the position would ever be null at this point since Endaoment does not support short-selling Portfolio
+  // shares, but if one day we do, we don't want to hang the subgraph and prefer ignoring this unsupported event.
+  if (position == null) {
+    return
+  }
+
+  // Run v1 migration reconciliation logic
+  reconcileV1Migration(entity, event.params.baseTokenReceived, event)
+
+  // Calculate proportional invested USDC amount to redeem
+  const proportionalRedemption = event.params.sharesRedeemed.times(position.investedUsdc).div(position.shares)
+
+  // Update entity values
+  const contract = NdaoEntityContract.bind(event.address)
+  entity.recognizedUsdcBalance = contract.balance()
+  entity.investedUsdc = entity.investedUsdc.minus(proportionalRedemption)
+
+  // Update portfolio position values
+  position.shares = position.shares.minus(event.params.sharesRedeemed)
+  position.investedUsdc = position.investedUsdc.minus(proportionalRedemption)
 
   entity.save()
   position.save()
