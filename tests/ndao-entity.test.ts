@@ -597,7 +597,6 @@ describe('NdaoEntity Tests', () => {
       if (position) throw new Error('Expected portfolio position to be null')
     })
 
-    // TODO: it should correctly index a partial redemption (50%)
     test('it should correctly index a partial redemption (50%)', () => {
       // ------ Arrange -------
       const investedAmount: u64 = 400_000_000
@@ -688,7 +687,6 @@ describe('NdaoEntity Tests', () => {
       assert.bigIntEquals(BigInt.fromU64((investedAmount * 3) / 4), position.investedUsdc)
     })
 
-    // TODO: it should correctly index a partial redemption (10%)
     test('it should correctly index a partial redemption (10%)', () => {
       // ------ Arrange -------
       const investedAmount: u64 = 400_000_000
