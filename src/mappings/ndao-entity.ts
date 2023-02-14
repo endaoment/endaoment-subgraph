@@ -1,15 +1,18 @@
 import {
   EntityBalanceCorrected,
   EntityBalanceReconciled,
+  EntityDeposit,
   EntityDonationReceived,
+  EntityRedeem,
   EntityValuePaidOut,
   EntityValueTransferred,
 } from '../../generated/templates/NdaoEntity/NdaoEntity'
-import { Address, BigInt, ethereum, log } from '@graphprotocol/graph-ts'
+import { Address, BigInt, ethereum, log, store } from '@graphprotocol/graph-ts'
 import { NdaoEntity as NdaoEntityContract } from '../../generated/templates/NdaoEntity/NdaoEntity'
 import { reconcileV1Migration } from '../utils/v1-migration-reconciliation'
 import { loadNdaoEntityOrThrow } from '../utils/ndao-entity-utils'
 import { FUND_ENTITY_TYPE, ORG_ENTITY_TYPE } from '../utils/on-chain-entity-type'
+import { PortfolioPosition } from '../../generated/schema'
 
 function registerDonation(event: ethereum.Event, usdcDonated: BigInt, fee: BigInt): void {
   // Fetch entity and ensure it exists
@@ -123,4 +126,77 @@ export function handleEntityValuePaidOut(event: EntityValuePaidOut): void {
   entity.totalUsdcPaidOutFees = entity.totalUsdcPaidOutFees.plus(event.params.amountFee)
 
   entity.save()
+}
+
+export function handleEntityDeposit(event: EntityDeposit): void {
+  // Fetch entity and ensure it exists
+  const entity = loadNdaoEntityOrThrow(event.address)
+
+  // Fetch position or create it if it doesn't exist
+  const positionId = `${event.params.portfolio.toHex()}|${event.address.toHex()}`
+  let position = PortfolioPosition.load(positionId)
+  if (position == null) {
+    position = new PortfolioPosition(positionId)
+    position.entity = entity.id
+    position.portfolio = event.params.portfolio
+    position.shares = BigInt.zero()
+    position.investedUsdc = BigInt.zero()
+  }
+
+  // Run v1 migration reconciliation logic
+  const negativeDepositAmount = event.params.baseTokenDeposited.times(BigInt.fromI32(-1))
+  reconcileV1Migration(entity, negativeDepositAmount, event)
+
+  // Update entity values
+  const contract = NdaoEntityContract.bind(event.address)
+  entity.recognizedUsdcBalance = contract.balance()
+  entity.investedUsdc = entity.investedUsdc.plus(event.params.baseTokenDeposited)
+
+  // Update portfolio position values
+  position.shares = position.shares.plus(event.params.sharesReceived)
+  position.investedUsdc = position.investedUsdc.plus(event.params.baseTokenDeposited)
+
+  entity.save()
+  position.save()
+}
+
+export function handleEntityRedeem(event: EntityRedeem): void {
+  // Fetch entity and ensure it exists
+  const entity = loadNdaoEntityOrThrow(event.address)
+
+  // Fetch position
+  const positionId = `${event.params.portfolio.toHex()}|${event.address.toHex()}`
+  let position = PortfolioPosition.load(positionId)
+
+  // Unlikely the position would ever be null at this point since Endaoment does not support short-selling Portfolio
+  // shares, but if one day we do, we don't want to hang the subgraph and prefer ignoring this unsupported event.
+  if (position == null) {
+    return
+  }
+
+  // Run v1 migration reconciliation logic
+  reconcileV1Migration(entity, event.params.baseTokenReceived, event)
+
+  // Calculate proportional invested USDC amount to redeem
+  const proportionalRedemption = event.params.sharesRedeemed.times(position.investedUsdc).div(position.shares)
+
+  // Update entity values
+  const contract = NdaoEntityContract.bind(event.address)
+  entity.recognizedUsdcBalance = contract.balance()
+  entity.investedUsdc = entity.investedUsdc.minus(proportionalRedemption)
+
+  // Update portfolio position values
+  position.shares = position.shares.minus(event.params.sharesRedeemed)
+  position.investedUsdc = position.investedUsdc.minus(proportionalRedemption)
+
+  // Save entity
+  entity.save()
+
+  // If position is empty, remove it from the database to prevent polluting the Positions array of a given entity.
+  // Save otherwise.
+  if (position.shares.equals(BigInt.zero()) && position.investedUsdc.equals(BigInt.zero())) {
+    store.remove('PortfolioPosition', positionId)
+  } else {
+    position.save()
+  }
 }
