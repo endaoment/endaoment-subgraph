@@ -140,6 +140,40 @@ type PortfolioPosition @entity {
   investedUsdc: BigInt!
 }
 
+type Registry @entity {
+  id: ID!
+
+  "Address of the Endaoment Registry contract."
+  address: Bytes!
+
+  "Owner of the Endaoment Registry contract."
+  owner: Bytes!
+
+  "Address of the Entity Factories approved on the registry."
+  approvedFactories: [Bytes!]!
+
+  "Address of the swap wrappers approved on the registry."
+  swapWrappers: [Bytes!]!
+
+  "Signatures that can be invoked by address."
+  publicCapabilities: [Bytes!]!
+
+  # authorityUsers
+}
+
+"Address that has a special authority in the Endaoment protocol."
+type AuthorityUser @entity {
+  "Address of the authority user."
+  id: Bytes!
+
+  "Roles of the authority user."
+  roles: [Role!]!
+}
+
+type Role @entity {
+  id: ID!
+}
+
 """
 Helper metadata entity to track migration information of an NdaoEntity. Not meant to be queried directly, as the
 information here only useful for internal indexing logic. As soon as an entity is fully initialized, this entity
