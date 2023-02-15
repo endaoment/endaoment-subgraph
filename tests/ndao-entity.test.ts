@@ -16,6 +16,7 @@ import {
   PORTFOLIO_1_ADDRESS,
   PORTFOLIO_2_ADDRESS,
   createEntityRedeemEvent,
+  createEntityEthReceivedEvent,
 } from './utils/ndao-entity'
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { handleEntityDeployed } from '../src/mappings/org-fund-factory'
@@ -26,6 +27,7 @@ import {
   handleEntityBalanceReconciled,
   handleEntityDeposit,
   handleEntityDonationReceived,
+  handleEntityEthReceived,
   handleEntityRedeem,
   handleEntityValuePaidOut,
   handleEntityValueTransferred,
@@ -731,5 +733,39 @@ describe('NdaoEntity Tests', () => {
       assert.bigIntEquals(BigInt.fromU64((shares * 9) / 10), position.shares)
       assert.bigIntEquals(BigInt.fromU64((investedAmount * 9) / 10), position.investedUsdc)
     })
+  })
+
+  test('it should correctly index Native ETH Contributions', () => {
+    // ------ Arrange -------
+    const ethIn: u64 = 10 ** 18
+
+    // ------ Act -------
+    mockBalance(DEFAULT_ENTITY_ADDRESS, 0)
+    handleEntityEthReceived(createEntityEthReceivedEvent(DEFAULT_ENTITY_ADDRESS, EXTERNAL_ADDRESS, ethIn))
+
+    // ------ Assert ------
+    const entity = NdaoEntity.load(DEFAULT_ENTITY_ADDRESS)
+    if (!entity) throw new Error('Entity not found in store')
+
+    assert.bigIntEquals(BigInt.fromI32(0), entity.recognizedUsdcBalance)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.investedUsdc)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationsReceived)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcDonationFees)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantsReceived)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantInFees)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionsReceived)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcContributionFees)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransfersReceived)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferInFees)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcMigrated)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceived)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcReceivedFees)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOut)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcGrantedOutFees)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOut)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcTransferredOutFees)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOut)
+    assert.bigIntEquals(BigInt.fromI32(0), entity.totalUsdcPaidOutFees)
+    assert.bigIntEquals(BigInt.fromU64(ethIn), entity.totalEthReceived)
   })
 })

@@ -3,6 +3,7 @@ import {
   EntityBalanceReconciled,
   EntityDeposit,
   EntityDonationReceived,
+  EntityEthReceived,
   EntityRedeem,
   EntityValuePaidOut,
   EntityValueTransferred,
@@ -199,4 +200,18 @@ export function handleEntityRedeem(event: EntityRedeem): void {
   } else {
     position.save()
   }
+}
+
+export function handleEntityEthReceived(event: EntityEthReceived): void {
+  // Fetch entity and ensure it exists
+  const entity = loadNdaoEntityOrThrow(event.address)
+
+  // Run v1 migration reconciliation logic
+  reconcileV1Migration(entity, BigInt.zero(), event)
+
+  // Update entity values. Ideally, we would like to query the outstanding ETH balance of the entity, but that is not
+  // currently supported by The Graph. See this discord message for more details:
+  // https://discord.com/channels/438038660412342282/438070183794573313/1065286527858516018
+  entity.totalEthReceived = entity.totalEthReceived.plus(event.params.amount)
+  entity.save()
 }

@@ -7,6 +7,7 @@ import {
   EntityValuePaidOut,
   EntityDeposit,
   EntityRedeem,
+  EntityEthReceived,
 } from '../../generated/templates/NdaoEntity/NdaoEntity'
 import { createMockedFunction, newMockEvent } from 'matchstick-as'
 
@@ -238,6 +239,24 @@ export function createEntityRedeemEvent(
   event.parameters.push(
     new ethereum.EventParam('baseTokenReceived', ethereum.Value.fromUnsignedBigInt(BigInt.fromU64(baseTokenReceived))),
   )
+
+  return event
+}
+
+export function createEntityEthReceivedEvent(
+  source: Address,
+  sender: Address,
+  amount: u64,
+  blockNumber: i32 = 1,
+): EntityEthReceived {
+  const event = changetype<EntityEthReceived>(newMockEvent())
+  event.block.number = BigInt.fromI32(blockNumber)
+
+  event.address = source
+
+  event.parameters = []
+  event.parameters.push(new ethereum.EventParam('sender', ethereum.Value.fromAddress(sender)))
+  event.parameters.push(new ethereum.EventParam('amount', ethereum.Value.fromUnsignedBigInt(BigInt.fromU64(amount))))
 
   return event
 }

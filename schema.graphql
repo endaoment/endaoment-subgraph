@@ -26,8 +26,8 @@ type NdaoEntity @entity {
   "USDC Balance that has been formally recognized by the entity."
   recognizedUsdcBalance: BigInt!
 
-  # Amount of USDC that is yet to be formally recognized by the entity
-  # unrecognizedUsdcBalance: BigInt! # TODO: See if this field will work
+  "Total amount of native ETH that was transferred to the entity."
+  totalEthReceived: BigInt!
 
   """
   Amount USDC that has been donated to this entity, after fees. Any recognized inbound asset transfer from addresses

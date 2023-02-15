@@ -88,6 +88,15 @@ export class NdaoEntity extends Entity {
     this.set("recognizedUsdcBalance", Value.fromBigInt(value));
   }
 
+  get totalEthReceived(): BigInt {
+    let value = this.get("totalEthReceived");
+    return value!.toBigInt();
+  }
+
+  set totalEthReceived(value: BigInt) {
+    this.set("totalEthReceived", Value.fromBigInt(value));
+  }
+
   get totalUsdcDonationsReceived(): BigInt {
     let value = this.get("totalUsdcDonationsReceived");
     return value!.toBigInt();
