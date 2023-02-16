@@ -8,16 +8,7 @@ import {
   UserRoleUpdated,
 } from '../../generated/Registry/Registry'
 import { resolveRegistry } from '../utils/registry-utils'
-
-function remove<T>(array: Array<T>, element: T): Array<T> {
-  const toReturn = new Array<T>()
-  for (let i = 0; i < array.length; i++) {
-    if (array[i] != element) {
-      toReturn.push(array[i])
-    }
-  }
-  return toReturn
-}
+import { remove } from '../utils/arrays'
 
 export function handleFactoryApprovalSet(event: FactoryApprovalSet): void {
   const registry = resolveRegistry(event.address)
@@ -47,7 +38,19 @@ export function handleSwapWrapperStatusSet(event: SwapWrapperStatusSet): void {
   registry.save()
 }
 
-export function handlePortfolioStatusSet(event: PortfolioStatusSet): void {}
+export function handlePortfolioStatusSet(event: PortfolioStatusSet): void {
+  const registry = resolveRegistry(event.address)
+
+  if (event.params.isActive) {
+    const array = registry.portfolios
+    array.push(event.params.portfolio)
+    registry.portfolios = array
+  } else {
+    registry.portfolios = remove(registry.portfolios, event.params.portfolio)
+  }
+
+  registry.save()
+}
 
 export function handleOwnershipChanged(event: OwnershipChanged): void {}
 
