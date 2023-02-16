@@ -10,6 +10,7 @@ import {
 import { resolveAuthorityUser, resolveCapability, resolveRegistry, resolveRole } from '../utils/registry-utils'
 import { remove } from '../utils/arrays'
 import { RoleCapability } from '../../generated/schema'
+import { store } from '@graphprotocol/graph-ts'
 
 export function handleFactoryApprovalSet(event: FactoryApprovalSet): void {
   const registry = resolveRegistry(event.address)
@@ -60,18 +61,27 @@ export function handleOwnershipChanged(event: OwnershipChanged): void {
 }
 
 export function handleRoleCapabilityUpdated(event: RoleCapabilityUpdated): void {
-  // Bind capability to the role
+  // Resolve elementary entities.
   const capability = resolveCapability(event.params.target, event.params.functionSig)
   const role = resolveRole(event.params.role)
   const roleCapabilityId = `${role.id}|${capability.id}`
 
-  // If the role capability already exists, return.
   let roleCapability = RoleCapability.load(roleCapabilityId)
+  if (!event.params.enabled) {
+    // If the RoleCapability relationship already exists, and we are disabling it, delete it.
+    if (roleCapability) {
+      store.remove('RoleCapability', roleCapabilityId)
+    }
+
+    return
+  }
+
+  // If the RoleCapability relationship already exists, and we are enabling it again, simply return
   if (roleCapability) {
     return
   }
 
-  // Otherwise, bind capability to the role
+  // Otherwise, bind capability to the role.
   roleCapability = new RoleCapability(roleCapabilityId)
   roleCapability.role = role.id
   roleCapability.capability = capability.id
