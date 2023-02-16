@@ -1,0 +1,7 @@
+query getTop5DeployedOrgs {
+    ndaoEntities (where: { entityType: Org } orderBy: totalUsdcReceived, orderDirection: desc, first: 5) {
+        contractAddress:id
+        ein
+        totalUsdcReceived
+    }
+}

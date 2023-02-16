@@ -1,0 +1,11 @@
+query roles {
+    roles {
+        id
+        capabilities {
+            capability {
+                target
+                signature
+            }
+        }
+    }
+}

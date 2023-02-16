@@ -36,6 +36,7 @@ export function resolveCapability(target: Address, signature: Bytes): Capability
   capability = new Capability(id)
   capability.target = target
   capability.signature = signature
+  capability.isPublic = false
   capability.save()
 
   return capability

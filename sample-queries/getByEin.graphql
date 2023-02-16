@@ -1,0 +1,14 @@
+query getByEin {
+    ndaoEntities (where: { ein: "844661797" }) {
+        contractAddress:id
+        ein
+        totalUsdcReceived
+        entityManager
+        recognizedUsdcBalance
+        totalUsdcDonationsReceived
+        totalUsdcDonationFees
+        totalUsdcGrantsReceived
+        totalUsdcGrantInFees
+        totalUsdcPaidOut
+    }
+}

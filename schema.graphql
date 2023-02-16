@@ -226,7 +226,7 @@ type Capability @entity {
   signature: Bytes!
 
   "Indicates if the capability can be invoked by any address publicly."
-  isPublic: Boolean
+  isPublic: Boolean!
 
   "Roles that can invoke the capability."
   roles: [RoleCapability!]! @derivedFrom(field: "capability")
@@ -250,6 +250,3 @@ type NdaoEntityFirstIndexedBlock @entity {
   # Balance delta due to events emitted in the initial block.
   eventBalanceDelta: BigInt!
 }
-
-# TODO (Later, if time allows): Track permissioned wallets
-# TODO (Later, if time allows): Track unique donors, their total contributions and correlate them to donations

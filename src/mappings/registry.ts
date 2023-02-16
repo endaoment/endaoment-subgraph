@@ -90,10 +90,10 @@ export function handleRoleCapabilityUpdated(event: RoleCapabilityUpdated): void 
 
 export function handleUserRoleUpdated(event: UserRoleUpdated): void {
   // Resolve elementary entities.
-  let authorityUser = resolveAuthorityUser(event.params.user)
+  const authorityUser = resolveAuthorityUser(event.params.user)
   const role = resolveRole(event.params.role)
 
-  const roleUserId = `${authorityUser.id}|${role.id}`
+  const roleUserId = `${authorityUser.id.toHex()}|${role.id}`
   let roleUser = RoleUser.load(roleUserId)
 
   if (!event.params.enabled) {
@@ -117,4 +117,8 @@ export function handleUserRoleUpdated(event: UserRoleUpdated): void {
   roleUser.save()
 }
 
-export function handlePublicCapabilityUpdated(event: PublicCapabilityUpdated): void {}
+export function handlePublicCapabilityUpdated(event: PublicCapabilityUpdated): void {
+  const capability = resolveCapability(event.params.target, event.params.functionSig)
+  capability.isPublic = event.params.enabled
+  capability.save()
+}
