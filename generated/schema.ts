@@ -397,13 +397,13 @@ export class Registry extends Entity {
     this.set("owner", Value.fromBytes(value));
   }
 
-  get approvedFactories(): Array<Bytes> {
-    let value = this.get("approvedFactories");
+  get entityFactories(): Array<Bytes> {
+    let value = this.get("entityFactories");
     return value!.toBytesArray();
   }
 
-  set approvedFactories(value: Array<Bytes>) {
-    this.set("approvedFactories", Value.fromBytesArray(value));
+  set entityFactories(value: Array<Bytes>) {
+    this.set("entityFactories", Value.fromBytesArray(value));
   }
 
   get swapWrappers(): Array<Bytes> {
@@ -413,6 +413,15 @@ export class Registry extends Entity {
 
   set swapWrappers(value: Array<Bytes>) {
     this.set("swapWrappers", Value.fromBytesArray(value));
+  }
+
+  get portfolios(): Array<Bytes> {
+    let value = this.get("portfolios");
+    return value!.toBytesArray();
+  }
+
+  set portfolios(value: Array<Bytes>) {
+    this.set("portfolios", Value.fromBytesArray(value));
   }
 
   get publicCapabilities(): Array<string> {

@@ -149,10 +149,13 @@ type Registry @entity {
   owner: Bytes!
 
   "Address of the Entity Factories approved on the registry."
-  approvedFactories: [Bytes!]!
+  entityFactories: [Bytes!]!
 
   "Address of the swap wrappers approved on the registry."
   swapWrappers: [Bytes!]!
+
+  "Address of the portfolios approved on the registry."
+  portfolios: [Bytes!]!
 
   "Capabilities that can be invoked by any address."
   publicCapabilities: [Capability!]! @derivedFrom(field: "publicOnRegistry")
