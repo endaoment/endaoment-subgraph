@@ -14,6 +14,9 @@ export function resolveRegistry(address: Address): Registry {
   registry = new Registry('1')
   registry.address = address
   registry.owner = contract.owner()
+  registry.swapWrappers = []
+  registry.entityFactories = []
+  registry.portfolios = []
   registry.save()
 
   return registry

@@ -9,13 +9,25 @@ import {
 } from '../../generated/Registry/Registry'
 import { resolveRegistry } from '../utils/registry-utils'
 
+function remove<T>(array: Array<T>, element: T): Array<T> {
+  const toReturn = new Array<T>()
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] != element) {
+      toReturn.push(array[i])
+    }
+  }
+  return toReturn
+}
+
 export function handleFactoryApprovalSet(event: FactoryApprovalSet): void {
   const registry = resolveRegistry(event.address)
 
   if (event.params.isApproved) {
-    registry.entityFactories.push(event.params.factory)
+    const array = registry.entityFactories
+    array.push(event.params.factory)
+    registry.entityFactories = array
   } else {
-    registry.entityFactories = registry.entityFactories.filter((factory) => factory != event.params.factory)
+    registry.entityFactories = remove(registry.entityFactories, event.params.factory)
   }
 
   registry.save()
@@ -25,9 +37,11 @@ export function handleSwapWrapperStatusSet(event: SwapWrapperStatusSet): void {
   const registry = resolveRegistry(event.address)
 
   if (event.params.isSupported) {
-    registry.swapWrappers.push(event.params.swapWrapper)
+    const array = registry.swapWrappers
+    array.push(event.params.swapWrapper)
+    registry.swapWrappers = array
   } else {
-    registry.swapWrappers = registry.swapWrappers.filter((swapWrapper) => swapWrapper != event.params.swapWrapper)
+    registry.swapWrappers = remove(registry.swapWrappers, event.params.swapWrapper)
   }
 
   registry.save()
