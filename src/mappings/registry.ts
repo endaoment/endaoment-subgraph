@@ -7,8 +7,9 @@ import {
   SwapWrapperStatusSet,
   UserRoleUpdated,
 } from '../../generated/Registry/Registry'
-import { resolveCapability, resolveRegistry } from '../utils/registry-utils'
+import { resolveAuthorityUser, resolveCapability, resolveRegistry, resolveRole } from '../utils/registry-utils'
 import { remove } from '../utils/arrays'
+import { RoleCapability } from '../../generated/schema'
 
 export function handleFactoryApprovalSet(event: FactoryApprovalSet): void {
   const registry = resolveRegistry(event.address)
@@ -59,12 +60,22 @@ export function handleOwnershipChanged(event: OwnershipChanged): void {
 }
 
 export function handleRoleCapabilityUpdated(event: RoleCapabilityUpdated): void {
-  const registry = resolveRegistry(event.address)
-  // TODO: Handle capability disabled later and see severed relationships
-
+  // Bind capability to the role
   const capability = resolveCapability(event.params.target, event.params.functionSig)
+  const role = resolveRole(event.params.role)
+  const roleCapabilityId = `${role.id}|${capability.id}`
 
-  registry.save()
+  // If the role capability already exists, return.
+  let roleCapability = RoleCapability.load(roleCapabilityId)
+  if (roleCapability) {
+    return
+  }
+
+  // Otherwise, bind capability to the role
+  roleCapability = new RoleCapability(roleCapabilityId)
+  roleCapability.role = role.id
+  roleCapability.capability = capability.id
+  roleCapability.save()
 }
 
 export function handleUserRoleUpdated(event: UserRoleUpdated): void {}

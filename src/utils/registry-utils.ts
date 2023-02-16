@@ -1,5 +1,5 @@
 import { Address, Bytes } from '@graphprotocol/graph-ts'
-import { Capability, Registry } from '../../generated/schema'
+import { AuthorityUser, Capability, Registry, Role } from '../../generated/schema'
 import { Registry as RegistryContract } from '../../generated/Registry/Registry'
 
 export function resolveRegistry(address: Address): Registry {
@@ -22,8 +22,12 @@ export function resolveRegistry(address: Address): Registry {
   return registry
 }
 
+export function toCapabilityId(target: Address, signature: Bytes): string {
+  return `${target.toHex()}|${signature.toHex()}`
+}
+
 export function resolveCapability(target: Address, signature: Bytes): Capability {
-  const id = `${target.toHex()}|${signature.toHex()}`
+  const id = toCapabilityId(target, signature)
   let capability = Capability.load(id)
   if (capability) {
     return capability
@@ -35,4 +39,29 @@ export function resolveCapability(target: Address, signature: Bytes): Capability
   capability.save()
 
   return capability
+}
+
+export function resolveRole(roleId: number): Role {
+  const rId = roleId.toString()
+  let role = Role.load(rId)
+  if (role) {
+    return role
+  }
+
+  role = new Role(rId)
+  role.save()
+
+  return role
+}
+
+export function resolveAuthorityUser(address: Address): AuthorityUser {
+  let authorityUser = AuthorityUser.load(address)
+  if (authorityUser) {
+    return authorityUser
+  }
+
+  authorityUser = new AuthorityUser(address)
+  authorityUser.save()
+
+  return authorityUser
 }

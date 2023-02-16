@@ -159,9 +159,6 @@ type Registry @entity {
 
   "Capabilities that can be invoked by any address."
   publicCapabilities: [Capability!]! @derivedFrom(field: "publicOnRegistry")
-
-  "Authority users that have special permissions in the Endaoment protocol."
-  authorityUsers: [AuthorityUser!]! @derivedFrom(field: "registry")
 }
 
 "Address that has a special authority in the Endaoment protocol."
@@ -171,9 +168,6 @@ type AuthorityUser @entity {
 
   "Roles of the authority user."
   roles: [RoleUser!]! @derivedFrom(field: "user")
-
-  "Registry that the authority user is associated with."
-  registry: Registry!
 }
 
 "Role assigned to an authority user."
@@ -201,7 +195,7 @@ type Role @entity {
   users: [RoleUser!]! @derivedFrom(field: "role")
 
   "Capabilities of the role."
-  capabilities: [RoleCapability!]!
+  capabilities: [RoleCapability!]! @derivedFrom(field: "role")
 }
 
 "Capability that can be invoked by a role."

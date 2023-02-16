@@ -432,15 +432,6 @@ export class Registry extends Entity {
   set publicCapabilities(value: Array<string>) {
     this.set("publicCapabilities", Value.fromStringArray(value));
   }
-
-  get authorityUsers(): Array<Bytes> {
-    let value = this.get("authorityUsers");
-    return value!.toBytesArray();
-  }
-
-  set authorityUsers(value: Array<Bytes>) {
-    this.set("authorityUsers", Value.fromBytesArray(value));
-  }
 }
 
 export class AuthorityUser extends Entity {
@@ -483,15 +474,6 @@ export class AuthorityUser extends Entity {
 
   set roles(value: Array<Bytes>) {
     this.set("roles", Value.fromBytesArray(value));
-  }
-
-  get registry(): string {
-    let value = this.get("registry");
-    return value!.toString();
-  }
-
-  set registry(value: string) {
-    this.set("registry", Value.fromString(value));
   }
 }
 
