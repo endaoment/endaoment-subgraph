@@ -5,8 +5,18 @@ import { createEntityDeployedEvent } from './utils/org-fund-factory'
 import { OnChainNdaoEntityType } from '../src/utils/on-chain-entity-type'
 import { NdaoEntity, Registry } from '../generated/schema'
 import { mockOrgId } from './utils/ndao-entity'
-import { handleFactoryApprovalSet } from '../src/mappings/registry'
-import { createFactoryApprovalSetEvent, mockOwner, REGISTRY_ADDRESS } from './utils/registry'
+import {
+  handleFactoryApprovalSet,
+  handlePortfolioStatusSet,
+  handleSwapWrapperStatusSet,
+} from '../src/mappings/registry'
+import {
+  createFactoryApprovalSetEvent,
+  createPortfolioStatusSetEvent,
+  createSwapWrapperStatusSetEvent,
+  mockOwner,
+  REGISTRY_ADDRESS,
+} from './utils/registry'
 
 const OWNER = Address.fromString('0x3643c207f8441A1CBf7F35256c6DAE459E6d7bC7')
 
@@ -30,7 +40,7 @@ describe('Registry', () => {
 
     // Assert
     let registry = Registry.load('1')
-    if (!registry) throw new Error('Entity not found in store')
+    if (!registry) throw new Error('Registry not found in store')
 
     assert.i32Equals(1, registry.entityFactories.length)
     assert.bytesEquals(ADDRESS_1, registry.entityFactories[0])
@@ -45,10 +55,80 @@ describe('Registry', () => {
 
     // Assert
     let registry = Registry.load('1')
-    if (!registry) throw new Error('Entity not found in store')
+    if (!registry) throw new Error('Registry not found in store')
 
     assert.i32Equals(2, registry.entityFactories.length)
     assert.bytesEquals(ADDRESS_1, registry.entityFactories[0])
     assert.bytesEquals(ADDRESS_2, registry.entityFactories[1])
+  })
+
+  test('it should register Factory removals', () => {
+    // Act
+    handleFactoryApprovalSet(createFactoryApprovalSetEvent(ADDRESS_1, true))
+    handleFactoryApprovalSet(createFactoryApprovalSetEvent(ADDRESS_2, true))
+    handleFactoryApprovalSet(createFactoryApprovalSetEvent(ADDRESS_1, false))
+
+    // Assert
+    let registry = Registry.load('1')
+    if (!registry) throw new Error('Registry not found in store')
+
+    assert.i32Equals(1, registry.entityFactories.length)
+    assert.bytesEquals(ADDRESS_2, registry.entityFactories[0])
+  })
+
+  test('it should register SwapWrapper approvals', () => {
+    // Act
+    handleSwapWrapperStatusSet(createSwapWrapperStatusSetEvent(ADDRESS_1, true))
+    handleSwapWrapperStatusSet(createSwapWrapperStatusSetEvent(ADDRESS_2, true))
+
+    // Assert
+    let registry = Registry.load('1')
+    if (!registry) throw new Error('Registry not found in store')
+
+    assert.i32Equals(2, registry.swapWrappers.length)
+    assert.bytesEquals(ADDRESS_1, registry.swapWrappers[0])
+    assert.bytesEquals(ADDRESS_2, registry.swapWrappers[1])
+  })
+
+  test('it should register SwapWrapper removals', () => {
+    // Act
+    handleSwapWrapperStatusSet(createSwapWrapperStatusSetEvent(ADDRESS_1, true))
+    handleSwapWrapperStatusSet(createSwapWrapperStatusSetEvent(ADDRESS_2, true))
+    handleSwapWrapperStatusSet(createSwapWrapperStatusSetEvent(ADDRESS_1, false))
+
+    // Assert
+    let registry = Registry.load('1')
+    if (!registry) throw new Error('Registry not found in store')
+
+    assert.i32Equals(1, registry.swapWrappers.length)
+    assert.bytesEquals(ADDRESS_2, registry.swapWrappers[0])
+  })
+
+  test('it should register Portfolio approvals', () => {
+    // Act
+    handlePortfolioStatusSet(createPortfolioStatusSetEvent(ADDRESS_1, true))
+    handlePortfolioStatusSet(createPortfolioStatusSetEvent(ADDRESS_2, true))
+
+    // Assert
+    let registry = Registry.load('1')
+    if (!registry) throw new Error('Registry not found in store')
+
+    assert.i32Equals(2, registry.portfolios.length)
+    assert.bytesEquals(ADDRESS_1, registry.portfolios[0])
+    assert.bytesEquals(ADDRESS_2, registry.portfolios[1])
+  })
+
+  test('it should register Portfolio removals', () => {
+    // Act
+    handlePortfolioStatusSet(createPortfolioStatusSetEvent(ADDRESS_1, true))
+    handlePortfolioStatusSet(createPortfolioStatusSetEvent(ADDRESS_2, true))
+    handlePortfolioStatusSet(createPortfolioStatusSetEvent(ADDRESS_1, false))
+
+    // Assert
+    let registry = Registry.load('1')
+    if (!registry) throw new Error('Registry not found in store')
+
+    assert.i32Equals(1, registry.portfolios.length)
+    assert.bytesEquals(ADDRESS_2, registry.portfolios[0])
   })
 })

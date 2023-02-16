@@ -174,6 +174,7 @@ export function createPortfolioStatusSetEvent(portfolio: Address, isActive: bool
   let portfolioStatusSetEvent = changetype<PortfolioStatusSet>(newMockEvent())
 
   portfolioStatusSetEvent.parameters = new Array()
+  portfolioStatusSetEvent.address = REGISTRY_ADDRESS
 
   portfolioStatusSetEvent.parameters.push(new ethereum.EventParam('portfolio', ethereum.Value.fromAddress(portfolio)))
   portfolioStatusSetEvent.parameters.push(new ethereum.EventParam('isActive', ethereum.Value.fromBoolean(isActive)))
@@ -225,6 +226,7 @@ export function createSwapWrapperStatusSetEvent(swapWrapper: Address, isSupporte
   let swapWrapperStatusSetEvent = changetype<SwapWrapperStatusSet>(newMockEvent())
 
   swapWrapperStatusSetEvent.parameters = new Array()
+  swapWrapperStatusSetEvent.address = REGISTRY_ADDRESS
 
   swapWrapperStatusSetEvent.parameters.push(
     new ethereum.EventParam('swapWrapper', ethereum.Value.fromAddress(swapWrapper)),
