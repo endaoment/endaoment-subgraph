@@ -41,7 +41,7 @@ export function resolveCapability(target: Address, signature: Bytes): Capability
   return capability
 }
 
-export function resolveRole(roleId: number): Role {
+export function resolveRole(roleId: i32): Role {
   const rId = roleId.toString()
   let role = Role.load(rId)
   if (role) {
