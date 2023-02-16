@@ -113,9 +113,6 @@ type NdaoEntity @entity {
 
   "Positions owned by the entity in various portfolios."
   positions: [PortfolioPosition!]! @derivedFrom(field: "entity")
-
-  # TODO (Later, if time allows): Track portfolio deposits, redemptions.
-  # TODO (Later, if time allows): Track individual donations & grants as entities and correlate them here
 }
 
 "A position taken by an Endaoment entity in a portfolio approved by Endaoment"
@@ -140,8 +137,10 @@ type PortfolioPosition @entity {
   investedUsdc: BigInt!
 }
 
+"Entity representing the Endaoment Protocol Registry."
 type Registry @entity {
-  id: ID!
+  "ID of the registry, which is the constant string '1'"
+  id: String!
 
   "Address of the Endaoment Registry contract."
   address: Bytes!
@@ -155,10 +154,11 @@ type Registry @entity {
   "Address of the swap wrappers approved on the registry."
   swapWrappers: [Bytes!]!
 
-  "Signatures that can be invoked by address."
-  publicCapabilities: [Bytes!]!
+  "Capabilities that can be invoked by any address."
+  publicCapabilities: [Capability!]! @derivedFrom(field: "publicOnRegistry")
 
-  # authorityUsers
+  "Authority users that have special permissions in the Endaoment protocol."
+  authorityUsers: [AuthorityUser!]! @derivedFrom(field: "registry")
 }
 
 "Address that has a special authority in the Endaoment protocol."
@@ -167,11 +167,75 @@ type AuthorityUser @entity {
   id: Bytes!
 
   "Roles of the authority user."
-  roles: [Role!]!
+  roles: [RoleUser!]! @derivedFrom(field: "user")
+
+  "Registry that the authority user is associated with."
+  registry: Registry!
 }
 
+"Role assigned to an authority user."
+type RoleUser @entity {
+  """
+  Address of the role user.
+
+  Format: <user_address>|<role_id>
+  """
+  id: Bytes!
+
+  "User that has the role."
+  user: AuthorityUser!
+
+  "Role assigned to the user."
+  role: Role!
+}
+
+"Role that can invoke capabilities."
 type Role @entity {
+  "ID of the role - String representation of the role's integer id."
+  id: String!
+
+  "Users associated with the role."
+  users: [RoleUser!]! @derivedFrom(field: "role")
+
+  "Capabilities of the role."
+  capabilities: [RoleCapability!]!
+}
+
+"Capability that can be invoked by a role."
+type RoleCapability @entity {
+  """
+  ID of the role capability.
+
+  Format: <role_id>|<capability_id>
+  """
   id: ID!
+
+  "Role that can invoke the capability."
+  role: Role!
+
+  "Capability that can be invoked by the role."
+  capability: Capability!
+}
+
+"Capability that can be invoked publicly or via a role."
+type Capability @entity {
+  """
+  ID of the capability.
+  Format: <target>|<signature>
+  """
+  id: ID!
+
+  "Target of the capability."
+  target: Bytes!
+
+  "Signature that can be invoked on the target of the capability."
+  signature: Bytes!
+
+  "Registry that the capability is associated with. Only set if the capability is a public capability."
+  publicOnRegistry: Registry
+
+  "Roles that can invoke the capability."
+  roles: [RoleCapability!]! @derivedFrom(field: "capability")
 }
 
 """
