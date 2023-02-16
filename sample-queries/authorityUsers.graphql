@@ -1,16 +1,16 @@
 query authorityUsers {
-    authorityUsers (where: {roles_: { id_not: "" }}) {
+  authorityUsers (where: {roles_: { id_not: "" }}) {
+    id
+    roles {
+      role {
         id
-        roles {
-            role {
-                id
-                capabilities {
-                    capability {
-                        target
-                        signature
-                    }
-                }
-            }
+        capabilities {
+          capability {
+            target
+            signature
+          }
         }
+      }
     }
+  }
 }

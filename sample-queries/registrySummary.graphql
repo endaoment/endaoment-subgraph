@@ -1,9 +1,9 @@
 query registrySummary {
-    registries {
-        entityFactories
-        swapWrappers
-        portfolios
-        address
-        owner
-    }
+  registries {
+    entityFactories
+    swapWrappers
+    portfolios
+    address
+    owner
+  }
 }

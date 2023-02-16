@@ -1,7 +1,20 @@
 query getTop5DeployedOrgs {
-    ndaoEntities (where: { entityType: Org } orderBy: totalUsdcReceived, orderDirection: desc, first: 5) {
-        contractAddress:id
-        ein
-        totalUsdcReceived
-    }
+  ndaoEntities (where: { entityType: Org } orderBy: totalUsdcReceived, orderDirection: desc, first: 10) {
+    contractAddress:id
+    ein
+    totalUsdcDonationsReceived
+    totalUsdcDonationFees
+    totalUsdcGrantsReceived
+    totalUsdcGrantInFees
+    totalUsdcContributionsReceived
+    totalUsdcContributionFees
+    totalUsdcTransfersReceived
+    totalUsdcTransferInFees
+    totalUsdcMigrated
+    totalUsdcReceived
+    totalUsdcReceivedFees
+    totalUsdcPaidOut
+    totalUsdcPaidOutFees
+    initialized
+  }
 }
