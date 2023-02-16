@@ -8,7 +8,7 @@ module.exports = {
       chainId: 31337,
       forking: {
         url: process.env.RPC_URL,
-        blockNumber: 16039956,
+        blockNumber: 16639611,
       },
       mining: {
         mempool: {
