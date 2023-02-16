@@ -1,5 +1,5 @@
-import { Address } from '@graphprotocol/graph-ts'
-import { Registry } from '../../generated/schema'
+import { Address, Bytes } from '@graphprotocol/graph-ts'
+import { Capability, Registry } from '../../generated/schema'
 import { Registry as RegistryContract } from '../../generated/Registry/Registry'
 
 export function resolveRegistry(address: Address): Registry {
@@ -20,4 +20,19 @@ export function resolveRegistry(address: Address): Registry {
   registry.save()
 
   return registry
+}
+
+export function resolveCapability(target: Address, signature: Bytes): Capability {
+  const id = `${target.toHex()}|${signature.toHex()}`
+  let capability = Capability.load(id)
+  if (capability) {
+    return capability
+  }
+
+  capability = new Capability(id)
+  capability.target = target
+  capability.signature = signature
+  capability.save()
+
+  return capability
 }

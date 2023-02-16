@@ -7,7 +7,7 @@ import {
   SwapWrapperStatusSet,
   UserRoleUpdated,
 } from '../../generated/Registry/Registry'
-import { resolveRegistry } from '../utils/registry-utils'
+import { resolveCapability, resolveRegistry } from '../utils/registry-utils'
 import { remove } from '../utils/arrays'
 
 export function handleFactoryApprovalSet(event: FactoryApprovalSet): void {
@@ -52,10 +52,21 @@ export function handlePortfolioStatusSet(event: PortfolioStatusSet): void {
   registry.save()
 }
 
-export function handleOwnershipChanged(event: OwnershipChanged): void {}
+export function handleOwnershipChanged(event: OwnershipChanged): void {
+  const registry = resolveRegistry(event.address)
+  registry.owner = event.params.newOwner
+  registry.save()
+}
+
+export function handleRoleCapabilityUpdated(event: RoleCapabilityUpdated): void {
+  const registry = resolveRegistry(event.address)
+  // TODO: Handle capability disabled later and see severed relationships
+
+  const capability = resolveCapability(event.params.target, event.params.functionSig)
+
+  registry.save()
+}
 
 export function handleUserRoleUpdated(event: UserRoleUpdated): void {}
 
 export function handlePublicCapabilityUpdated(event: PublicCapabilityUpdated): void {}
-
-export function handleRoleCapabilityUpdated(event: RoleCapabilityUpdated): void {}
