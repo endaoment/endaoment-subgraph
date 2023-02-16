@@ -9,7 +9,7 @@ import {
 } from '../../generated/Registry/Registry'
 import { resolveAuthorityUser, resolveCapability, resolveRegistry, resolveRole } from '../utils/registry-utils'
 import { remove } from '../utils/arrays'
-import { RoleCapability } from '../../generated/schema'
+import { AuthorityUser, RoleCapability, RoleUser } from '../../generated/schema'
 import { store } from '@graphprotocol/graph-ts'
 
 export function handleFactoryApprovalSet(event: FactoryApprovalSet): void {
@@ -88,6 +88,33 @@ export function handleRoleCapabilityUpdated(event: RoleCapabilityUpdated): void 
   roleCapability.save()
 }
 
-export function handleUserRoleUpdated(event: UserRoleUpdated): void {}
+export function handleUserRoleUpdated(event: UserRoleUpdated): void {
+  // Resolve elementary entities.
+  let authorityUser = resolveAuthorityUser(event.params.user)
+  const role = resolveRole(event.params.role)
+
+  const roleUserId = `${authorityUser.id}|${role.id}`
+  let roleUser = RoleUser.load(roleUserId)
+
+  if (!event.params.enabled) {
+    // If the RoleUser relationship already exists, and we are disabling it, delete it.
+    if (roleUser) {
+      store.remove('RoleUser', roleUserId)
+    }
+
+    return
+  }
+
+  // If the RoleUser relationship already exists, and we are enabling it again, simply return
+  if (roleUser) {
+    return
+  }
+
+  // Otherwise, bind user to the role.
+  roleUser = new RoleUser(roleUserId)
+  roleUser.role = role.id
+  roleUser.user = authorityUser.id
+  roleUser.save()
+}
 
 export function handlePublicCapabilityUpdated(event: PublicCapabilityUpdated): void {}
