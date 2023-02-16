@@ -1,4 +1,4 @@
-import { newMockEvent } from 'matchstick-as'
+import { createMockedFunction, newMockEvent } from 'matchstick-as'
 import { ethereum, Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
 import {
   AuthorityUpdated,
@@ -21,6 +21,8 @@ import {
   TreasuryChanged,
   UserRoleUpdated,
 } from '../../generated/Registry/Registry'
+
+export const REGISTRY_ADDRESS = Address.fromString('0xB533e61a8279d9f8909d6718a1B5227dbD52929B')
 
 export function createAuthorityUpdatedEvent(user: Address, newAuthority: Address): AuthorityUpdated {
   let authorityUpdatedEvent = changetype<AuthorityUpdated>(newMockEvent())
@@ -114,6 +116,7 @@ export function createFactoryApprovalSetEvent(factory: Address, isApproved: bool
   let factoryApprovalSetEvent = changetype<FactoryApprovalSet>(newMockEvent())
 
   factoryApprovalSetEvent.parameters = new Array()
+  factoryApprovalSetEvent.address = REGISTRY_ADDRESS
 
   factoryApprovalSetEvent.parameters.push(new ethereum.EventParam('factory', ethereum.Value.fromAddress(factory)))
   factoryApprovalSetEvent.parameters.push(new ethereum.EventParam('isApproved', ethereum.Value.fromBoolean(isApproved)))
@@ -292,6 +295,7 @@ export function createUserRoleUpdatedEvent(user: Address, role: i32, enabled: bo
   let userRoleUpdatedEvent = changetype<UserRoleUpdated>(newMockEvent())
 
   userRoleUpdatedEvent.parameters = new Array()
+  userRoleUpdatedEvent.address = REGISTRY_ADDRESS
 
   userRoleUpdatedEvent.parameters.push(new ethereum.EventParam('user', ethereum.Value.fromAddress(user)))
   userRoleUpdatedEvent.parameters.push(
@@ -300,4 +304,12 @@ export function createUserRoleUpdatedEvent(user: Address, role: i32, enabled: bo
   userRoleUpdatedEvent.parameters.push(new ethereum.EventParam('enabled', ethereum.Value.fromBoolean(enabled)))
 
   return userRoleUpdatedEvent
+}
+
+export function mockOwner(owner: Address): void {
+  const ethValues: ethereum.Value[] = [ethereum.Value.fromAddress(owner)]
+  createMockedFunction(REGISTRY_ADDRESS, 'owner', 'owner():(address)').returns(
+    // @ts-ignore - Ignore error due to graph-ts mismatch
+    ethValues,
+  )
 }
