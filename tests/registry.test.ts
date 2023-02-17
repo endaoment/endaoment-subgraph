@@ -180,5 +180,33 @@ describe('Registry', () => {
       assert.stringEquals(capabilityId, roleCapability.capability)
       assert.stringEquals(roleId, roleCapability.role)
     })
+
+    test('it should handle RoleCapability disabled', () => {
+      // Arrange
+      const role: i32 = 1
+      const target = ADDRESS_1
+      const functionSig: Bytes = Bytes.fromHexString('0x12345678')
+
+      // Act
+      handleRoleCapabilityUpdated(createRoleCapabilityUpdatedEvent(role, target, functionSig, true))
+      handleRoleCapabilityUpdated(createRoleCapabilityUpdatedEvent(role, target, functionSig, false))
+
+      // Assert
+      const capabilityId = `${target.toHexString()}|${functionSig.toHexString()}`
+      const capability = Capability.load(capabilityId)
+      if (!capability) throw new Error('Capability not found in store')
+      assert.bytesEquals(target, capability.target)
+      assert.bytesEquals(functionSig, capability.signature)
+      assert.booleanEquals(false, capability.isPublic)
+
+      const roleId = role.toString()
+      const roleCapabilityId = `${roleId}|${capabilityId}`
+      const roleEntity = Role.load(roleId)
+      if (!roleEntity) throw new Error('Role not found in store')
+      assert.i32Equals(0, roleEntity.capabilities.length)
+
+      const roleCapability = RoleCapability.load(roleCapabilityId)
+      assert.assertNull(roleCapability)
+    })
   })
 })
