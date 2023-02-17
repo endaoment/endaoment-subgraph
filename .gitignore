@@ -16,3 +16,4 @@ docker/data
 # GraphQL IDE Files
 sample-queries/.graphqlconfig
 sample-queries/schema.graphql
+sample-queries/drafts

@@ -1,0 +1,20 @@
+query mostContributedOrgs {
+  ndaoEntities (where: { entityType: Org } orderBy: totalUsdcReceived, orderDirection: desc, first: 10) {
+    contractAddress:id
+    ein
+    totalUsdcDonationsReceived
+    totalUsdcDonationFees
+    totalUsdcGrantsReceived
+    totalUsdcGrantInFees
+    totalUsdcContributionsReceived
+    totalUsdcContributionFees
+    totalUsdcTransfersReceived
+    totalUsdcTransferInFees
+    totalUsdcMigrated
+    totalUsdcReceived
+    totalUsdcReceivedFees
+    totalUsdcPaidOut
+    totalUsdcPaidOutFees
+    recognizedUsdcBalance
+  }
+}
