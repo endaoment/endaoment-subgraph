@@ -113,9 +113,6 @@ type NdaoEntity @entity {
 
   "Positions owned by the entity in various portfolios."
   positions: [PortfolioPosition!]! @derivedFrom(field: "entity")
-
-  # TODO (Later, if time allows): Track portfolio deposits, redemptions.
-  # TODO (Later, if time allows): Track individual donations & grants as entities and correlate them here
 }
 
 "A position taken by an Endaoment entity in a portfolio approved by Endaoment"
@@ -140,6 +137,101 @@ type PortfolioPosition @entity {
   investedUsdc: BigInt!
 }
 
+"Entity representing the Endaoment Protocol Registry."
+type Registry @entity {
+  "ID of the registry, which is the constant string '1'"
+  id: String!
+
+  "Address of the Endaoment Registry contract."
+  address: Bytes!
+
+  "Owner of the Endaoment Registry contract."
+  owner: Bytes!
+
+  "Address of the Entity Factories approved on the registry."
+  entityFactories: [Bytes!]!
+
+  "Address of the swap wrappers approved on the registry."
+  swapWrappers: [Bytes!]!
+
+  "Address of the portfolios approved on the registry."
+  portfolios: [Bytes!]!
+}
+
+"Address that has a special authority in the Endaoment protocol."
+type AuthorityUser @entity {
+  "Address of the authority user."
+  id: Bytes!
+
+  "Roles of the authority user."
+  roles: [RoleUser!]! @derivedFrom(field: "user")
+}
+
+"Role assigned to an authority user."
+type RoleUser @entity {
+  """
+  Address of the role user.
+
+  Format: <user_address>|<role_id>
+  """
+  id: ID!
+
+  "User that has the role."
+  user: AuthorityUser!
+
+  "Role assigned to the user."
+  role: Role!
+}
+
+"Role that can invoke capabilities."
+type Role @entity {
+  "ID of the role - String representation of the role's integer id."
+  id: String!
+
+  "Users associated with the role."
+  users: [RoleUser!]! @derivedFrom(field: "role")
+
+  "Capabilities of the role."
+  capabilities: [RoleCapability!]! @derivedFrom(field: "role")
+}
+
+"Capability that can be invoked by a role."
+type RoleCapability @entity {
+  """
+  ID of the role capability.
+
+  Format: <role_id>|<capability_id>
+  """
+  id: ID!
+
+  "Role that can invoke the capability."
+  role: Role!
+
+  "Capability that can be invoked by the role."
+  capability: Capability!
+}
+
+"Capability that can be invoked publicly or via a role."
+type Capability @entity {
+  """
+  ID of the capability.
+  Format: <target>|<signature>
+  """
+  id: ID!
+
+  "Target of the capability."
+  target: Bytes!
+
+  "Signature that can be invoked on the target of the capability."
+  signature: Bytes!
+
+  "Indicates if the capability can be invoked by any address publicly."
+  isPublic: Boolean!
+
+  "Roles that can invoke the capability."
+  roles: [RoleCapability!]! @derivedFrom(field: "capability")
+}
+
 """
 Helper metadata entity to track migration information of an NdaoEntity. Not meant to be queried directly, as the
 information here only useful for internal indexing logic. As soon as an entity is fully initialized, this entity
@@ -158,6 +250,3 @@ type NdaoEntityFirstIndexedBlock @entity {
   # Balance delta due to events emitted in the initial block.
   eventBalanceDelta: BigInt!
 }
-
-# TODO (Later, if time allows): Track permissioned wallets
-# TODO (Later, if time allows): Track unique donors, their total contributions and correlate them to donations

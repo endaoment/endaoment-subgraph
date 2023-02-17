@@ -348,6 +348,344 @@ export class PortfolioPosition extends Entity {
   }
 }
 
+export class Registry extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Registry entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Registry must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Registry", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Registry | null {
+    return changetype<Registry | null>(store.get("Registry", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get address(): Bytes {
+    let value = this.get("address");
+    return value!.toBytes();
+  }
+
+  set address(value: Bytes) {
+    this.set("address", Value.fromBytes(value));
+  }
+
+  get owner(): Bytes {
+    let value = this.get("owner");
+    return value!.toBytes();
+  }
+
+  set owner(value: Bytes) {
+    this.set("owner", Value.fromBytes(value));
+  }
+
+  get entityFactories(): Array<Bytes> {
+    let value = this.get("entityFactories");
+    return value!.toBytesArray();
+  }
+
+  set entityFactories(value: Array<Bytes>) {
+    this.set("entityFactories", Value.fromBytesArray(value));
+  }
+
+  get swapWrappers(): Array<Bytes> {
+    let value = this.get("swapWrappers");
+    return value!.toBytesArray();
+  }
+
+  set swapWrappers(value: Array<Bytes>) {
+    this.set("swapWrappers", Value.fromBytesArray(value));
+  }
+
+  get portfolios(): Array<Bytes> {
+    let value = this.get("portfolios");
+    return value!.toBytesArray();
+  }
+
+  set portfolios(value: Array<Bytes>) {
+    this.set("portfolios", Value.fromBytesArray(value));
+  }
+}
+
+export class AuthorityUser extends Entity {
+  constructor(id: Bytes) {
+    super();
+    this.set("id", Value.fromBytes(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save AuthorityUser entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.BYTES,
+        `Entities of type AuthorityUser must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("AuthorityUser", id.toBytes().toHexString(), this);
+    }
+  }
+
+  static load(id: Bytes): AuthorityUser | null {
+    return changetype<AuthorityUser | null>(
+      store.get("AuthorityUser", id.toHexString())
+    );
+  }
+
+  get id(): Bytes {
+    let value = this.get("id");
+    return value!.toBytes();
+  }
+
+  set id(value: Bytes) {
+    this.set("id", Value.fromBytes(value));
+  }
+
+  get roles(): Array<string> {
+    let value = this.get("roles");
+    return value!.toStringArray();
+  }
+
+  set roles(value: Array<string>) {
+    this.set("roles", Value.fromStringArray(value));
+  }
+}
+
+export class RoleUser extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save RoleUser entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type RoleUser must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("RoleUser", id.toString(), this);
+    }
+  }
+
+  static load(id: string): RoleUser | null {
+    return changetype<RoleUser | null>(store.get("RoleUser", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get user(): Bytes {
+    let value = this.get("user");
+    return value!.toBytes();
+  }
+
+  set user(value: Bytes) {
+    this.set("user", Value.fromBytes(value));
+  }
+
+  get role(): string {
+    let value = this.get("role");
+    return value!.toString();
+  }
+
+  set role(value: string) {
+    this.set("role", Value.fromString(value));
+  }
+}
+
+export class Role extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Role entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Role must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Role", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Role | null {
+    return changetype<Role | null>(store.get("Role", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get users(): Array<string> {
+    let value = this.get("users");
+    return value!.toStringArray();
+  }
+
+  set users(value: Array<string>) {
+    this.set("users", Value.fromStringArray(value));
+  }
+
+  get capabilities(): Array<string> {
+    let value = this.get("capabilities");
+    return value!.toStringArray();
+  }
+
+  set capabilities(value: Array<string>) {
+    this.set("capabilities", Value.fromStringArray(value));
+  }
+}
+
+export class RoleCapability extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save RoleCapability entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type RoleCapability must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("RoleCapability", id.toString(), this);
+    }
+  }
+
+  static load(id: string): RoleCapability | null {
+    return changetype<RoleCapability | null>(store.get("RoleCapability", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get role(): string {
+    let value = this.get("role");
+    return value!.toString();
+  }
+
+  set role(value: string) {
+    this.set("role", Value.fromString(value));
+  }
+
+  get capability(): string {
+    let value = this.get("capability");
+    return value!.toString();
+  }
+
+  set capability(value: string) {
+    this.set("capability", Value.fromString(value));
+  }
+}
+
+export class Capability extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Capability entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Capability must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Capability", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Capability | null {
+    return changetype<Capability | null>(store.get("Capability", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get target(): Bytes {
+    let value = this.get("target");
+    return value!.toBytes();
+  }
+
+  set target(value: Bytes) {
+    this.set("target", Value.fromBytes(value));
+  }
+
+  get signature(): Bytes {
+    let value = this.get("signature");
+    return value!.toBytes();
+  }
+
+  set signature(value: Bytes) {
+    this.set("signature", Value.fromBytes(value));
+  }
+
+  get isPublic(): boolean {
+    let value = this.get("isPublic");
+    return value!.toBoolean();
+  }
+
+  set isPublic(value: boolean) {
+    this.set("isPublic", Value.fromBoolean(value));
+  }
+
+  get roles(): Array<string> {
+    let value = this.get("roles");
+    return value!.toStringArray();
+  }
+
+  set roles(value: Array<string>) {
+    this.set("roles", Value.fromStringArray(value));
+  }
+}
+
 export class NdaoEntityFirstIndexedBlock extends Entity {
   constructor(id: Bytes) {
     super();

@@ -1,0 +1,9 @@
+query mostInvestedEntities {
+  ndaoEntities (orderBy: investedUsdc, orderDirection: desc, first: 3) {
+    id
+    entityType
+    entityManager
+    investedUsdc
+    recognizedUsdcBalance
+  }
+}

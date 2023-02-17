@@ -1,0 +1,23 @@
+query orgsPendingPayout {
+  ndaoEntities (
+    where: { entityType: Org, recognizedUsdcBalance_gte: 100000000 },
+    orderBy: recognizedUsdcBalance, orderDirection: desc
+  ) {
+    contractAddress:id
+    ein
+    totalUsdcDonationsReceived
+    totalUsdcDonationFees
+    totalUsdcGrantsReceived
+    totalUsdcGrantInFees
+    totalUsdcContributionsReceived
+    totalUsdcContributionFees
+    totalUsdcTransfersReceived
+    totalUsdcTransferInFees
+    totalUsdcMigrated
+    totalUsdcReceived
+    totalUsdcReceivedFees
+    totalUsdcPaidOut
+    totalUsdcPaidOutFees
+    recognizedUsdcBalance
+  }
+}
