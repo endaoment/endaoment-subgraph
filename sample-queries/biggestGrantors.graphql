@@ -1,0 +1,11 @@
+query biggestGrantors {
+  ndaoEntities (
+    orderBy: totalUsdcGrantedOut, orderDirection: desc
+  ) {
+    contractAddress:id
+    entityManager
+    totalUsdcReceived
+    totalUsdcGrantedOut
+    totalUsdcGrantedOutFees
+  }
+}

@@ -140,6 +140,7 @@ export function createOwnershipChangedEvent(owner: Address, newOwner: Address): 
 
   ownershipChangedEvent.parameters = new Array()
 
+  ownershipChangedEvent.address = REGISTRY_ADDRESS
   ownershipChangedEvent.parameters.push(new ethereum.EventParam('owner', ethereum.Value.fromAddress(owner)))
   ownershipChangedEvent.parameters.push(new ethereum.EventParam('newOwner', ethereum.Value.fromAddress(newOwner)))
 

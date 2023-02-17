@@ -7,11 +7,13 @@ import { NdaoEntity, Registry } from '../generated/schema'
 import { mockOrgId } from './utils/ndao-entity'
 import {
   handleFactoryApprovalSet,
+  handleOwnershipChanged,
   handlePortfolioStatusSet,
   handleSwapWrapperStatusSet,
 } from '../src/mappings/registry'
 import {
   createFactoryApprovalSetEvent,
+  createOwnershipChangedEvent,
   createPortfolioStatusSetEvent,
   createSwapWrapperStatusSetEvent,
   mockOwner,
@@ -132,5 +134,16 @@ describe('Registry', () => {
       assert.i32Equals(1, registry.portfolios.length)
       assert.bytesEquals(ADDRESS_2, registry.portfolios[0])
     })
+  })
+
+  test('it should handle ownership changed', () => {
+    // Act
+    handleOwnershipChanged(createOwnershipChangedEvent(OWNER, ADDRESS_3))
+
+    // Assert
+    let registry = Registry.load('1')
+    if (!registry) throw new Error('Registry not found in store')
+
+    assert.bytesEquals(ADDRESS_3, registry.owner)
   })
 })
