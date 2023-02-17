@@ -191,6 +191,7 @@ export function createPublicCapabilityUpdatedEvent(
   let publicCapabilityUpdatedEvent = changetype<PublicCapabilityUpdated>(newMockEvent())
 
   publicCapabilityUpdatedEvent.parameters = new Array()
+  publicCapabilityUpdatedEvent.address = REGISTRY_ADDRESS
 
   publicCapabilityUpdatedEvent.parameters.push(new ethereum.EventParam('target', ethereum.Value.fromAddress(target)))
   publicCapabilityUpdatedEvent.parameters.push(

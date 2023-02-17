@@ -9,6 +9,7 @@ import {
   handleFactoryApprovalSet,
   handleOwnershipChanged,
   handlePortfolioStatusSet,
+  handlePublicCapabilityUpdated,
   handleRoleCapabilityUpdated,
   handleSwapWrapperStatusSet,
   handleUserRoleUpdated,
@@ -17,6 +18,7 @@ import {
   createFactoryApprovalSetEvent,
   createOwnershipChangedEvent,
   createPortfolioStatusSetEvent,
+  createPublicCapabilityUpdatedEvent,
   createRoleCapabilityUpdatedEvent,
   createSwapWrapperStatusSetEvent,
   createUserRoleUpdatedEvent,
@@ -256,6 +258,41 @@ describe('Registry', () => {
 
       const roleUser = RoleUser.load(roleUserId)
       assert.assertNull(roleUser)
+    })
+
+    test('it should handle public capability enabled', () => {
+      // Arrange
+      const target = ADDRESS_1
+      const functionSig: Bytes = Bytes.fromHexString('0x12345678')
+
+      // Act
+      handlePublicCapabilityUpdated(createPublicCapabilityUpdatedEvent(target, functionSig, true))
+
+      // Assert
+      const capabilityId = `${target.toHexString()}|${functionSig.toHexString()}`
+      const capability = Capability.load(capabilityId)
+      if (!capability) throw new Error('Capability not found in store')
+      assert.bytesEquals(target, capability.target)
+      assert.bytesEquals(functionSig, capability.signature)
+      assert.booleanEquals(true, capability.isPublic)
+    })
+
+    test('it should handle public capability disabled', () => {
+      // Arrange
+      const target = ADDRESS_1
+      const functionSig: Bytes = Bytes.fromHexString('0x12345678')
+
+      // Act
+      handlePublicCapabilityUpdated(createPublicCapabilityUpdatedEvent(target, functionSig, true))
+      handlePublicCapabilityUpdated(createPublicCapabilityUpdatedEvent(target, functionSig, false))
+
+      // Assert
+      const capabilityId = `${target.toHexString()}|${functionSig.toHexString()}`
+      const capability = Capability.load(capabilityId)
+      if (!capability) throw new Error('Capability not found in store')
+      assert.bytesEquals(target, capability.target)
+      assert.bytesEquals(functionSig, capability.signature)
+      assert.booleanEquals(false, capability.isPublic)
     })
   })
 })
