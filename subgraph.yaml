@@ -89,4 +89,12 @@ templates:
           handler: handleEntityBalanceReconciled
         - event: EntityBalanceCorrected(indexed address,uint256)
           handler: handleEntityBalanceCorrected
+        - event: EntityValuePaidOut(indexed address,indexed address,uint256,uint256)
+          handler: handleEntityValuePaidOut
+        - event: EntityDeposit(indexed address,uint256,uint256)
+          handler: handleEntityDeposit
+        - event: EntityRedeem(indexed address,uint256,uint256)
+          handler: handleEntityRedeem
+        - event: EntityEthReceived(indexed address,uint256)
+          handler: handleEntityEthReceived
       file: ./src/mappings/ndao-entity.ts
