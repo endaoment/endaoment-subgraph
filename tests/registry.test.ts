@@ -3,7 +3,7 @@ import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
 import { handleEntityDeployed } from '../src/mappings/org-fund-factory'
 import { createEntityDeployedEvent } from './utils/org-fund-factory'
 import { OnChainNdaoEntityType } from '../src/utils/on-chain-entity-type'
-import { Capability, NdaoEntity, Registry, Role, RoleCapability, RoleUser } from '../generated/schema'
+import { AuthorityUser, Capability, NdaoEntity, Registry, Role, RoleCapability, RoleUser } from '../generated/schema'
 import { mockOrgId } from './utils/ndao-entity'
 import {
   handleFactoryApprovalSet,
@@ -224,7 +224,7 @@ describe('Registry', () => {
       const roleEntity = Role.load(roleId)
       if (!roleEntity) throw new Error('Role not found in store')
 
-      const roleUserId = `${user.toHexString()}|${roleId}` // <user_address>|<role_id>
+      const roleUserId = `${user.toHexString()}|${roleId}`
       assert.i32Equals(1, roleEntity.users.length)
       assert.stringEquals(roleUserId, roleEntity.users[0])
 
@@ -232,6 +232,30 @@ describe('Registry', () => {
       if (!roleUser) throw new Error('UserRole not found in store')
       assert.stringEquals(roleId, roleUser.role)
       assert.bytesEquals(user, roleUser.user)
+    })
+
+    test('it should handle UserRole disabled', () => {
+      // Arrange
+      const role: i32 = 1
+      const user = ADDRESS_1
+
+      // Act
+      handleUserRoleUpdated(createUserRoleUpdatedEvent(user, role, true))
+      handleUserRoleUpdated(createUserRoleUpdatedEvent(user, role, false))
+
+      // Assert
+      const roleId = role.toString()
+      const roleEntity = Role.load(roleId)
+      if (!roleEntity) throw new Error('Role not found in store')
+
+      const authorityUser = AuthorityUser.load(user)
+      if (!authorityUser) throw new Error('AuthorityUser not found in store')
+
+      const roleUserId = `${user.toHexString()}|${roleId}`
+      assert.i32Equals(0, roleEntity.users.length)
+
+      const roleUser = RoleUser.load(roleUserId)
+      assert.assertNull(roleUser)
     })
   })
 })
