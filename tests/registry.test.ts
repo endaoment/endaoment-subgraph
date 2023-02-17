@@ -1,20 +1,22 @@
 import { assert, describe, test, clearStore, afterEach, beforeAll } from 'matchstick-as'
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
 import { handleEntityDeployed } from '../src/mappings/org-fund-factory'
 import { createEntityDeployedEvent } from './utils/org-fund-factory'
 import { OnChainNdaoEntityType } from '../src/utils/on-chain-entity-type'
-import { NdaoEntity, Registry } from '../generated/schema'
+import { Capability, NdaoEntity, Registry, Role, RoleCapability } from '../generated/schema'
 import { mockOrgId } from './utils/ndao-entity'
 import {
   handleFactoryApprovalSet,
   handleOwnershipChanged,
   handlePortfolioStatusSet,
+  handleRoleCapabilityUpdated,
   handleSwapWrapperStatusSet,
 } from '../src/mappings/registry'
 import {
   createFactoryApprovalSetEvent,
   createOwnershipChangedEvent,
   createPortfolioStatusSetEvent,
+  createRoleCapabilityUpdatedEvent,
   createSwapWrapperStatusSetEvent,
   mockOwner,
   REGISTRY_ADDRESS,
@@ -136,14 +138,47 @@ describe('Registry', () => {
     })
   })
 
-  test('it should handle ownership changed', () => {
-    // Act
-    handleOwnershipChanged(createOwnershipChangedEvent(OWNER, ADDRESS_3))
+  describe('Authority and role management', () => {
+    test('it should handle ownership changed', () => {
+      // Act
+      handleOwnershipChanged(createOwnershipChangedEvent(OWNER, ADDRESS_3))
 
-    // Assert
-    let registry = Registry.load('1')
-    if (!registry) throw new Error('Registry not found in store')
+      // Assert
+      let registry = Registry.load('1')
+      if (!registry) throw new Error('Registry not found in store')
 
-    assert.bytesEquals(ADDRESS_3, registry.owner)
+      assert.bytesEquals(ADDRESS_3, registry.owner)
+    })
+
+    test('it should handle RoleCapability enabled', () => {
+      // Arrange
+      const role: i32 = 1
+      const target = ADDRESS_1
+      const functionSig: Bytes = Bytes.fromHexString('0x12345678')
+
+      // Act
+      handleRoleCapabilityUpdated(createRoleCapabilityUpdatedEvent(role, target, functionSig, true))
+
+      // Assert
+      const capabilityId = `${target.toHexString()}|${functionSig.toHexString()}`
+      const capability = Capability.load(capabilityId)
+      if (!capability) throw new Error('Capability not found in store')
+      assert.bytesEquals(target, capability.target)
+      assert.bytesEquals(functionSig, capability.signature)
+      assert.booleanEquals(false, capability.isPublic)
+
+      const roleId = role.toString()
+      const roleCapabilityId = `${roleId}|${capabilityId}`
+      const roleEntity = Role.load(roleId)
+      if (!roleEntity) throw new Error('Role not found in store')
+      assert.i32Equals(1, roleEntity.capabilities.length)
+      assert.stringEquals(roleCapabilityId, roleEntity.capabilities[0])
+
+      const roleCapability = RoleCapability.load(roleCapabilityId)
+      if (!roleCapability) throw new Error('RoleCapability not found in store')
+
+      assert.stringEquals(capabilityId, roleCapability.capability)
+      assert.stringEquals(roleId, roleCapability.role)
+    })
   })
 })

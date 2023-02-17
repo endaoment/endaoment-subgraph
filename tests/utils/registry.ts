@@ -210,6 +210,7 @@ export function createRoleCapabilityUpdatedEvent(
   let roleCapabilityUpdatedEvent = changetype<RoleCapabilityUpdated>(newMockEvent())
 
   roleCapabilityUpdatedEvent.parameters = new Array()
+  roleCapabilityUpdatedEvent.address = REGISTRY_ADDRESS
 
   roleCapabilityUpdatedEvent.parameters.push(
     new ethereum.EventParam('role', ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(role))),
