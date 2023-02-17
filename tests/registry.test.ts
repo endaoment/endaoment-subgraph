@@ -3,7 +3,7 @@ import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
 import { handleEntityDeployed } from '../src/mappings/org-fund-factory'
 import { createEntityDeployedEvent } from './utils/org-fund-factory'
 import { OnChainNdaoEntityType } from '../src/utils/on-chain-entity-type'
-import { Capability, NdaoEntity, Registry, Role, RoleCapability } from '../generated/schema'
+import { Capability, NdaoEntity, Registry, Role, RoleCapability, RoleUser } from '../generated/schema'
 import { mockOrgId } from './utils/ndao-entity'
 import {
   handleFactoryApprovalSet,
@@ -11,6 +11,7 @@ import {
   handlePortfolioStatusSet,
   handleRoleCapabilityUpdated,
   handleSwapWrapperStatusSet,
+  handleUserRoleUpdated,
 } from '../src/mappings/registry'
 import {
   createFactoryApprovalSetEvent,
@@ -18,6 +19,7 @@ import {
   createPortfolioStatusSetEvent,
   createRoleCapabilityUpdatedEvent,
   createSwapWrapperStatusSetEvent,
+  createUserRoleUpdatedEvent,
   mockOwner,
   REGISTRY_ADDRESS,
 } from './utils/registry'
@@ -207,6 +209,29 @@ describe('Registry', () => {
 
       const roleCapability = RoleCapability.load(roleCapabilityId)
       assert.assertNull(roleCapability)
+    })
+
+    test('it should handle UserRole enabled', () => {
+      // Arrange
+      const role: i32 = 1
+      const user = ADDRESS_1
+
+      // Act
+      handleUserRoleUpdated(createUserRoleUpdatedEvent(user, role, true))
+
+      // Assert
+      const roleId = role.toString()
+      const roleEntity = Role.load(roleId)
+      if (!roleEntity) throw new Error('Role not found in store')
+
+      const roleUserId = `${user.toHexString()}|${roleId}` // <user_address>|<role_id>
+      assert.i32Equals(1, roleEntity.users.length)
+      assert.stringEquals(roleUserId, roleEntity.users[0])
+
+      const roleUser = RoleUser.load(roleUserId)
+      if (!roleUser) throw new Error('UserRole not found in store')
+      assert.stringEquals(roleId, roleUser.role)
+      assert.bytesEquals(user, roleUser.user)
     })
   })
 })
