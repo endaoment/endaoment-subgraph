@@ -1,12 +1,10 @@
 <a href="https://developers.endaoment.org/" target="_blank" rel="noopener">
-  <picture>
-    <img alt="Endaoment developers" src="https://storage.googleapis.com/endaoment-static/readme-assets/graph-readme-cover.png" />
-  </picture>
+  <img alt="Endaoment developers" src="https://storage.googleapis.com/endaoment-static/readme-assets/graph-readme-cover.png" />
 </a>
 
 <div align="center">
   <h1>Endaoment Subgraph</h1>
-        <a href="https://docs.endaoment.org">
+        <a href="https://docs.endaoment.org/developers">
         <img src="https://img.shields.io/static/v1?label=&message=Documentation&colorA=E4EBF4&colorB=E4EBF4&style=flat&logo=gitbook" alt="Gitbook">
         </a>
     <a href="https://twitter.com/endaomentdotorg">
