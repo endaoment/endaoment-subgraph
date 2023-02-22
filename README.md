@@ -1,4 +1,26 @@
-# endaoment-subgraph
+<a href="https://developers.endaoment.org/" target="_blank" rel="noopener">
+  <picture>
+    <img alt="Endaoment developers" src="https://storage.googleapis.com/endaoment-static/readme-assets/graph-readme-cover.png" />
+  </picture>
+</a>
+
+<div align="center">
+  <h1>Endaoment Subgraph</h1>
+        <a href="https://docs.endaoment.org">
+        <img src="https://img.shields.io/static/v1?label=&message=Documentation&colorA=E4EBF4&colorB=E4EBF4&style=flat&logo=gitbook" alt="Gitbook">
+        </a>
+    <a href="https://twitter.com/endaomentdotorg">
+    <img src="https://img.shields.io/twitter/url.svg?label=%40endaomentdotorg&style=social&url=https%3A%2F%2Ftwitter.com%2Fendaomentdotorg" alt="@endaomentdotorg">
+      <a href="https://discord.gg/endaoment">
+        <img alt="Discord" src="https://img.shields.io/discord/734855436276334746?color=7389D8&label&logo=discord&logoColor=ffffff" />
+        </a>
+        <a href="https://etherscan.io/address/0xbe21e4cf884c8b2517e4e199487f8b505841cb36">
+        <img src="https://img.shields.io/static/v1?label=ENS&message=endaoment.eth&colorA=696F8C&colorB=696F8C&style=flat&logo=ethereum" alt="endaoment.eth">
+        </a>
+  </a>
+  <br/><br/>
+</div>
+
 Subgraph for the Endaoment Protocol
 
 ## Getting started
